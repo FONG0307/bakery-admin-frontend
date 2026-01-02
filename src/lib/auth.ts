@@ -27,3 +27,23 @@ export async function signout() {
     credentials: "include",
   });
 }
+
+export async function signup(email: string, password: string) {
+  const res = await fetch(`${API_URL}/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      email,
+      password,
+      password_confirmation: password,
+    }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.errors?.join(", ") || "Signup failed");
+  }
+
+  return res.json();
+}

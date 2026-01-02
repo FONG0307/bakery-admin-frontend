@@ -4,16 +4,36 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { signup } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const router = useRouter();
+  const[success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      const t = setTimeout(() => {
+        router.push("/signin");
+      }, 3000);
+      return () => clearTimeout(t);
+    }
+  }, [success]);
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
-          href="/"
+          href="/signin"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon />
@@ -83,7 +103,52 @@ export default function SignUpForm() {
                 </span>
               </div>
             </div>
-            <form>
+
+            {error && (
+              <div className="mb-4 rounded bg-red-100 px-3 py-2 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg dark:bg-gray-900">
+                  <h2 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white">
+                    🎉 Đăng ký thành công
+                  </h2>
+                  <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                    Tài khoản của bạn đã được tạo thành công.
+                  </p>
+
+                  <button
+                    onClick={() => router.push("/signin")}
+                    className="w-full rounded-lg bg-brand-500 px-4 py-2 text-white hover:bg-brand-600"
+                  >
+                    Đi tới trang đăng nhập
+                  </button>
+                </div>
+              </div>
+            )}
+            <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setError(null);
+          
+              if (!isChecked) {
+                setError("You must agree to Terms and Conditions");
+                return;
+              }
+          
+              try {
+                setLoading(true);
+                await signup(email, password);
+                setSuccess(true);
+              } catch (err: any) {
+                setError(err.message);
+              } finally {
+                setLoading(false);
+              }
+            }}
+            >
               <div className="space-y-5">
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   {/* <!-- First Name --> */}
@@ -119,9 +184,11 @@ export default function SignUpForm() {
                   <Input
                     type="email"
                     id="email"
-                    name="email"
                     placeholder="Enter your email"
+                    defaultValue={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
+
                 </div>
                 {/* <!-- Password --> */}
                 <div>
@@ -132,6 +199,8 @@ export default function SignUpForm() {
                     <Input
                       placeholder="Enter your password"
                       type={showPassword ? "text" : "password"}
+                      defaultValue={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}

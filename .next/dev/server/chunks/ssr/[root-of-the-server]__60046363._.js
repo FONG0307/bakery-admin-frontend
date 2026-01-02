@@ -26,7 +26,9 @@ __turbopack_context__.s([
     "signin",
     ()=>signin,
     "signout",
-    ()=>signout
+    ()=>signout,
+    "signup",
+    ()=>signup
 ]);
 const API_URL = "http://localhost:3001/api";
 async function signin(email, password) {
@@ -56,6 +58,25 @@ async function signout() {
         method: "DELETE",
         credentials: "include"
     });
+}
+async function signup(email, password) {
+    const res = await fetch(`${API_URL}/signup`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            email,
+            password,
+            password_confirmation: password
+        })
+    });
+    if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.errors?.join(", ") || "Signup failed");
+    }
+    return res.json();
 }
 }),
 "[project]/src/components/common/ThemeToggleButton.tsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {
@@ -3679,7 +3700,7 @@ const navItems = [
         subItems: [
             {
                 name: "Form Elements",
-                path: "/form-elements",
+                path: "admin/form-elements",
                 pro: false
             }
         ]

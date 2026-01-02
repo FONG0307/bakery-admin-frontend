@@ -2,27 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { getUsers,deleteUser} from "@/lib/users";
+import AddUserModal from "@/components/admin/AddUserModel";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [openAdd, setOpenAdd] = useState(false);
 
   useEffect(() => {
-    getUsers()
-      .then((data) => {
-        setUsers(Array.isArray(data) ? data : []);
-      })
-      .finally(() => setLoading(false));
+    console.log("🔥 USERS PAGE MOUNTED");
+  
+    getUsers().then((data) => {
+      console.log("🔥 USERS API DATA:", data);
+      setUsers(Array.isArray(data) ? data : data?.users || []);
+    });
   }, []);
-  
-  
-
-  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
       <h1 className="text-xl font-semibold mb-4">User Management</h1>
-
+      <button
+            onClick={() => setOpenAdd(true)}
+            className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+        >
+            + Add User
+        </button>
+        <AddUserModal
+        open={openAdd}
+        onClose={() => setOpenAdd(false)}
+        onCreated={(newUser) => setUsers((prev) => [...prev, newUser])}
+        />
       <table className="w-full border">
         <thead>
           <tr className="bg-gray-100 dark:bg-gray-800">
