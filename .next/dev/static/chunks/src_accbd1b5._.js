@@ -1389,12 +1389,12 @@ function UserDropdown() {
                             alt: "User"
                         }, void 0, false, {
                             fileName: "[project]/src/components/header/UserDropdown.tsx",
-                            lineNumber: 34,
+                            lineNumber: 35,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/header/UserDropdown.tsx",
-                        lineNumber: 33,
+                        lineNumber: 34,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1402,7 +1402,7 @@ function UserDropdown() {
                         children: "Musharof"
                     }, void 0, false, {
                         fileName: "[project]/src/components/header/UserDropdown.tsx",
-                        lineNumber: 42,
+                        lineNumber: 43,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
@@ -1420,18 +1420,18 @@ function UserDropdown() {
                             strokeLinejoin: "round"
                         }, void 0, false, {
                             fileName: "[project]/src/components/header/UserDropdown.tsx",
-                            lineNumber: 54,
+                            lineNumber: 55,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/header/UserDropdown.tsx",
-                        lineNumber: 44,
+                        lineNumber: 45,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                lineNumber: 29,
+                lineNumber: 30,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dropdown$2f$Dropdown$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dropdown"], {
@@ -1446,7 +1446,7 @@ function UserDropdown() {
                                 children: "Musharof Chowdhury"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                lineNumber: 70,
+                                lineNumber: 71,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1454,13 +1454,13 @@ function UserDropdown() {
                                 children: "randomuser@pimjo.com"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                lineNumber: 73,
+                                lineNumber: 74,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/header/UserDropdown.tsx",
-                        lineNumber: 69,
+                        lineNumber: 70,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -1487,24 +1487,24 @@ function UserDropdown() {
                                                 fill: ""
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                                lineNumber: 94,
+                                                lineNumber: 95,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                            lineNumber: 86,
+                                            lineNumber: 87,
                                             columnNumber: 15
                                         }, this),
                                         "Edit profile"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                    lineNumber: 80,
+                                    lineNumber: 81,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                lineNumber: 79,
+                                lineNumber: 80,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -1528,24 +1528,24 @@ function UserDropdown() {
                                                 fill: ""
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                                lineNumber: 119,
+                                                lineNumber: 120,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                            lineNumber: 111,
+                                            lineNumber: 112,
                                             columnNumber: 15
                                         }, this),
                                         "Account settings"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                    lineNumber: 105,
+                                    lineNumber: 106,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                lineNumber: 104,
+                                lineNumber: 105,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -1569,35 +1569,35 @@ function UserDropdown() {
                                                 fill: ""
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                                lineNumber: 144,
+                                                lineNumber: 145,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                            lineNumber: 136,
+                                            lineNumber: 137,
                                             columnNumber: 15
                                         }, this),
                                         "Support"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                    lineNumber: 130,
+                                    lineNumber: 131,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                lineNumber: 129,
+                                lineNumber: 130,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/header/UserDropdown.tsx",
-                        lineNumber: 78,
+                        lineNumber: 79,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: handleLogout,
-                        className: "flex w-full items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg hover:bg-gray-100 dark:text-gray-400",
+                        className: "flex w-full items-center gap-3 px-3 py-2 mt-3 font-medium   text-gray-700 rounded-lg hover:bg-gray-100 dark:text-gray-400",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                                 className: "fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300",
@@ -1613,31 +1613,31 @@ function UserDropdown() {
                                     fill: ""
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                    lineNumber: 168,
+                                    lineNumber: 169,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                                lineNumber: 160,
+                                lineNumber: 161,
                                 columnNumber: 11
                             }, this),
                             "Sign out"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/header/UserDropdown.tsx",
-                        lineNumber: 155,
+                        lineNumber: 156,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/header/UserDropdown.tsx",
-                lineNumber: 64,
+                lineNumber: 65,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/header/UserDropdown.tsx",
-        lineNumber: 28,
+        lineNumber: 29,
         columnNumber: 5
     }, this);
 }
@@ -4038,7 +4038,7 @@ const navItems = [
         subItems: [
             {
                 name: "Ecommerce",
-                path: "/",
+                path: "/admin",
                 pro: false
             }
         ]
@@ -4050,7 +4050,7 @@ const navItems = [
             columnNumber: 11
         }, ("TURBOPACK compile-time value", void 0)),
         name: "Calendar",
-        path: "/calendar"
+        path: "/admin/calendar"
     },
     {
         icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$icons$2f$user$2d$circle$2e$svg$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__UserCircleIcon$3e$__["UserCircleIcon"], {}, void 0, false, {
@@ -4062,12 +4062,12 @@ const navItems = [
         subItems: [
             {
                 name: "User List",
-                path: "admin/users",
+                path: "/admin/users",
                 pro: false
             },
             {
                 name: "User Profile",
-                path: "admin/profile",
+                path: "/admin/profile",
                 pro: false
             }
         ]
@@ -4082,7 +4082,7 @@ const navItems = [
         subItems: [
             {
                 name: "Form Elements",
-                path: "admin/form-elements",
+                path: "/admin/form-elements",
                 pro: false
             }
         ]
@@ -4097,7 +4097,7 @@ const navItems = [
         subItems: [
             {
                 name: "Basic Tables",
-                path: "/basic-tables",
+                path: "/admin/basic-tables",
                 pro: false
             }
         ]
@@ -4112,12 +4112,12 @@ const navItems = [
         subItems: [
             {
                 name: "Blank Page",
-                path: "/blank",
+                path: "/admin/blank",
                 pro: false
             },
             {
                 name: "404 Error",
-                path: "/error-404",
+                path: "/admin/error-404",
                 pro: false
             }
         ]
@@ -4134,12 +4134,12 @@ const othersItems = [
         subItems: [
             {
                 name: "Line Chart",
-                path: "/line-chart",
+                path: "/admin/line-chart",
                 pro: false
             },
             {
                 name: "Bar Chart",
-                path: "/bar-chart",
+                path: "/admin/bar-chart",
                 pro: false
             }
         ]
@@ -4454,7 +4454,7 @@ const AppSidebar = ()=>{
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: `py-8 flex  ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`,
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                    href: "/",
+                    href: "/admin",
                     children: isExpanded || isHovered || isMobileOpen ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {

@@ -2737,32 +2737,38 @@ var _s = __turbopack_context__.k.signature();
 function SignInPage() {
     _s();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    const [checking, setChecking] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "SignInPage.useEffect": ()=>{
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMe"])().then({
                 "SignInPage.useEffect": (user)=>{
-                    // nếu đã login
-                    if (user.role === "admin" || user.role === "super_admin") {
-                        router.replace("/admin");
-                    } else {
-                        // user thường → đá về signin lại
+                    if (user.role !== "admin" && user.role !== "staff") {
                         router.replace("/signin");
                     }
                 }
             }["SignInPage.useEffect"]).catch({
                 "SignInPage.useEffect": ()=>{
-                // chưa login → cho ở lại trang signin
+                    router.replace("/signin");
+                }
+            }["SignInPage.useEffect"]).finally({
+                "SignInPage.useEffect": ()=>{
+                    setChecking(false);
                 }
             }["SignInPage.useEffect"]);
         }
-    }["SignInPage.useEffect"], []);
+    }["SignInPage.useEffect"], [
+        router
+    ]);
+    if (checking) {
+        return null;
+    }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$auth$2f$SignInForm$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
         fileName: "[project]/src/app/(auth)/signin/page.tsx",
-        lineNumber: 27,
+        lineNumber: 31,
         columnNumber: 10
     }, this);
 }
-_s(SignInPage, "vQduR7x+OPXj6PSmJyFnf+hU7bg=", false, function() {
+_s(SignInPage, "EZyqNjv1DAMSa/f97bPVpf6bCGI=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
     ];

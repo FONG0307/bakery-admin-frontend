@@ -1,52 +1,136 @@
-// lib/users.ts
-const API_BASE = "http://localhost:3001";
+// src/lib/users.ts
+const API_BASE = "http://localhost:3001/api";
 
-export async function getUsers() {
-  const res = await fetch(`${API_BASE}/api/users`, {
-    credentials: "include",
+/* =======================
+   TYPES
+======================= */
+export type User = {
+  id: number;
+  email: string;
+  role: "admin" | "staff" | "user";
+
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  bio?: string;
+
+  country?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  tax_id?: string;
+
+  created_at?: string;
+};
+
+/* =======================
+   HELPERS
+======================= */
+function authHeaders() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No auth token");
+  }
+
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
+
+/* =======================
+   API CALLS
+======================= */
+
+// ✅ GET USERS
+export async function getUsers(): Promise<User[]> {
+  try {
+    const res = await fetch(`${API_BASE}/users`, {
+      headers: authHeaders(),
+    });
+
+    const data = await res.json();
+
+    console.log("🔥 /api/users response:", data);
+
+    if (!res.ok) {
+      console.error("GET USERS FAILED:", data);
+      return [];
+    }
+
+    // ✅ backend trả ARRAY TRỰC TIẾP
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    // (fallback nếu sau này đổi backend)
+    if (Array.isArray(data.users)) {
+      return data.users;
+    }
+
+    console.warn("⚠️ Unexpected users response shape:", data);
+    return [];
+  } catch (err) {
+    console.error("GET USERS ERROR:", err);
+    return [];
+  }
+}
+
+// ✅ CREATE USER
+export async function createUser(payload: any) {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch("http://localhost:3001/api/users", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      user: payload, // 🔥 QUAN TRỌNG
+    }),
   });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch users");
+    const data = await res.json();
+    throw new Error(data.errors?.join(", ") || "Create user failed");
   }
 
-  const data = await res.json();
-  return data.users;
+  return res.json();
 }
 
 
-export async function deleteUser(id: number) {
-  const res = await fetch(`${API_BASE}/api/users/${id}`, {
+// ✅ UPDATE USER
+export async function updateUser(id: number, data: any) {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token");
+
+  const res = await fetch(`${API_BASE}/users/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // 🔥 BẮT BUỘC
+    },
+    body: JSON.stringify({ user: data }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Update user failed");
+  }
+
+  return res.json();
+}
+
+// ✅ DELETE USER
+export async function deleteUser(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/users/${id}`, {
     method: "DELETE",
-    credentials: "include",
+    headers: authHeaders(),
   });
 
   if (!res.ok) {
     throw new Error("Failed to delete user");
   }
-}
-
-export async function createUser(data: {
-  email: string;
-  password: string;
-  role: string;
-}) {
-  const res = await fetch("http://localhost:3001/api/users", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({
-      email: data.email,
-      password: data.password,
-      password_confirmation: data.password, // 🔥 QUAN TRỌNG
-      role: data.role,
-    }),
-  });
-
-  if (!res.ok) {
-    const result = await res.json();
-    throw new Error(result.errors?.join(", ") || "Create user failed");
-  }
-
-  return res.json();
 }
