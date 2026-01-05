@@ -29,3 +29,77 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
 [04:55:22.564] Server  LOG      ✓ Compiled in 33ms
 [04:55:43.390] Server  LOG      ✓ Compiled in 34ms
 [04:57:13.534] Server  LOG      ✓ Compiled in 34ms
+[05:02:42.575] Server  LOG      ✓ Compiled in 40ms
+[05:02:43.479] Browser ERROR   ./src/components/form/input/InputField.tsx:37:70
+Parsing ecmascript source code failed
+  35 |         disabled={disabled}
+  36 |         className={inputClasses}
+> 37 |         {...rest}   {/* 👈 required, name, onChange, value, etc. */}
+     |                                                                      ^
+  38 |       />
+  39 |
+  40 |       {hint && (
+
+Expected '</', got '}'
+
+Import traces:
+  Client Component Browser:
+    ./src/components/form/input/InputField.tsx [Client Component Browser]
+    ./src/components/auth/SignInForm.tsx [Client Component Browser]
+    ./src/app/(auth)/signin/page.tsx [Client Component Browser]
+    ./src/app/(auth)/signin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/form/input/InputField.tsx [Client Component SSR]
+    ./src/components/auth/SignInForm.tsx [Client Component SSR]
+    ./src/app/(auth)/signin/page.tsx [Client Component SSR]
+    ./src/app/(auth)/signin/page.tsx [Server Component]
+[05:04:12.676] Server  LOG      ✓ Compiled in 32ms
+[05:04:13.479] Browser ERROR   ./src/components/form/input/InputField.tsx:37:70
+Parsing ecmascript source code failed
+  35 |         disabled={disabled}
+  36 |         className={inputClasses}
+> 37 |         {...rest}   {/* 👈 required, name, onChange, value, etc. */}
+     |                                                                      ^
+  38 |       />
+  39 |
+  40 |       {hint && (
+
+Expected '</', got '}'
+
+Import traces:
+  Client Component Browser:
+    ./src/components/form/input/InputField.tsx [Client Component Browser]
+    ./src/components/auth/SignInForm.tsx [Client Component Browser]
+    ./src/app/(auth)/signin/page.tsx [Client Component Browser]
+    ./src/app/(auth)/signin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/form/input/InputField.tsx [Client Component SSR]
+    ./src/components/auth/SignInForm.tsx [Client Component SSR]
+    ./src/app/(auth)/signin/page.tsx [Client Component SSR]
+    ./src/app/(auth)/signin/page.tsx [Server Component]
+[05:04:20.478] Browser ERROR   ./src/components/form/input/InputField.tsx:37:70
+Parsing ecmascript source code failed
+  35 |         disabled={disabled}
+  36 |         className={inputClasses}
+> 37 |         {...rest}   {/* 👈 required, name, onChange, value, etc. */}
+     |                                                                      ^
+  38 |       />
+  39 |
+  40 |       {hint && (
+
+Expected '</', got '}'
+
+Import traces:
+  Client Component Browser:
+    ./src/components/form/input/InputField.tsx [Client Component Browser]
+    ./src/components/auth/SignInForm.tsx [Client Component Browser]
+    ./src/app/(auth)/signin/page.tsx [Client Component Browser]
+    ./src/app/(auth)/signin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/form/input/InputField.tsx [Client Component SSR]
+    ./src/components/auth/SignInForm.tsx [Client Component SSR]
+    ./src/app/(auth)/signin/page.tsx [Client Component SSR]
+    ./src/app/(auth)/signin/page.tsx [Server Component]
