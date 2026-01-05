@@ -34,7 +34,7 @@ const Input: FC<InputProps> = ({
         type={type}
         disabled={disabled}
         className={inputClasses}
-        {...rest}   {/* 👈 required, name, onChange, value, etc. */}
+        {...rest}
       />
 
       {hint && (
