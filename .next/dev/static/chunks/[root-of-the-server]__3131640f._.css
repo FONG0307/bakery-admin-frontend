@@ -214,26 +214,26 @@
 
   @supports (color: lab(0% 0 0)) {
     :root, :host {
-      --color-red-50: lab(96.5005% 4.18511 1.52329);
+      --color-red-50: lab(96.5005% 4.18508 1.52328);
       --color-red-100: lab(92.243% 10.2865 3.83865);
-      --color-red-400: lab(63.7053% 60.7449 31.3109);
+      --color-red-400: lab(63.7053% 60.745 31.3109);
       --color-red-500: lab(55.4814% 75.0732 48.8528);
       --color-red-600: lab(48.4493% 77.4328 61.5452);
       --color-red-700: lab(40.4273% 67.2623 53.7441);
       --color-red-900: lab(28.5139% 44.5539 29.0463);
       --color-yellow-100: lab(97.3564% -4.51407 27.344);
-      --color-yellow-600: lab(62.7799% 22.4198 86.1544);
-      --color-green-100: lab(96.186% -13.8464 6.52362);
+      --color-yellow-600: lab(62.7799% 22.4197 86.1544);
+      --color-green-100: lab(96.1861% -13.8464 6.52365);
       --color-green-600: lab(59.0978% -58.6621 41.2579);
-      --color-cyan-100: lab(95.3146% -13.8285 -6.84733);
-      --color-cyan-600: lab(55.1767% -26.7496 -30.5138);
-      --color-blue-50: lab(96.492% -1.14647 -5.11479);
-      --color-blue-500: lab(54.1736% 13.3368 -74.6839);
+      --color-cyan-100: lab(95.3146% -13.8285 -6.84732);
+      --color-cyan-600: lab(55.1767% -26.7496 -30.5139);
+      --color-blue-50: lab(96.492% -1.14644 -5.11479);
+      --color-blue-500: lab(54.1736% 13.3369 -74.6839);
       --color-blue-600: lab(44.0605% 29.0279 -86.0352);
-      --color-purple-100: lab(93.3333% 6.9744 -9.83434);
+      --color-purple-100: lab(93.3333% 6.97437 -9.83434);
       --color-purple-600: lab(43.0295% 75.21 -86.5669);
-      --color-pink-100: lab(93.5864% 9.01193 -3.15077);
-      --color-pink-600: lab(49.5493% 79.8381 2.31769);
+      --color-pink-100: lab(93.5864% 9.01193 -3.15079);
+      --color-pink-600: lab(49.5493% 79.8381 2.31768);
     }
   }
 }
@@ -845,10 +845,6 @@
     margin-top: calc(var(--spacing) * 10);
   }
 
-  .mt-16 {
-    margin-top: calc(var(--spacing) * 16);
-  }
-
   .mt-\[17px\] {
     margin-top: 17px;
   }
@@ -935,23 +931,6 @@
 
   .ml-auto {
     margin-left: auto;
-  }
-
-  .menu-dropdown-badge {
-    padding-inline: calc(var(--spacing) * 2.5);
-    padding-block: calc(var(--spacing) * .5);
-    font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
-    --tw-font-weight: var(--font-weight-medium);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-brand-500);
-    text-transform: uppercase;
-    border-radius: 3.40282e38px;
-    display: block;
-  }
-
-  .menu-dropdown-badge:is(.dark *) {
-    color: var(--color-brand-400);
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -1424,11 +1403,6 @@
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
 
-  .-translate-x-full {
-    --tw-translate-x: -100%;
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-
   .translate-x-0 {
     --tw-translate-x: calc(var(--spacing) * 0);
     translate: var(--tw-translate-x) var(--tw-translate-y);
@@ -1523,10 +1497,6 @@
 
   .justify-end {
     justify-content: flex-end;
-  }
-
-  .justify-start {
-    justify-content: flex-start;
   }
 
   .gap-0\.5 {
@@ -1898,52 +1868,6 @@
 
   .menu-item-active:is(.dark *) {
     color: var(--color-brand-400);
-  }
-
-  .menu-dropdown-badge-inactive {
-    background-color: var(--color-brand-50);
-  }
-
-  @media (hover: hover) {
-    .menu-dropdown-badge-inactive:is(:where(.group):hover *) {
-      background-color: var(--color-brand-100);
-    }
-  }
-
-  .menu-dropdown-badge-inactive:is(.dark *) {
-    background-color: #465fff26;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .menu-dropdown-badge-inactive:is(.dark *) {
-      background-color: color-mix(in oklab, var(--color-brand-500) 15%, transparent);
-    }
-  }
-
-  @media (hover: hover) {
-    .menu-dropdown-badge-inactive:is(.dark *):is(:where(.group):hover *) {
-      background-color: #465fff33;
-    }
-
-    @supports (color: color-mix(in lab, red, red)) {
-      .menu-dropdown-badge-inactive:is(.dark *):is(:where(.group):hover *) {
-        background-color: color-mix(in oklab, var(--color-brand-500) 20%, transparent);
-      }
-    }
-  }
-
-  .menu-dropdown-badge-active {
-    background-color: var(--color-brand-100);
-  }
-
-  .menu-dropdown-badge-active:is(.dark *) {
-    background-color: #465fff33;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .menu-dropdown-badge-active:is(.dark *) {
-      background-color: color-mix(in oklab, var(--color-brand-500) 20%, transparent);
-    }
   }
 
   .bg-black\/40 {
@@ -2478,11 +2402,6 @@
     line-height: calc(var(--spacing) * 6);
   }
 
-  .leading-\[20px\] {
-    --tw-leading: 20px;
-    line-height: 20px;
-  }
-
   .leading-normal {
     --tw-leading: var(--leading-normal);
     line-height: var(--leading-normal);
@@ -2518,26 +2437,6 @@
     letter-spacing: -.2px;
   }
 
-  .menu-item-icon-inactive {
-    color: var(--color-gray-500);
-  }
-
-  @media (hover: hover) {
-    .menu-item-icon-inactive:is(:where(.group):hover *) {
-      color: var(--color-gray-700);
-    }
-  }
-
-  .menu-item-icon-inactive:is(.dark *) {
-    color: var(--color-gray-400);
-  }
-
-  @media (hover: hover) {
-    .menu-item-icon-inactive:is(.dark *):is(:where(.group):hover *) {
-      color: var(--color-gray-300);
-    }
-  }
-
   .menu-item-icon {
     color: var(--color-gray-500);
   }
@@ -2550,14 +2449,6 @@
 
   .menu-item-icon:is(.dark *) {
     color: var(--color-gray-400);
-  }
-
-  .menu-item-icon-active {
-    color: var(--color-brand-500);
-  }
-
-  .menu-item-icon-active:is(.dark *) {
-    color: var(--color-brand-400);
   }
 
   .text-blue-600 {
@@ -2799,16 +2690,6 @@
   .duration-200 {
     --tw-duration: .2s;
     transition-duration: .2s;
-  }
-
-  .duration-300 {
-    --tw-duration: .3s;
-    transition-duration: .3s;
-  }
-
-  .ease-in-out {
-    --tw-ease: var(--ease-in-out);
-    transition-timing-function: var(--ease-in-out);
   }
 
   .ease-linear {
@@ -3430,12 +3311,6 @@
   }
 
   @media (min-width: 1024px) {
-    .lg\:mt-0 {
-      margin-top: calc(var(--spacing) * 0);
-    }
-  }
-
-  @media (min-width: 1024px) {
     .lg\:mb-6 {
       margin-bottom: calc(var(--spacing) * 6);
     }
@@ -3570,12 +3445,6 @@
   }
 
   @media (min-width: 1024px) {
-    .lg\:justify-center {
-      justify-content: center;
-    }
-  }
-
-  @media (min-width: 1024px) {
     .lg\:justify-end {
       justify-content: flex-end;
     }
@@ -3584,12 +3453,6 @@
   @media (min-width: 1024px) {
     .lg\:justify-normal {
       justify-content: normal;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .lg\:justify-start {
-      justify-content: flex-start;
     }
   }
 

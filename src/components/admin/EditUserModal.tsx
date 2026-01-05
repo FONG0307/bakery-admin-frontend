@@ -12,6 +12,14 @@ type Props = {
   onUpdated: (user: any) => void;
 };
 
+const ROLE_OPTIONS = [
+  { label: "Admin", value: "admin" },
+  { label: "Staff", value: "staff" },
+  { label: "Customer", value: "user" },
+] as const;
+
+type RoleValue = typeof ROLE_OPTIONS[number]["value"];
+
 export default function EditUserModal({
   open,
   user,
@@ -47,6 +55,7 @@ export default function EditUserModal({
   }
 
   async function handleSubmit() {
+    const { showSuccess, showError } = useToast();
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Unauthorized");
@@ -80,14 +89,13 @@ export default function EditUserModal({
     );
 
     const data = await res.json().catch(() => ({}));
-    const { showSuccess, showError } = useToast();
+   
     if (!res.ok) {
       showError(data.errors?.join(", ") || "Update failed");
       return;
     }
-
-    onUpdated(data);
     showSuccess("User updated successfully ✅");
+    onUpdated(data);
     onClose();
   }
 
@@ -139,7 +147,11 @@ export default function EditUserModal({
                 { label: "Staff", value: "staff" },
                 { label: "Customer", value: "user" },
               ]}
-              onChange={(value) => updateField("role", value)}
+              onChange={(value) => {
+                if (value === "admin" || value === "staff" || value === "user") {
+                  updateField("role", value);
+                }
+              }}
             />
           </Field>
 

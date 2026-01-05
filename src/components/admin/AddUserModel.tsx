@@ -147,7 +147,11 @@ export default function AddUserModal({ open, onClose, onCreated }: Props) {
                 { label: "Staff", value: "staff" },
                 { label: "Customer", value: "user" },
               ]}
-              onChange={(value) => updateField("role", value)}
+              onChange={(value) => {
+                if (value === "admin" || value === "staff" || value === "user") {
+                  updateField("role", value);
+                }
+              }}
             />
           </Field>
 

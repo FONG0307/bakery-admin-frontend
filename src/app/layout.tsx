@@ -21,7 +21,9 @@ export default function RootLayout({
          <AuthProvider> 
           <ThemeProvider>
             <ToastProvider>
-              <SidebarProvider>{children}</SidebarProvider>
+              <SidebarProvider>
+                {children}
+              </SidebarProvider>
             </ToastProvider>
           </ThemeProvider>
         </AuthProvider>

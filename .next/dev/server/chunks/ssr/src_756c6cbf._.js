@@ -404,7 +404,11 @@ function AddUserModal({ open, onClose, onCreated }) {
                                         value: "user"
                                     }
                                 ],
-                                onChange: (value)=>updateField("role", value)
+                                onChange: (value)=>{
+                                    if (value === "admin" || value === "staff" || value === "user") {
+                                        updateField("role", value);
+                                    }
+                                }
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/AddUserModel.tsx",
                                 lineNumber: 143,
@@ -422,12 +426,12 @@ function AddUserModal({ open, onClose, onCreated }) {
                                 children: "Set password"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                                lineNumber: 156,
+                                lineNumber: 160,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                            lineNumber: 155,
+                            lineNumber: 159,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Field, {
@@ -438,12 +442,12 @@ function AddUserModal({ open, onClose, onCreated }) {
                                 onChange: (e)=>updateField("password", e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                                lineNumber: 162,
+                                lineNumber: 166,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                            lineNumber: 161,
+                            lineNumber: 165,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Field, {
@@ -454,12 +458,12 @@ function AddUserModal({ open, onClose, onCreated }) {
                                 onChange: (e)=>updateField("password_confirmation", e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                                lineNumber: 170,
+                                lineNumber: 174,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                            lineNumber: 169,
+                            lineNumber: 173,
                             columnNumber: 11
                         }, this)
                     ]
@@ -478,7 +482,7 @@ function AddUserModal({ open, onClose, onCreated }) {
                             children: "Cancel"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                            lineNumber: 181,
+                            lineNumber: 185,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -488,13 +492,13 @@ function AddUserModal({ open, onClose, onCreated }) {
                             children: loading ? "Creating..." : "Create User"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                            lineNumber: 188,
+                            lineNumber: 192,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                    lineNumber: 180,
+                    lineNumber: 184,
                     columnNumber: 9
                 }, this)
             ]
@@ -518,14 +522,14 @@ function AddUserModal({ open, onClose, onCreated }) {
                 children: label
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/AddUserModel.tsx",
-                lineNumber: 211,
+                lineNumber: 215,
                 columnNumber: 7
             }, this),
             children
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/admin/AddUserModel.tsx",
-        lineNumber: 210,
+        lineNumber: 214,
         columnNumber: 5
     }, this);
 }
@@ -548,6 +552,20 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$ToastConte
 ;
 ;
 ;
+const ROLE_OPTIONS = [
+    {
+        label: "Admin",
+        value: "admin"
+    },
+    {
+        label: "Staff",
+        value: "staff"
+    },
+    {
+        label: "Customer",
+        value: "user"
+    }
+];
 function EditUserModal({ open, user, onClose, onUpdated }) {
     const [form, setForm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         email: "",
@@ -580,6 +598,7 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
             }));
     }
     async function handleSubmit() {
+        const { showSuccess, showError } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$ToastContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useToast"])();
         const token = localStorage.getItem("token");
         if (!token) {
             alert("Unauthorized");
@@ -608,13 +627,12 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
             })
         });
         const data = await res.json().catch(()=>({}));
-        const { showSuccess, showError } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$ToastContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useToast"])();
         if (!res.ok) {
             showError(data.errors?.join(", ") || "Update failed");
             return;
         }
-        onUpdated(data);
         showSuccess("User updated successfully ✅");
+        onUpdated(data);
         onClose();
     }
     if (!open) return null;
@@ -628,7 +646,7 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                     children: "Edit User"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                    lineNumber: 99,
+                    lineNumber: 107,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -641,12 +659,12 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                 onChange: (e)=>updateField("first_name", e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                lineNumber: 105,
+                                lineNumber: 113,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 104,
+                            lineNumber: 112,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Field, {
@@ -656,12 +674,12 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                 onChange: (e)=>updateField("last_name", e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                lineNumber: 112,
+                                lineNumber: 120,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 111,
+                            lineNumber: 119,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -673,17 +691,17 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                     onChange: (e)=>updateField("email", e.target.value)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                    lineNumber: 120,
+                                    lineNumber: 128,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                lineNumber: 119,
+                                lineNumber: 127,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 118,
+                            lineNumber: 126,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Field, {
@@ -693,12 +711,12 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                 onChange: (e)=>updateField("phone", e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                lineNumber: 128,
+                                lineNumber: 136,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 127,
+                            lineNumber: 135,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Field, {
@@ -719,15 +737,19 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                         value: "user"
                                     }
                                 ],
-                                onChange: (value)=>updateField("role", value)
+                                onChange: (value)=>{
+                                    if (value === "admin" || value === "staff" || value === "user") {
+                                        updateField("role", value);
+                                    }
+                                }
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                lineNumber: 135,
+                                lineNumber: 143,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 134,
+                            lineNumber: 142,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -738,7 +760,7 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                     children: "Change password"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                    lineNumber: 148,
+                                    lineNumber: 160,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -746,13 +768,13 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                     children: "Leave blank to keep current password"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                    lineNumber: 151,
+                                    lineNumber: 163,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 147,
+                            lineNumber: 159,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Field, {
@@ -762,12 +784,12 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                 onChange: (e)=>updateField("password", e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                lineNumber: 157,
+                                lineNumber: 169,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 156,
+                            lineNumber: 168,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Field, {
@@ -777,18 +799,18 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                                 onChange: (e)=>updateField("password_confirmation", e.target.value)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                                lineNumber: 164,
+                                lineNumber: 176,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 163,
+                            lineNumber: 175,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                    lineNumber: 103,
+                    lineNumber: 111,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -800,7 +822,7 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                             children: "Cancel"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 174,
+                            lineNumber: 186,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -809,24 +831,24 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                             children: "Save Changes"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                            lineNumber: 180,
+                            lineNumber: 192,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                    lineNumber: 173,
+                    lineNumber: 185,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/admin/EditUserModal.tsx",
-            lineNumber: 98,
+            lineNumber: 106,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/admin/EditUserModal.tsx",
-        lineNumber: 97,
+        lineNumber: 105,
         columnNumber: 5
     }, this);
 }
@@ -839,14 +861,14 @@ function EditUserModal({ open, user, onClose, onUpdated }) {
                 children: label
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/EditUserModal.tsx",
-                lineNumber: 202,
+                lineNumber: 214,
                 columnNumber: 7
             }, this),
             children
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/admin/EditUserModal.tsx",
-        lineNumber: 201,
+        lineNumber: 213,
         columnNumber: 5
     }, this);
 }
