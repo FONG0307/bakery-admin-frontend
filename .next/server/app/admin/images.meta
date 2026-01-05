@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/admin/layout,_N_T_/admin/(ui-elements)/layout,_N_T_/admin/(ui-elements)/images/layout,_N_T_/admin/(ui-elements)/images/page,_N_T_/admin/images"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/admin/!KHVpLWVsZW1lbnRzKQ/images/__PAGE__",
+    "/admin/!KHVpLWVsZW1lbnRzKQ/images",
+    "/admin/!KHVpLWVsZW1lbnRzKQ",
+    "/admin",
+    "/_index",
+    "/_head"
+  ]
+}

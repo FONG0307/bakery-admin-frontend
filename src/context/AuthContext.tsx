@@ -3,13 +3,24 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getMe } from "@/lib/auth";
 
-type User = {
+export type User = {
   id: number;
   email: string;
   role: "admin" | "staff" | "user";
+
   first_name?: string;
   last_name?: string;
+
+  // Address / billing info
+  country?: string;
+  state?: string;
+  city?: string;
+  postal_code?: string;
+  tax_id?: string;
+  phone?: string;
+  bio?: string;
 };
+
 
 type AuthContextType = {
   user: User | null;
