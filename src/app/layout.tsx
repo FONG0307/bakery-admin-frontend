@@ -9,6 +9,7 @@ import { ToastProvider } from '@/context/ToastContext';
 const outfit = Outfit({
   subsets: ["latin"],
 });
+console.log("API URL =", process.env.NEXT_PUBLIC_API_URL);
 
 export default function RootLayout({
   children,
