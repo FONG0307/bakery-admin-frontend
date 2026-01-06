@@ -17,9 +17,17 @@ export function useAuth() {
 
   useEffect(() => {
     getMe()
-    .then((res) => setUser(res.user))
-    .finally(() => setLoading(false));
+      .then((user) => {
+        setUser(user);
+      })
+      .catch(() => {
+        setUser(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
+
 
   return { user, loading };
 }

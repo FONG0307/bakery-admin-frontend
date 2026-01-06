@@ -36,9 +36,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     getMe()
-      .then((res) => {
-        // 🔥 FIX QUYẾT ĐỊNH
-        setUser(res.user);
+      .then((user) => {
+        setUser(user);
       })
       .catch(() => {
         setUser(null);
@@ -47,6 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       });
   }, []);
+
 
   return (
     <AuthContext.Provider value={{ user, loading, setUser }}>
