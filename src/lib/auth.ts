@@ -13,20 +13,29 @@ export type User = {
   last_name?: string;
 };
 
-export async function signin(email: string, password: string): Promise<User> {
+/* ================= LOGIN ================= */
+
+export async function signin(
+  email: string,
+  password: string
+): Promise<User> {
   const res = await fetch(`${API_URL}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
 
-  if (!res.ok) throw new Error("Login failed");
+  if (!res.ok) {
+    throw new Error("Login failed");
+  }
 
   const data = await res.json();
   localStorage.setItem("token", data.token);
 
-  return data.user; // ✅ user trực tiếp
+  return data.user;
 }
+
+/* ================= ME ================= */
 
 export async function getMe(): Promise<User | null> {
   if (typeof window === "undefined") return null;
@@ -43,9 +52,32 @@ export async function getMe(): Promise<User | null> {
   if (!res.ok) return null;
 
   const data = await res.json();
-
-  return data.user; // ✅ CHUẨN
+  return data.user;
 }
+
+/* ================= SIGNUP (FIX LỖI BUILD) ================= */
+
+export async function signup(
+  email: string,
+  password: string
+): Promise<void> {
+  const res = await fetch(`${API_URL}/api/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      password,
+      password_confirmation: password,
+    }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.errors?.join(", ") || "Signup failed");
+  }
+}
+
+/* ================= LOGOUT ================= */
 
 export function signout() {
   localStorage.removeItem("token");
