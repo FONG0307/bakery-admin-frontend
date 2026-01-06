@@ -168,6 +168,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 "[project]/src/lib/auth.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
+// src/lib/auth.ts
 __turbopack_context__.s([
     "getMe",
     ()=>getMe,
@@ -192,23 +193,35 @@ async function signin(email, password) {
             password
         })
     });
-    if (!res.ok) throw new Error("Login failed");
+    console.log(res);
+    localStorage.removeItem("token");
+    if (!res.ok) {
+        throw new Error("Login failed");
+    }
     const data = await res.json();
     localStorage.setItem("token", data.token);
     return data.user;
 }
 async function getMe() {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    console.log("TOKEN =", localStorage.getItem("token"));
     const token = localStorage.getItem("token");
     if (!token) {
-        throw new Error("No token in storage");
+        console.warn("getMe skipped: no token");
+        return null;
     }
     const res = await fetch(`${API_URL}/api/me`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-    if (!res.ok) throw new Error("Unauthorized");
-    return res.json();
+    if (!res.ok) {
+        console.warn("getMe failed:", res.status);
+        return null;
+    }
+    const data = await res.json();
+    return data.user;
 }
 async function signup(email, password) {
     const res = await fetch(`${API_URL}/api/signup`, {
@@ -226,7 +239,6 @@ async function signup(email, password) {
         const data = await res.json();
         throw new Error(data.errors?.join(", ") || "Signup failed");
     }
-    return res.json();
 }
 function signout() {
     localStorage.removeItem("token");
@@ -259,18 +271,11 @@ function AuthProvider({ children }) {
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AuthProvider.useEffect": ()=>{
+            const token = localStorage.getItem("token");
+            if (!token) return;
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMe"])().then({
-                "AuthProvider.useEffect": (res)=>{
-                    // 🔥 FIX QUYẾT ĐỊNH
-                    setUser(res.user);
-                }
-            }["AuthProvider.useEffect"]).catch({
-                "AuthProvider.useEffect": ()=>{
-                    setUser(null);
-                }
-            }["AuthProvider.useEffect"]).finally({
-                "AuthProvider.useEffect": ()=>{
-                    setLoading(false);
+                "AuthProvider.useEffect": (user)=>{
+                    if (user) setUser(user);
                 }
             }["AuthProvider.useEffect"]);
         }
@@ -284,7 +289,7 @@ function AuthProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AuthContext.tsx",
-        lineNumber: 52,
+        lineNumber: 48,
         columnNumber: 5
     }, this);
 }

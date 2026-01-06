@@ -1,6 +1,6 @@
 // src/lib/users.ts
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-
+const NEXT_PUBLIC_API_URL = 'https://api.ndphong0307.tech';
 /* =======================
    TYPES
 ======================= */

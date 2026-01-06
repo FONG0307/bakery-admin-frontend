@@ -1291,9 +1291,17 @@ function useAuth() {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "useAuth.useEffect": ()=>{
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMe"])().then({
-                "useAuth.useEffect": (res)=>setUser(res.user)
+                "useAuth.useEffect": (user)=>{
+                    setUser(user);
+                }
+            }["useAuth.useEffect"]).catch({
+                "useAuth.useEffect": ()=>{
+                    setUser(null);
+                }
             }["useAuth.useEffect"]).finally({
-                "useAuth.useEffect": ()=>setLoading(false)
+                "useAuth.useEffect": ()=>{
+                    setLoading(false);
+                }
             }["useAuth.useEffect"]);
         }
     }["useAuth.useEffect"], []);
@@ -4336,7 +4344,9 @@ const AppSidebar = ()=>{
                             columnNumber: 15
                         }, ("TURBOPACK compile-time value", void 0)),
                         nav.subItems && (isExpanded || isHovered || isMobileOpen) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            ref: (el)=>subMenuRefs.current[`${type}-${index}`] = el,
+                            ref: (el)=>{
+                                subMenuRefs.current[`${type}-${index}`] = el;
+                            },
                             className: "overflow-hidden transition-all",
                             style: {
                                 height: openSubmenu?.type === type && openSubmenu?.index === index ? subMenuHeight[`${type}-${index}`] : 0
@@ -4512,17 +4522,15 @@ function AdminLayout({ children }) {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AdminLayout.useEffect": ()=>{
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMe"])().then({
-                "AdminLayout.useEffect": (res)=>{
-                    const user = res.user;
-                    if (!user) return;
+                "AdminLayout.useEffect": (user)=>{
+                    if (!user) {
+                        router.replace("/signin");
+                        return;
+                    }
                     if (user.role !== "admin" && user.role !== "staff") {
                         router.replace("/signin");
                         return;
                     }
-                }
-            }["AdminLayout.useEffect"]).catch({
-                "AdminLayout.useEffect": ()=>{
-                    router.replace("/signin");
                 }
             }["AdminLayout.useEffect"]).finally({
                 "AdminLayout.useEffect": ()=>setLoading(false)

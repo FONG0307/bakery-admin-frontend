@@ -142,6 +142,7 @@ const useTheme = ()=>{
 "[project]/src/lib/auth.ts [app-ssr] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
+// src/lib/auth.ts
 __turbopack_context__.s([
     "getMe",
     ()=>getMe,
@@ -166,23 +167,22 @@ async function signin(email, password) {
             password
         })
     });
-    if (!res.ok) throw new Error("Login failed");
+    console.log(res);
+    localStorage.removeItem("token");
+    if (!res.ok) {
+        throw new Error("Login failed");
+    }
     const data = await res.json();
     localStorage.setItem("token", data.token);
     return data.user;
 }
 async function getMe() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        throw new Error("No token in storage");
-    }
-    const res = await fetch(`${API_URL}/api/me`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-    if (!res.ok) throw new Error("Unauthorized");
-    return res.json();
+    if ("TURBOPACK compile-time truthy", 1) return null;
+    //TURBOPACK unreachable
+    ;
+    const token = undefined;
+    const res = undefined;
+    const data = undefined;
 }
 async function signup(email, password) {
     const res = await fetch(`${API_URL}/api/signup`, {
@@ -200,7 +200,6 @@ async function signup(email, password) {
         const data = await res.json();
         throw new Error(data.errors?.join(", ") || "Signup failed");
     }
-    return res.json();
 }
 function signout() {
     localStorage.removeItem("token");
@@ -227,13 +226,10 @@ function AuthProvider({ children }) {
     const [user, setUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getMe"])().then((res)=>{
-            // 🔥 FIX QUYẾT ĐỊNH
-            setUser(res.user);
-        }).catch(()=>{
-            setUser(null);
-        }).finally(()=>{
-            setLoading(false);
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$auth$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getMe"])().then((user)=>{
+            if (user) setUser(user);
         });
     }, []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(AuthContext.Provider, {
@@ -245,7 +241,7 @@ function AuthProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AuthContext.tsx",
-        lineNumber: 52,
+        lineNumber: 48,
         columnNumber: 5
     }, this);
 }

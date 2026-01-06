@@ -1,5 +1,6 @@
 // src/lib/auth.ts
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+const API_URL = "https://api.ndphong0307.tech";
 
 if (!API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined");
@@ -24,7 +25,8 @@ export async function signin(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-
+  console.log(res)
+  localStorage.removeItem("token")
   if (!res.ok) {
     throw new Error("Login failed");
   }
@@ -37,11 +39,15 @@ export async function signin(
 
 /* ================= ME ================= */
 
-export async function getMe(): Promise<User | null> {
+export async function getMe() {
   if (typeof window === "undefined") return null;
+  console.log("TOKEN =", localStorage.getItem("token"));
 
   const token = localStorage.getItem("token");
-  if (!token) return null;
+  if (!token) {
+    console.warn("getMe skipped: no token");
+    return null;
+  }
 
   const res = await fetch(`${API_URL}/api/me`, {
     headers: {
@@ -49,7 +55,10 @@ export async function getMe(): Promise<User | null> {
     },
   });
 
-  if (!res.ok) return null;
+  if (!res.ok) {
+    console.warn("getMe failed:", res.status);
+    return null;
+  }
 
   const data = await res.json();
   return data.user;

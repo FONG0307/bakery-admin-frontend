@@ -13,7 +13,8 @@ __turbopack_context__.s([
     "updateUser",
     ()=>updateUser
 ]);
-const API_BASE = "http://localhost:3001/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const NEXT_PUBLIC_API_URL = 'https://api.ndphong0307.tech';
 /* =======================
    HELPERS
 ======================= */ function authHeaders() {
@@ -28,7 +29,7 @@ const API_BASE = "http://localhost:3001/api";
 }
 async function getUsers() {
     try {
-        const res = await fetch(`${API_BASE}/users`, {
+        const res = await fetch(`${API_BASE}/api/users`, {
             headers: authHeaders()
         });
         const data = await res.json();
@@ -54,7 +55,8 @@ async function getUsers() {
 }
 async function createUser(payload) {
     const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:3001/api/users", {
+    if (!token) throw new Error("No token");
+    const res = await fetch(`${API_BASE}/api/users`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -73,7 +75,7 @@ async function createUser(payload) {
 async function updateUser(id, data) {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No token");
-    const res = await fetch(`${API_BASE}/users/${id}`, {
+    const res = await fetch(`${API_BASE}/api/users/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -90,7 +92,7 @@ async function updateUser(id, data) {
     return res.json();
 }
 async function deleteUser(id) {
-    const res = await fetch(`${API_BASE}/users/${id}`, {
+    const res = await fetch(`${API_BASE}/api/users/${id}`, {
         method: "DELETE",
         headers: authHeaders()
     });

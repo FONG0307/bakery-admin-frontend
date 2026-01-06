@@ -35,16 +35,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getMe()
-      .then((user) => {
-        setUser(user);
-      })
-      .catch(() => {
-        setUser(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    getMe().then((user) => {
+      if (user) setUser(user);
+    });
   }, []);
 
 
