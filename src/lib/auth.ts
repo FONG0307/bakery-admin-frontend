@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = "https://api.ndphong0307.tech";
 
 if (!API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined");
@@ -20,7 +20,10 @@ export async function signin(email: string, password: string) {
 
 export async function getMe() {
   const token = localStorage.getItem("token");
-  if (!token) throw new Error("No token");
+
+  if (!token) {
+    throw new Error("No token in storage");
+  }
 
   const res = await fetch(`${API_URL}/api/me`, {
     headers: {
@@ -32,6 +35,7 @@ export async function getMe() {
 
   return res.json();
 }
+
 
 export async function signup(email: string, password: string) {
   const res = await fetch(`${API_URL}/api/signup`, {

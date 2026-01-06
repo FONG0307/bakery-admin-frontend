@@ -178,9 +178,11 @@ __turbopack_context__.s([
     "signup",
     ()=>signup
 ]);
-const API_URL = "http://localhost:3001/api";
+const API_URL = "https://api.ndphong0307.tech";
+if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+;
 async function signin(email, password) {
-    const res = await fetch(`${API_URL}/login`, {
+    const res = await fetch(`${API_URL}/api/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -197,8 +199,10 @@ async function signin(email, password) {
 }
 async function getMe() {
     const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token");
-    const res = await fetch(`${API_URL}/me`, {
+    if (!token) {
+        throw new Error("No token in storage");
+    }
+    const res = await fetch(`${API_URL}/api/me`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -206,16 +210,12 @@ async function getMe() {
     if (!res.ok) throw new Error("Unauthorized");
     return res.json();
 }
-function signout() {
-    localStorage.removeItem("token");
-}
 async function signup(email, password) {
-    const res = await fetch(`${API_URL}/signup`, {
+    const res = await fetch(`${API_URL}/api/signup`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        credentials: "include",
         body: JSON.stringify({
             email,
             password,
@@ -227,6 +227,9 @@ async function signup(email, password) {
         throw new Error(data.errors?.join(", ") || "Signup failed");
     }
     return res.json();
+}
+function signout() {
+    localStorage.removeItem("token");
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
@@ -281,7 +284,7 @@ function AuthProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AuthContext.tsx",
-        lineNumber: 41,
+        lineNumber: 52,
         columnNumber: 5
     }, this);
 }
