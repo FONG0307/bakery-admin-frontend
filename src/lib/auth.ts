@@ -1,8 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-console.log("API URL =", process.env.NEXT_PUBLIC_API_URL);
 
 export async function signin(email: string, password: string) {
-  const res = await fetch(`${API_URL}/login`, {
+  const res = await fetch(`${API_URL}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -19,7 +18,7 @@ export async function getMe() {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No token");
 
-  const res = await fetch(`${API_URL}/me`, {
+  const res = await fetch(`${API_URL}/api/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -34,7 +33,7 @@ export function signout() {
 }
 
 export async function signup(email: string, password: string) {
-  const res = await fetch(`${API_URL}/signup`, {
+  const res = await fetch(`${API_URL}/api/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",

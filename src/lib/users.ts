@@ -46,7 +46,7 @@ function authHeaders() {
 // ✅ GET USERS
 export async function getUsers(): Promise<User[]> {
   try {
-    const res = await fetch(`${API_BASE}/users`, {
+    const res = await fetch(`${API_BASE}/api/users`, {
       headers: authHeaders(),
     });
 
@@ -106,7 +106,7 @@ export async function updateUser(id: number, data: any) {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No token");
 
-  const res = await fetch(`${API_BASE}/users/${id}`, {
+  const res = await fetch(`${API_BASE}/api/users/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -125,7 +125,7 @@ export async function updateUser(id: number, data: any) {
 
 // ✅ DELETE USER
 export async function deleteUser(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/users/${id}`, {
+  const res = await fetch(`${API_BASE}/api/users/${id}`, {
     method: "DELETE",
     headers: authHeaders(),
   });
