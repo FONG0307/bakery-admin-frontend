@@ -1,5 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+if (!API_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
 export async function signin(email: string, password: string) {
   const res = await fetch(`${API_URL}/api/login`, {
     method: "POST",
@@ -25,18 +29,14 @@ export async function getMe() {
   });
 
   if (!res.ok) throw new Error("Unauthorized");
-  return res.json();
-}
 
-export function signout() {
-  localStorage.removeItem("token");
+  return res.json();
 }
 
 export async function signup(email: string, password: string) {
   const res = await fetch(`${API_URL}/api/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
     body: JSON.stringify({
       email,
       password,
@@ -50,4 +50,8 @@ export async function signup(email: string, password: string) {
   }
 
   return res.json();
+}
+
+export function signout() {
+  localStorage.removeItem("token");
 }

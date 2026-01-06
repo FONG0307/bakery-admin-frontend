@@ -80,15 +80,16 @@ export async function getUsers(): Promise<User[]> {
 // ✅ CREATE USER
 export async function createUser(payload: any) {
   const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token");
 
-  const res = await fetch("http://localhost:3001/api/users", {
+  const res = await fetch(`${API_BASE}/api/users`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      user: payload, // 🔥 QUAN TRỌNG
+      user: payload,
     }),
   });
 
