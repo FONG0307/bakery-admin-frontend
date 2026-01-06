@@ -21,20 +21,20 @@ export default function AdminLayout({
 
   useEffect(() => {
     getMe()
-      .then((res) => {
-        const user = res.user;
-        if (!user) return;
+      .then((user) => {
+        if (!user) {
+          router.replace("/signin");
+          return;
+        }
 
         if (user.role !== "admin" && user.role !== "staff") {
           router.replace("/signin");
           return;
         }
       })
-      .catch(() => {
-        router.replace("/signin");
-      })
       .finally(() => setLoading(false));
   }, []);
+
 
 
 
