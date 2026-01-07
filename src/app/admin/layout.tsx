@@ -20,9 +20,10 @@ export default function AdminLayout({
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (loading) return;
+    if (loading) return; // ⛔ chờ AuthContext xong hẳn
 
-    if (!user) {
+    // ⛔ chỉ redirect khi ĐÃ BIẾT user chắc chắn null
+    if (user === null) {
       router.replace("/signin");
       return;
     }
@@ -31,6 +32,7 @@ export default function AdminLayout({
       router.replace("/signin");
     }
   }, [loading, user, router]);
+
 
   if (loading) {
     return (
