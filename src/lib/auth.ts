@@ -26,7 +26,6 @@ export async function signin(
     body: JSON.stringify({ email, password }),
   });
   console.log(res)
-  localStorage.removeItem("token")
   if (!res.ok) {
     throw new Error("Login failed");
   }
