@@ -72,6 +72,19 @@ export async function signup(
 
 /* ================= LOGOUT ================= */
 
-export function signout() {
-  localStorage.removeItem("token");
+export async function signout() {
+  const token = localStorage.getItem("token");
+
+  try {
+    await fetch(`${API_URL}/api/logout`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch {
+    // ignore
+  } finally {
+    localStorage.removeItem("token");
+  }
 }
