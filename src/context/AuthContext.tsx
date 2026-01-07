@@ -10,6 +10,13 @@ export type User = {
   role: "admin" | "staff" | "user";
   first_name?: string;
   last_name?: string;
+  country?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  tax_id?: string;
+  phone?: string;
+  bio?: string;
 };
 
 type AuthContextType = {
