@@ -39,29 +39,18 @@ export async function signin(
 
 /* ================= ME ================= */
 
-export async function getMe() {
-  if (typeof window === "undefined") return null;
-  console.log("TOKEN =", localStorage.getItem("token"));
-  
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.warn("getMe skipped: no token");
-    return null;
-  }
+export async function getMe(token?: string) {
+  const t = token ?? localStorage.getItem("token");
+  if (!t) throw new Error("No token");
 
   const res = await fetch(`${API_URL}/api/me`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${t}`,
     },
   });
 
-  if (!res.ok) {
-    console.warn("getMe failed:", res.status);
-    return null;
-  }
-
-  const data = await res.json();
-  return data.user;
+  if (!res.ok) throw new Error("Unauthorized");
+  return res.json();
 }
 
 /* ================= SIGNUP (FIX LỖI BUILD) ================= */

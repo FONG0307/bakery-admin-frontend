@@ -1,13 +1,13 @@
+//src/app/admin/layout.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getMe } from "@/lib/auth";
-
 import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
+import { useAuth } from "@/context/AuthContext";
 
 
 export default function AdminLayout({
@@ -17,26 +17,20 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    getMe()
-      .then((user) => {
-        if (!user) {
-          router.replace("/signin");
-          return;
-        }
+   useEffect(() => {
+    if (loading) return;
 
-        if (user.role !== "admin" && user.role !== "staff") {
-          router.replace("/signin");
-          return;
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    if (!user) {
+      router.replace("/signin");
+      return;
+    }
 
-
-
+    if (user.role !== "admin" && user.role !== "staff") {
+      router.replace("/signin");
+    }
+  }, [loading, user]);
 
   if (loading) {
     return (
@@ -45,6 +39,7 @@ export default function AdminLayout({
       </div>
     );
   }
+
 
   const mainContentMargin = isMobileOpen
     ? "ml-0"

@@ -1,3 +1,4 @@
+//src/context/AuthContext.tsx
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
@@ -7,20 +8,9 @@ export type User = {
   id: number;
   email: string;
   role: "admin" | "staff" | "user";
-
   first_name?: string;
   last_name?: string;
-
-  // Address / billing info
-  country?: string;
-  state?: string;
-  city?: string;
-  postal_code?: string;
-  tax_id?: string;
-  phone?: string;
-  bio?: string;
 };
-
 
 type AuthContextType = {
   user: User | null;
@@ -31,16 +21,32 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null); // ✅ FIX 1
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+    const t = localStorage.getItem("token");
 
-    getMe().then((user) => {
-      if (user) setUser(user);
-    });
+    if (!t) {
+      setLoading(false);
+      return;
+    }
+
+    setToken(t);
+
+    getMe(t) // ✅ không còn TS error
+      .then((me) => {
+        setUser(me);
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        setToken(null);
+        setUser(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
 
