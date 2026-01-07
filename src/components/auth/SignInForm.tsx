@@ -29,7 +29,6 @@ export default function SignInForm() {
 
     try {
       await signin(email, password);
-      router.replace("/admin");
     } catch (err: any) {
       setError(err.message);
     } finally {
