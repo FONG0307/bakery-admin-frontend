@@ -19,8 +19,9 @@ export default function AdminLayout({
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   const { user, loading } = useAuth();
 
-   useEffect(() => {
-    if (loading) return;
+
+  useEffect(() => {
+    if (loading) return; // ✅ CHỐT CHẶN QUAN TRỌNG
 
     if (!user) {
       router.replace("/signin");
@@ -30,15 +31,7 @@ export default function AdminLayout({
     if (user.role !== "admin" && user.role !== "staff") {
       router.replace("/signin");
     }
-  }, [loading, user]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Checking permission...
-      </div>
-    );
-  }
+  }, [loading, user, router]);
 
 
   const mainContentMargin = isMobileOpen
