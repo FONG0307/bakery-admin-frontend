@@ -1,39 +1,35 @@
 // src/lib/auth.ts
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+import { User } from "@/context/AuthContext";
 
 if (!API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined");
 }
 
-export type User = {
-  id: number;
-  email: string;
-  role: "admin" | "staff" | "user";
-  first_name?: string;
-  last_name?: string;
-};
-
 /* ================= LOGIN ================= */
+export type SigninResponse = {
+  token: string;
+  user: User;
+}
 
 export async function signin(
   email: string,
   password: string
-): Promise<User> {
+): Promise<SigninResponse> {
   const res = await fetch(`${API_URL}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  console.log(res)
+
   if (!res.ok) {
     throw new Error("Login failed");
   }
 
-  const data = await res.json();
+  const data: SigninResponse = await res.json();
   localStorage.setItem("token", data.token);
-
-  return data.user;
+  return data;
 }
 
 /* ================= ME ================= */
