@@ -1,172 +1,59 @@
-[00:00:00.760] Server  LOG      ✓ Ready in 546ms
-[00:00:12.238] Server  LOG      ○ Compiling /signin ...
-[00:00:13.038] Server  ERROR    ⨯ Error: NEXT_PUBLIC_API_URL is not defined
-[00:00:13.271] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:13.401] Browser ERROR   uncaughtError: Error: NEXT_PUBLIC_API_URL is not defined
-[00:01:10.209] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
-[00:01:10.210] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[00:01:10.210] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
-[00:01:10.280] Server  LOG      ✓ Compiled in 41ms
-[00:01:10.446] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:10.603] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:10.603] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+[00:00:01.428] Server  LOG      ✓ Ready in 1089ms
+[00:00:06.335] Server  LOG      ○ Compiling /_not-found/page ...
+[00:00:27.984] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:28.982] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:00:28.983] Browser WARN    Image with src "http://localhost:3000/images/error/404.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:00:28.983] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
+[00:00:39.514] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:03:10.663] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[00:03:10.725] Server  LOG      ✓ Compiled in 60ms
-[00:03:10.997] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:03:11.188] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+[00:00:45.790] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:45.950] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:03:19.617] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:04:54.890] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:05:03.271] Browser LOG     {}
-[00:18:16.826] Browser LOG     {}
-[00:18:18.743] Browser WARN    Image with src "/images/product/product-01.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:18:18.743] Browser WARN    Image with src "/images/product/product-02.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:18:18.743] Browser WARN    Image with src "/images/product/product-03.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:18:18.743] Browser WARN    Image with src "/images/product/product-04.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:18:18.743] Browser WARN    Image with src "/images/product/product-05.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:18:21.325] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:33:19.871] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:33:20.121] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+[00:00:45.950] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:00:45.950] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
+[00:01:59.976] Browser ERROR   unhandledRejection: TypeError: Failed to fetch
+[00:14:13.458] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:14:13.617] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:14:13.617] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
+[00:14:13.617] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:33:42.412] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:33:42.554] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:33:42.554] Browser WARN    Image with src "http://localhost:3000/images/error/404.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:33:42.555] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+[00:16:29.976] Browser ERROR   unhandledRejection: TypeError: Failed to fetch
+[00:20:32.259] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:20:32.456] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:20:32.457] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywiZXhwIjoxNzY3NjY5NTc3fQ.ktT0iFDvy_8azJW0ictEmK4PngGXCWJSBcoJGqpT_xc
+[00:20:32.457] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:37:54.906] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:37:54.906] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:37:55.038] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:38:17.660] Browser LOG     {}
-[00:38:18.378] Browser WARN    Image with src "http://localhost:3000/images/logo/logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:38:27.773] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:38:27.995] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:38:27.995] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:38:33.769] Browser LOG     {}
-[00:38:34.468] Browser WARN    Image with src "http://localhost:3000/images/logo/logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:39:15.156] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[00:39:15.159] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[00:39:15.215] Server  LOG      ✓ Compiled in 73ms
-[00:39:15.512] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:39:15.531] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:39:15.744] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:39:15.744] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:39:16.090] Browser WARN    getMe failed: 401
-[00:39:17.009] Browser WARN    getMe failed: 401
-[00:39:21.761] Browser LOG     {}
-[00:39:22.219] Browser WARN    getMe failed: 401
-[00:39:22.486] Browser WARN    Image with src "http://localhost:3000/images/logo/logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:39:22.486] Browser WARN    getMe failed: 401
-[00:39:22.771] Browser WARN    getMe failed: 401
-[00:39:23.085] Browser WARN    getMe failed: 401
-[00:39:57.705] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/context/AuthContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[00:39:57.709] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/context/AuthContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[00:39:57.822] Server  LOG      ✓ Compiled in 61ms
-[00:39:58.175] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:39:58.176] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:39:58.421] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:39:58.421] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:39:59.019] Browser WARN    getMe failed: 401
-[00:40:00.009] Browser WARN    getMe failed: 401
-[00:40:04.412] Browser LOG     {}
-[00:40:04.994] Browser WARN    getMe failed: 401
-[00:40:05.226] Browser WARN    Image with src "http://localhost:3000/images/logo/logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:40:05.226] Browser WARN    getMe failed: 401
-[00:40:05.514] Browser WARN    getMe failed: 401
-[00:40:05.980] Browser WARN    getMe failed: 401
-[00:40:50.336] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[00:40:50.337] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[00:40:50.395] Server  LOG      ✓ Compiled in 56ms
-[00:40:50.603] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:40:50.731] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:40:50.986] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:40:50.986] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:40:50.986] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODA5OTF9.1ytfbUaBwKPA6ApQ5Y1Wb-DbjnK0oegfinP5Bx7Hi-c
-[00:40:51.009] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODA5OTF9.1ytfbUaBwKPA6ApQ5Y1Wb-DbjnK0oegfinP5Bx7Hi-c
-[00:40:51.812] Browser WARN    getMe failed: 401
-[00:40:52.009] Browser WARN    getMe failed: 401
-[00:41:02.826] Browser LOG     {}
-[00:41:02.826] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEwNTB9.ovj6eReeUidawcq7lDv2Cn0pKATR2VZQJr3EYfQTgLo
-[00:41:02.826] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEwNTB9.ovj6eReeUidawcq7lDv2Cn0pKATR2VZQJr3EYfQTgLo
-[00:41:03.433] Browser WARN    getMe failed: 401
-[00:41:03.433] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEwNTB9.ovj6eReeUidawcq7lDv2Cn0pKATR2VZQJr3EYfQTgLo
-[00:41:03.433] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEwNTB9.ovj6eReeUidawcq7lDv2Cn0pKATR2VZQJr3EYfQTgLo
-[00:41:03.433] Browser WARN    Image with src "http://localhost:3000/images/logo/logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:41:03.433] Browser WARN    getMe failed: 401
-[00:41:03.912] Browser WARN    getMe failed: 401
-[00:41:04.348] Browser WARN    getMe failed: 401
-[00:44:22.051] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:44:22.351] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:44:22.351] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:44:22.351] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEwNTB9.ovj6eReeUidawcq7lDv2Cn0pKATR2VZQJr3EYfQTgLo
-[00:44:23.390] Browser WARN    getMe failed: 401
-[00:44:36.025] Browser LOG     {}
-[00:44:36.130] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[00:44:36.130] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[00:44:36.873] Browser WARN    getMe failed: 401
-[00:44:36.873] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[00:44:36.873] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[00:44:36.873] Browser WARN    Image with src "http://localhost:3000/images/logo/logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:44:37.045] Browser WARN    getMe failed: 401
-[00:44:37.348] Browser WARN    getMe failed: 401
-[00:44:37.837] Browser WARN    getMe failed: 401
-[00:46:46.271] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:46:46.504] Browser WARN    Image with src "/images/shape/grid-01.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:46:46.504] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:46:46.504] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[00:46:47.603] Browser WARN    getMe failed: 401
-[00:52:54.204] Browser LOG     {}
-[00:52:59.220] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:52:59.422] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[00:52:59.931] Browser WARN    getMe failed: 401
-[00:53:09.970] Browser LOG     {}
-[00:55:57.069] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:55:57.303] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[00:55:58.524] Browser WARN    getMe failed: 401
-[00:56:16.937] Browser LOG     {}
-[01:16:52.701] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[01:16:52.983] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[01:16:54.079] Browser WARN    getMe failed: 401
-[01:20:34.364] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[01:20:34.364] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
-[01:20:34.467] Server  LOG      ✓ Compiled in 35ms
-[01:20:34.814] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[01:20:34.849] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[01:20:36.010] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[01:20:36.010] Browser WARN    Image with src "http://localhost:3000/images/shape/grid-01.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[01:20:36.010] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[01:20:37.009] Browser WARN    getMe failed: 401
-[01:20:37.010] Browser WARN    getMe failed: 401
-[01:20:57.176] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[01:20:57.396] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[01:20:57.764] Browser WARN    getMe failed: 401
-[01:25:03.410] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[01:25:03.636] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODEyNjN9.G3fFkAqnAUkEA-sD49L-MYGtzYGzE-t9wvMEewh5aVA
-[01:25:04.745] Browser WARN    getMe failed: 401
-[01:25:14.504] Browser LOG     {}
-[01:25:14.680] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
-[01:25:14.680] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
-[01:25:15.177] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
-[01:25:15.177] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
-[01:25:15.177] Browser WARN    Image with src "/images/product/product-01.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[01:25:15.177] Browser WARN    Image with src "/images/product/product-02.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[01:25:15.177] Browser WARN    Image with src "/images/product/product-03.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[01:25:15.177] Browser WARN    Image with src "/images/product/product-04.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[01:25:15.177] Browser WARN    Image with src "/images/product/product-05.jpg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[01:25:22.077] Browser ERROR   GET USERS ERROR: {}
-[01:25:22.078] Browser ERROR   GET USERS ERROR: {}
-[01:26:12.538] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[01:26:12.754] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
-[01:26:12.754] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
-[01:26:13.363] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
-[01:26:13.363] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc3ODM3MDF9.hk9fu6KjO-JG_mzDFizGEh3koT2a7r99lAxoD2IdjxI
-[01:26:13.363] Browser WARN    Image with src "http://localhost:3000/images/logo/logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[01:26:17.514] Browser ERROR   GET USERS ERROR: {}
-[01:26:17.514] Browser ERROR   GET USERS ERROR: {}
+[00:22:46.976] Browser ERROR   unhandledRejection: TypeError: Failed to fetch
+[00:40:52.638] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:40:52.803] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywiZXhwIjoxNzY3NjY5NTc3fQ.ktT0iFDvy_8azJW0ictEmK4PngGXCWJSBcoJGqpT_xc
+[00:43:06.976] Browser ERROR   unhandledRejection: TypeError: Failed to fetch
+[01:37:16.576] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:37:16.731] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywiZXhwIjoxNzY3NjY5NTc3fQ.ktT0iFDvy_8azJW0ictEmK4PngGXCWJSBcoJGqpT_xc
+[01:37:38.038] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:37:38.244] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywiZXhwIjoxNzY3NjY5NTc3fQ.ktT0iFDvy_8azJW0ictEmK4PngGXCWJSBcoJGqpT_xc
+[01:39:38.976] Browser ERROR   unhandledRejection: TypeError: Failed to fetch
+[04:56:25.757] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:56:26.006] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywiZXhwIjoxNzY3NjY5NTc3fQ.ktT0iFDvy_8azJW0ictEmK4PngGXCWJSBcoJGqpT_xc
+[04:56:26.201] Browser ERROR   unhandledRejection: TypeError: Failed to fetch
+[05:05:46.015] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[05:05:46.115] Server  LOG      ✓ Compiled in 35ms
+[05:05:46.444] Server  ERROR    ⨯ Error: NEXT_PUBLIC_API_URL is not defined
+[05:05:46.686] Server  ERROR    ⨯ Error: NEXT_PUBLIC_API_URL is not defined
+[05:05:46.879] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[05:05:47.976] Browser ERROR   uncaughtError: Error: NEXT_PUBLIC_API_URL is not defined
+[05:06:00.029] Server  ERROR    ⨯ Error: NEXT_PUBLIC_API_URL is not defined
+[05:06:00.268] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[05:06:00.421] Browser ERROR   uncaughtError: Error: NEXT_PUBLIC_API_URL is not defined
+[05:06:10.075] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[05:06:10.075] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[05:06:10.075] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[05:06:10.181] Server  LOG      ✓ Compiled in 56ms
+[05:06:10.494] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[05:06:10.748] Browser LOG     TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywiZXhwIjoxNzY3NjY5NTc3fQ.ktT0iFDvy_8azJW0ictEmK4PngGXCWJSBcoJGqpT_xc
+[05:06:11.591] Browser ERROR   unhandledRejection: TypeError: Failed to fetch
+[05:06:20.763] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/auth.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[05:06:20.868] Server  LOG      ✓ Compiled in 41ms
+[05:06:21.138] Server  ERROR    ⨯ Error: NEXT_PUBLIC_API_URL is not defined
+[05:06:21.376] Server  ERROR    ⨯ Error: NEXT_PUBLIC_API_URL is not defined
+[05:06:21.622] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[05:06:21.822] Browser ERROR   uncaughtError: Error: NEXT_PUBLIC_API_URL is not defined

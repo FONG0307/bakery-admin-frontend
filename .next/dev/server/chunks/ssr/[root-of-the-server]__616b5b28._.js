@@ -153,9 +153,10 @@ __turbopack_context__.s([
     "signup",
     ()=>signup
 ]);
-const API_URL = "https://api.ndphong0307.tech";
-if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+if (!API_URL) {
+    throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
 async function signin(email, password) {
     const res = await fetch(`${API_URL}/api/login`, {
         method: "POST",

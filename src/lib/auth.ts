@@ -1,6 +1,6 @@
 // src/lib/auth.ts
 
-const API_URL = "https://api.ndphong0307.tech";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined");
@@ -42,7 +42,7 @@ export async function signin(
 export async function getMe() {
   if (typeof window === "undefined") return null;
   console.log("TOKEN =", localStorage.getItem("token"));
-
+  
   const token = localStorage.getItem("token");
   if (!token) {
     console.warn("getMe skipped: no token");
