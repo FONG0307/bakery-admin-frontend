@@ -11,11 +11,13 @@ import { useAuth } from "@/context/AuthContext";
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { user, loading } = useAuth();
+  const { user, loading,setUser } = useAuth();
 
   async function handleLogout() {
     await signout();
+    setUser(null);
     router.replace("/signin");
+    router.refresh();
   }
 
 function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
