@@ -36,25 +36,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const t = localStorage.getItem("token");
 
     if (!t) {
+      setUser(null);
       setLoading(false);
       return;
     }
 
-    setToken(t);
-
-    getMe(t) // ✅ không còn TS error
-      .then((me) => {
-        setUser(me);
+    getMe(t)
+      .then((res) => {
+        setUser(res.user);
       })
       .catch(() => {
         localStorage.removeItem("token");
-        setToken(null);
         setUser(null);
       })
       .finally(() => {
         setLoading(false);
       });
   }, []);
+
 
 
   return (
