@@ -5,18 +5,25 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import type { User } from "@/context/AuthContext";
-type Props = {
-  user: User;
-};
+import { useAuth } from "@/context/AuthContext";
 
-export default function UserAddressCard({ user }: Props) {
+
+export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const { user, loading } = useAuth();
+  console.log("AUTH USER:", user);
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
     closeModal();
   };
+  if (loading) {
+    return (
+      <div className="p-5 border rounded-2xl">
+        Loading address...
+      </div>
+    );
+  }
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -32,7 +39,7 @@ export default function UserAddressCard({ user }: Props) {
                   Country
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  {user.country || "-"}
+                  {user?.country || "-"}
                 </p>
               </div>
 
@@ -41,7 +48,7 @@ export default function UserAddressCard({ user }: Props) {
                   City/State
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                   {[user.city, user.state].filter(Boolean).join(", ") || "-"}
+                   {[user?.city, user?.state].filter(Boolean).join(", ") || "-"}
                 </p>
               </div>
 
@@ -50,7 +57,7 @@ export default function UserAddressCard({ user }: Props) {
                   Postal Code
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  {user.postal_code || "-"}
+                  {user?.postal_code || "-"}
                 </p>
               </div>
 
@@ -59,7 +66,7 @@ export default function UserAddressCard({ user }: Props) {
                   TAX ID
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  {user.tax_id || "-"}
+                  {user?.tax_id || "-"}
                 </p>
               </div>
             </div>

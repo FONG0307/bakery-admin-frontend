@@ -5,14 +5,12 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import type { User } from "@/context/AuthContext";
-type Props = {
-    user: User;
-};
-export default function UserInfoCard({ user }: Props) {
+import { useAuth } from "@/context/AuthContext";
+
+export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const { user } = useAuth()
   const handleSave = () => {
-    // Handle save logic here
     console.log("Saving changes...");
     closeModal();
   };
@@ -31,7 +29,7 @@ export default function UserInfoCard({ user }: Props) {
                 First Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {user.first_name || "-"}
+                {user?.first_name || "-"}
               </p>
             </div>
 
@@ -40,7 +38,7 @@ export default function UserInfoCard({ user }: Props) {
                 Last Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {user.last_name || "-"}
+                {user?.last_name || "-"}
               </p>
             </div>
 
@@ -49,7 +47,7 @@ export default function UserInfoCard({ user }: Props) {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {user.email}
+                {user?.email}
               </p>
             </div>
 
@@ -58,7 +56,7 @@ export default function UserInfoCard({ user }: Props) {
                 Phone
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {user.phone || "-"}
+                {user?.phone || "-"}
               </p>
             </div>
 
@@ -67,7 +65,7 @@ export default function UserInfoCard({ user }: Props) {
                 Bio
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {user.bio || "-"}
+                {user?.bio || "-"}
               </p>
             </div>
           </div>

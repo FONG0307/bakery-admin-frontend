@@ -6,13 +6,10 @@ import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Image from "next/image";
-import type { User } from "@/context/AuthContext";
-type Props = {
-  user: User;
-};
-
-export default function UserMetaCard({ user }: Props) {
+import { useAuth } from "@/context/AuthContext";
+export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const { user } = useAuth();
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
@@ -20,7 +17,7 @@ export default function UserMetaCard({ user }: Props) {
   };
 
 
-   const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ") || "—";
+   const fullName = [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "—";
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -40,11 +37,11 @@ export default function UserMetaCard({ user }: Props) {
               </h4>
               <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {user.bio || "—"}
+                  {user?.bio || "—"}
                 </p>
                 <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                   {[user.city, user.country].filter(Boolean).join(", ") || "—"}
+                   {[user?.city, user?.country].filter(Boolean).join(", ") || "—"}
                 </p>
               </div>
             </div>
