@@ -52,6 +52,7 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "User List", path: "/admin/users" },
       { name: "User Profile", path: "/admin/profile" },
+      { name: "Test upload video", path: "/admin/files" },
     ],
   },
   {
