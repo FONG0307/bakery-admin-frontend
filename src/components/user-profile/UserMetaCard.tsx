@@ -7,6 +7,8 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+
+
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const { user } = useAuth();
