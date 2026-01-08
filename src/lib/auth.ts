@@ -52,7 +52,8 @@ export async function getMe(token?: string) {
 
 export async function signup(
   email: string,
-  password: string
+  password: string,
+  passwordConfirmation: string
 ): Promise<void> {
   const res = await fetch(`${API_URL}/api/signup`, {
     method: "POST",
@@ -60,7 +61,7 @@ export async function signup(
     body: JSON.stringify({
       email,
       password,
-      password_confirmation: password,
+      password_confirmation: passwordConfirmation,
     }),
   });
 

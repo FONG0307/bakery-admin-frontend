@@ -16,7 +16,8 @@ export default function SignUpForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const router = useRouter();
   const[success, setSuccess] = useState(false);
 
@@ -28,7 +29,7 @@ export default function SignUpForm() {
       return () => clearTimeout(t);
     }
   }, [success]);
-
+  
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -137,10 +138,28 @@ export default function SignUpForm() {
                 setError("You must agree to Terms and Conditions");
                 return;
               }
-          
+              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                setError("Email không hợp lệ");
+                return;
+              }
+
+              // Password policy
+              const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+              if (!passwordRegex.test(password)) {
+                setError(
+                  "Password phải ≥ 8 ký tự, gồm chữ hoa, chữ thường và số"
+                );
+                return;
+              }
+
+              // Password confirmation
+              if (password !== passwordConfirmation) {
+                setError("Password confirmation không khớp");
+                return;
+              }
               try {
                 setLoading(true);
-                await signup(email, password);
+                await signup(email, password, passwordConfirmation);
                 setSuccess(true);
               } catch (err: any) {
                 setError(err.message);
@@ -214,6 +233,30 @@ export default function SignUpForm() {
                     </span>
                   </div>
                 </div>
+                <div>
+                  <Label>
+                    Confirm Password<span className="text-error-500">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      placeholder="Confirm your password"
+                      type={showPasswordConfirmation ? "text" : "password"}
+                      defaultValue={passwordConfirmation}
+                      onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    />
+                    <span
+                        onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      >
+                        {showPasswordConfirmation ? (
+                          <EyeIcon className="fill-gray-500 dark:fill-gray-400" />  
+                        ) : (
+                          <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                        )}
+                    </span>
+                  </div>
+                </div>
+                
                 {/* <!-- Checkbox --> */}
                 <div className="flex items-center gap-3">
                   <Checkbox
