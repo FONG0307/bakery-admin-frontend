@@ -32,20 +32,18 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-/* ===========================
-   MENU DATA (KHÔNG ĐỘNG)
-   =========================== */
+
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
     subItems: [{ name: "Ecommerce", path: "/admin" }],
   },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/admin/calendar",
-  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/admin/calendar",
+  // },
   {
     icon: <UserCircleIcon />,
     name: "User",
@@ -53,24 +51,6 @@ const navItems: NavItem[] = [
       { name: "User List", path: "/admin/users" },
       { name: "User Profile", path: "/admin/profile" },
       { name: "Test upload video", path: "/admin/files" },
-    ],
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/admin/form-elements" }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/admin/basic-tables" }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/admin/blank" },
-      { name: "404 Error", path: "/admin/error-404" },
     ],
   },
 ];
@@ -110,14 +90,6 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
   const { user } = useAuth();
-
-  /* ===========================
-     🔥 FILTER MENU BY ROLE
-     QUY TẮC:
-     - user === null → KHÔNG FILTER
-     - user.role === admin → thấy User List
-     - role khác → ẩn User List
-     =========================== */
   const filteredNavItems = useMemo<NavItem[]>(() => {
     // ⛔ CHƯA LOAD USER → GIỮ NGUYÊN MENU
     if (!user) return navItems;
@@ -318,7 +290,6 @@ const AppSidebar: React.FC = () => {
 
       <nav className="px-5">
         {renderMenuItems(filteredNavItems, "main")}
-        {renderMenuItems(othersItems, "others")}
       </nav>
     </aside>
   );
