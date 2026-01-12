@@ -72,7 +72,7 @@ export default function AdminMediaPage() {
         </button>
       </div>
 
-      {/* ===== LIST ===== */}
+      {/* ===== MEDIA LIST ===== */}
       <div>
         <h2 className="font-semibold text-lg mb-3">
           Danh sách {type}
@@ -113,6 +113,7 @@ export default function AdminMediaPage() {
               src={preview.url}
               controls
               className="w-full max-w-xl rounded border"
+              
             />
           ) : (
             <img

@@ -21,6 +21,7 @@ export type User = {
   tax_id?: string;
 
   created_at?: string;
+  avatar?: string;
 };
 
 /* =======================
@@ -111,7 +112,7 @@ export async function updateUser(id: number, data: any) {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // 🔥 BẮT BUỘC
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ user: data }),
   });

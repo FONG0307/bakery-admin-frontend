@@ -34,6 +34,15 @@ export async function fetchMedia(type: "video" | "image") {
       },
     }
   );
-
-  return res.json();
+  console.log(res);
+  const text = await res.text();
+  try {
+    const data = JSON.parse(text);
+    console.log("PARSED JSON:", data);
+    return data;
+  } catch (e) {
+    console.error("❌ Response không phải JSON");
+    throw new Error("Invalid JSON response");
+  }
 }
+

@@ -110,9 +110,6 @@ const AppSidebar: React.FC = () => {
     });
   }, [user]);
 
-  /* ===========================
-     SUBMENU STATE
-     =========================== */
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
     index: number;
@@ -126,9 +123,6 @@ const AppSidebar: React.FC = () => {
     [pathname]
   );
 
-  /* ===========================
-     🔥 AUTO OPEN SUBMENU THEO URL
-     =========================== */
   useEffect(() => {
     let matched = false;
 
@@ -149,17 +143,10 @@ const AppSidebar: React.FC = () => {
     if (!matched) setOpenSubmenu(null);
   }, [pathname, isActive, filteredNavItems]);
 
-  /* ===========================
-     🔥 RESET SUBMENU KHI USER LOAD XONG
-     (TRÁNH CACHE MENU LÚC user = null)
-     =========================== */
   useEffect(() => {
     setOpenSubmenu(null);
   }, [user]);
 
-  /* ===========================
-     SUBMENU HEIGHT
-     =========================== */
   useEffect(() => {
     if (!openSubmenu) return;
     const key = `${openSubmenu.type}-${openSubmenu.index}`;
