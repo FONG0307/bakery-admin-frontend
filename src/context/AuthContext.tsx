@@ -17,6 +17,7 @@ export type User = {
   tax_id?: string;
   phone?: string;
   bio?: string;
+  avatar_url?: string;
 };
 
 type AuthContextType = {

@@ -79,31 +79,23 @@ export async function createUser(payload: any) {
 
 // ✅ UPDATE USER INFO (KHÔNG AVATAR)
 export async function updateUser(
-  id: number,
-  data: Partial<User>
+  userId: number,
+  data: Partial<User>,
+  avatar?: File
 ): Promise<User> {
-  const res = await fetch(`${API_BASE}/api/users/${id}`, {
-    method: "PATCH",
-    headers: authJsonHeaders(),
-    body: JSON.stringify({ user: data }),
+  const formData = new FormData();
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(`user[${key}]`, String(value));
+    }
   });
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || "Update user failed");
+  if (avatar) {
+    formData.append("avatar", avatar);
   }
 
-  return res.json();
-}
-
-export async function updateUserAvatar(
-  userId: number,
-  file: File
-): Promise<{ avatar_url: string }> {
-  const formData = new FormData();
-  formData.append("avatar", file);
-
-  const res = await fetch(`${API_BASE}/api/users/${userId}/update_avatar`, {
+  const res = await fetch(`${API_BASE}/api/users/${userId}`, {
     method: "PATCH",
     headers: authHeaderOnly(),
     body: formData,
@@ -111,7 +103,7 @@ export async function updateUserAvatar(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || "Update avatar failed");
+    throw new Error(err.error || "Update user failed");
   }
 
   return res.json();

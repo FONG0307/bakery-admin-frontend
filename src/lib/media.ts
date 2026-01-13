@@ -1,3 +1,4 @@
+//src\lib\media.ts
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function uploadMedia(file: File) {
