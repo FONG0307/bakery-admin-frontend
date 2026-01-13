@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { getUsers, deleteUser } from "@/lib/users";
 import AddUserModal from "@/components/admin/AddUserModel";
 import EditUserModal from "@/components/admin/EditUserModal";
-import avatarplaceholder from "@/assets/images/avatar-placeholder.png";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -68,7 +67,7 @@ export default function UsersPage() {
                   <td className="py-4">
                     <div className="flex items-center gap-3">
                       <img
-                        src={u.avatar_url || avatarplaceholder}
+                        src={u.avatar_url || "../images/user/avatar-placeholder.png"}
                         alt="avatar"
                         className="h-8 w-8 rounded-full object-cover"
                       />

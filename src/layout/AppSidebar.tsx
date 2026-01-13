@@ -91,7 +91,6 @@ const AppSidebar: React.FC = () => {
   const pathname = usePathname();
   const { user } = useAuth();
   const filteredNavItems = useMemo<NavItem[]>(() => {
-    // ⛔ CHƯA LOAD USER → GIỮ NGUYÊN MENU
     if (!user) return navItems;
 
     return navItems.map((item) => {

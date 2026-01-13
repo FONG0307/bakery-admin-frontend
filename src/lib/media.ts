@@ -26,23 +26,22 @@ export async function uploadMedia(file: File) {
 export async function fetchMedia(type: "video" | "image") {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(
-    `${API_URL}/api/media?type=${type}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  console.log(res);
-  const text = await res.text();
-  try {
-    const data = JSON.parse(text);
-    console.log("PARSED JSON:", data);
-    return data;
-  } catch (e) {
-    console.error("❌ Response không phải JSON");
-    throw new Error("Invalid JSON response");
-  }
-}
+  const res = await fetch(`${API_URL}/api/media?type=${type}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
+  if (!res.ok) {
+    throw new Error("Fetch media failed");
+  }
+
+  const data = await res.json();
+
+  if (!data || !Array.isArray(data.files)) {
+    console.error("❌ Invalid media response:", data);
+    return [];
+  }
+
+  return data.files;
+}

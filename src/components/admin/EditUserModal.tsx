@@ -53,14 +53,29 @@ export default function EditUserModal({
   function updateField(key: string, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
-
+  const { showSuccess, showError } = useToast();
   async function handleSubmit() {
-    const { showSuccess, showError } = useToast();
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Unauthorized");
       return;
     }
+    if (avatar) {
+      const fd = new FormData();
+      fd.append("avatar", avatar);
+
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users/${user.id}/avatar`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: fd,
+        }
+      );
+    }
+
 
     const payload: any = {
       email: form.email,
@@ -89,24 +104,46 @@ export default function EditUserModal({
     );
 
     const data = await res.json().catch(() => ({}));
-   
+
     if (!res.ok) {
       showError(data.errors?.join(", ") || "Update failed");
       return;
     }
     showSuccess("User updated successfully ✅");
-    onUpdated(data);
+    onUpdated({
+      ...data,
+      avatar_url: preview || data.avatar_url,
+    });
     onClose();
   }
 
   if (!open) return null;
-
+    const [avatar, setAvatar] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow dark:bg-gray-900">
         <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
           Edit User
         </h2>
+        <div className="col-span-2 flex items-center gap-4">
+          <img
+            src={preview || user.avatar_url || "/user/avatar-placeholder.png"}
+            className="h-16 w-16 rounded-full object-cover border"
+          />
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              setAvatar(file);
+              setPreview(URL.createObjectURL(file));
+            }}
+          />
+        </div>
+
 
         <div className="grid grid-cols-2 gap-4">
           <Field label="First name">

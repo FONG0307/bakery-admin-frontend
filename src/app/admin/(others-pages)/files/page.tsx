@@ -21,10 +21,17 @@ export default function AdminMediaPage() {
   const [loading, setLoading] = useState(false);
 
   async function loadMedia() {
-    const data = await fetchMedia(type);
-    setItems(data);
-    setPreview(null);
+    try {
+      const data = await fetchMedia(type);
+      setItems(data);
+    } catch (err) {
+      console.error(err);
+      setItems([]);
+    } finally {
+      setPreview(null);
+    }
   }
+
 
   useEffect(() => {
     loadMedia();

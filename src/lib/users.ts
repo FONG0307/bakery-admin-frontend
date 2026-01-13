@@ -103,7 +103,7 @@ export async function updateUserAvatar(
   const formData = new FormData();
   formData.append("avatar", file);
 
-  const res = await fetch(`${API_BASE}/api/users/${userId}/avatar`, {
+  const res = await fetch(`${API_BASE}/api/users/${userId}/update_avatar`, {
     method: "PATCH",
     headers: authHeaderOnly(),
     body: formData,
