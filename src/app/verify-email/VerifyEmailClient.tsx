@@ -24,10 +24,12 @@ export default function VerifyEmailClient() {
     verifyEmail(token)
       .then((res) => {
         setUser(res.user);
-        router.replace("/");
+        console.log("VERIFY SUCCESS:", res);
+        router.replace("/customer");
       })
-      .catch(() => {
-        router.replace("/signin");
+      .catch((err) => {
+        console.error("VERIFY FAILED:", err);
+        router.replace("/signin?verify=failed");
       });
   }, []);
 

@@ -97,11 +97,6 @@ export async function signout() {
 }
 /* ================= VERIFY EMAIL ================= */
 
-export type VerifyEmailResponse = {
-  token: string;
-  user: User;
-};
-
 export async function verifyEmail(token: string) {
   localStorage.removeItem("token");
 
@@ -110,14 +105,14 @@ export async function verifyEmail(token: string) {
   );
 
   const data = await res.json();
+  console.log("VERIFY API RESPONSE:", data);
 
-  if (!res.ok) {
+  if (!res.ok || !data.token || !data.user) {
     throw new Error(data.error || "Verify email failed");
   }
 
-  // 🔐 save token mới
   localStorage.setItem("token", data.token);
-
   return data;
 }
+
 
