@@ -1,46 +1,19 @@
 //src/app/admin/layout.tsx
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
-import { useAuth } from "@/context/AuthContext";
 
 
-export default function AdminLayout({
+export default function CustomerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    if (loading) return;
-
-    if (user === null) {
-      console.log(user);
-      router.replace("/signin");
-      return;
-    }
-
-    if (user.role !== "admin" && user.role !== "staff") {
-      router.replace("/customer");
-    }
-  }, [loading, user, router]);
-
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Checking permission...
-      </div>
-    );
-  }
   const mainContentMargin = isMobileOpen
     ? "ml-0"
     : isExpanded || isHovered

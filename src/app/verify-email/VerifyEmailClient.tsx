@@ -46,7 +46,7 @@ export default function VerifyEmailClient() {
         );
 
         setTimeout(() => {
-            router.replace("/");
+            router.replace("/customer");
         }, 2500);
         return;
         }
