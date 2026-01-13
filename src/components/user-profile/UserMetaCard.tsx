@@ -7,7 +7,7 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
-
+import avatar from "../../../public/images/user/avatar-placeholder.png";
 
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
@@ -29,7 +29,7 @@ export default function UserMetaCard() {
               <Image
                 width={80}
                 height={80}
-                src={ user?.avatar_url || "../../assets/images/avatar/01.jpg" }
+                src={ user?.avatar_url || avatar }
                 alt="user"
               />
             </div>

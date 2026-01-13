@@ -22,7 +22,6 @@ export default function CustomerLayout({
 
   return (
     <div className="min-h-screen xl:flex">
-      <AppSidebar />
       <Backdrop />
       <div className={`flex-1 transition-all ${mainContentMargin}`}>
         <AppHeader />
