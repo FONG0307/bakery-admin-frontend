@@ -1,4 +1,4 @@
-//src/context/AuthContext.tsx
+// src/context/AuthContext.tsx
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
@@ -23,13 +23,13 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   setUser: (u: User | null) => void;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null); 
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,10 +54,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
-
+  // 🔥 ADD LOGOUT IMPLEMENTATION
+  function logout() {
+    localStorage.removeItem("token");
+    setUser(null);
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        setUser,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

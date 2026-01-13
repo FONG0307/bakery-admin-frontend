@@ -1,9 +1,7 @@
 // src/lib/users.ts
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
-/* =======================
-   TYPES
-======================= */
+
 export type User = {
   id: number;
   email: string;
@@ -21,77 +19,54 @@ export type User = {
   tax_id?: string;
 
   created_at?: string;
-  avatar?: string;
+
+  avatar_url?: string;
 };
 
-/* =======================
-   HELPERS
-======================= */
-function authHeaders() {
+function authHeaderOnly() {
   const token = localStorage.getItem("token");
-
-  if (!token) {
-    throw new Error("No auth token");
-  }
+  if (!token) throw new Error("No auth token");
 
   return {
-    "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
   };
 }
 
-/* =======================
-   API CALLS
-======================= */
+function authJsonHeaders() {
+  return {
+    ...authHeaderOnly(),
+    "Content-Type": "application/json",
+  };
+}
+
 
 // ✅ GET USERS
 export async function getUsers(): Promise<User[]> {
   try {
     const res = await fetch(`${API_BASE}/api/users`, {
-      headers: authHeaders(),
+      headers: authHeaderOnly(),
     });
 
     const data = await res.json();
-
-    console.log("🔥 /api/users response:", data);
 
     if (!res.ok) {
       console.error("GET USERS FAILED:", data);
       return [];
     }
 
-    // ✅ backend trả ARRAY TRỰC TIẾP
-    if (Array.isArray(data)) {
-      return data;
-    }
-
-    // (fallback nếu sau này đổi backend)
-    if (Array.isArray(data.users)) {
-      return data.users;
-    }
-
-    console.warn("⚠️ Unexpected users response shape:", data);
-    return [];
+    return Array.isArray(data) ? data : data.users ?? [];
   } catch (err) {
     console.error("GET USERS ERROR:", err);
     return [];
   }
 }
 
-// ✅ CREATE USER
+// ✅ CREATE USER (JSON only)
 export async function createUser(payload: any) {
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("No token");
-
   const res = await fetch(`${API_BASE}/api/users`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      user: payload,
-    }),
+    headers: authJsonHeaders(),
+    body: JSON.stringify({ user: payload }),
   });
 
   if (!res.ok) {
@@ -102,18 +77,14 @@ export async function createUser(payload: any) {
   return res.json();
 }
 
-
-// ✅ UPDATE USER
-export async function updateUser(id: number, data: any) {
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("No token");
-
+// ✅ UPDATE USER INFO (KHÔNG AVATAR)
+export async function updateUser(
+  id: number,
+  data: Partial<User>
+): Promise<User> {
   const res = await fetch(`${API_BASE}/api/users/${id}`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: authJsonHeaders(),
     body: JSON.stringify({ user: data }),
   });
 
@@ -125,11 +96,32 @@ export async function updateUser(id: number, data: any) {
   return res.json();
 }
 
+export async function updateUserAvatar(
+  userId: number,
+  file: File
+): Promise<{ avatar_url: string }> {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const res = await fetch(`${API_BASE}/api/users/${userId}/avatar`, {
+    method: "PATCH",
+    headers: authHeaderOnly(),
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Update avatar failed");
+  }
+
+  return res.json();
+}
+
 // ✅ DELETE USER
 export async function deleteUser(id: number): Promise<void> {
   const res = await fetch(`${API_BASE}/api/users/${id}`, {
     method: "DELETE",
-    headers: authHeaders(),
+    headers: authHeaderOnly(),
   });
 
   if (!res.ok) {

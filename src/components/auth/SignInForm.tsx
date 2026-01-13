@@ -9,18 +9,17 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signin } from "@/lib/auth";
-import { useAuth } from "@/context/AuthContext"; // 🔥 ADD
+import { useAuth } from "@/context/AuthContext"; 
 
 export default function SignInForm() {
   const router = useRouter();
-  const { setUser } = useAuth(); // 🔥 ADD
+  const { setUser } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ submit handler
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -33,15 +32,18 @@ export default function SignInForm() {
     try {
       const res = await signin(email, password);
 
-      // 🔥 DÒNG QUYẾT ĐỊNH – UPDATE CONTEXT
       setUser(res.user);
-      router.replace("/admin");
     } catch (err: any) {
-      setError(err.message || "Sign in failed");
+      if (err.message === "PLEASE_VERIFY_EMAIL") {
+        setError("Please verify your email before logging in");
+      } else {
+        setError("Invalid email or password");
+      }
     } finally {
       setLoading(false);
     }
   }
+
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">

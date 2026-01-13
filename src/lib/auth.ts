@@ -23,14 +23,20 @@ export async function signin(
     body: JSON.stringify({ email, password }),
   });
 
+  const data = await res.json();
+
   if (!res.ok) {
-    throw new Error("Login failed");
+    if (res.status === 403) {
+      throw new Error("PLEASE_VERIFY_EMAIL");
+    }
+
+    throw new Error(data.error || "Login failed");
   }
 
-  const data: SigninResponse = await res.json();
   localStorage.setItem("token", data.token);
   return data;
 }
+
 
 /* ================= ME ================= */
 
@@ -89,3 +95,29 @@ export async function signout() {
     localStorage.removeItem("token");
   }
 }
+/* ================= VERIFY EMAIL ================= */
+
+export type VerifyEmailResponse = {
+  token: string;
+  user: User;
+};
+
+export async function verifyEmail(token: string) {
+  localStorage.removeItem("token");
+
+  const res = await fetch(
+    `${API_URL}/api/verify-email?token=${token}`
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Verify email failed");
+  }
+
+  // 🔐 save token mới
+  localStorage.setItem("token", data.token);
+
+  return data;
+}
+
