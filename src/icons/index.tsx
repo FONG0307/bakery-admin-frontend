@@ -51,7 +51,9 @@ import HorizontaLDots from "./horizontal-dots.svg";
 import ChatIcon from "./chat.svg";
 import MoreDotIcon from "./more-dot.svg";
 import BellIcon from "./bell.svg";
-
+import Donutcake from "./donutcake.svg";
+import Order from "./order.svg";
+import User from "./user.svg";
 export {
   DownloadIcon,
   BellIcon,
@@ -106,4 +108,7 @@ export {
   HorizontaLDots,
   ChevronUpIcon,
   ChatIcon,
+  Donutcake,
+  Order,
+  User,
 };

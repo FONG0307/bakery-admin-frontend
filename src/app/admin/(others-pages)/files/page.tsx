@@ -89,17 +89,39 @@ export default function AdminMediaPage() {
           {items.map((item) => (
             <li
               key={item.id}
-              className="p-3 flex justify-between items-center cursor-pointer hover:bg-gray-50"
-              onClick={() => setPreview(item)}
+              className="p-3 flex justify-between items-center hover:bg-gray-50"
             >
-              <div>
+              <div
+                className="cursor-pointer"
+                onClick={() => setPreview(item)}
+              >
                 <p className="font-medium">{item.filename}</p>
                 <p className="text-sm text-gray-500">
                   {(item.size / 1024 / 1024).toFixed(2)} MB
                 </p>
               </div>
-              <span className="text-blue-600 text-sm">Xem</span>
+
+              <div className="flex gap-3 text-sm">
+                <button
+                  onClick={() => setPreview(item)}
+                  className="text-blue-600 hover:underline"
+                >
+                  Xem
+                </button>
+
+                <a
+                  href={item.url}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-600 hover:underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Download
+                </a>
+              </div>
             </li>
+
           ))}
 
           {items.length === 0 && (
@@ -120,7 +142,6 @@ export default function AdminMediaPage() {
               src={preview.url}
               controls
               className="w-full max-w-xl rounded border"
-              
             />
           ) : (
             <img
@@ -128,6 +149,16 @@ export default function AdminMediaPage() {
               className="max-w-xl rounded border"
             />
           )}
+
+          <a
+            href={preview.url}
+            download
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 bg-green-600 text-white rounded"
+          >
+            ⬇️ Download
+          </a>
         </div>
       )}
     </div>

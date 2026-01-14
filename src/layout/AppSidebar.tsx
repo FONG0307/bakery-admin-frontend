@@ -14,13 +14,16 @@ import {
   BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
+  Donutcake,
   GridIcon,
   HorizontaLDots,
   ListIcon,
+  Order,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
   TableIcon,
+  User,
   UserCircleIcon,
 } from "../icons/index";
 import { useAuth } from "@/context/AuthContext";
@@ -40,14 +43,24 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Ecommerce", path: "/admin" }],
   },
   {
-    icon: <UserCircleIcon />,
+    icon: <Order />,
+    name: "Orders",
+    path: "/admin/orders",
+  },
+  {
+    icon: <Donutcake />,
+    name: "Products",
+    path: "/admin/products",
+  },
+  {
+    icon: <User />,
     name: "User",
     subItems: [
       { name: "User List", path: "/admin/users" },
       { name: "User Profile", path: "/admin/profile" },
       { name: "Test upload video", path: "/admin/files" },
     ],
-  },
+  }
 ];
 
 const othersItems: NavItem[] = [
