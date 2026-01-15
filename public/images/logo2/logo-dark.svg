@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64">
+  <g transform="translate(0,6)">
+    <path d="M16 10c-6 0-10 4-10 10s4 14 10 14h26c6 0 10-6 10-14S48 10 42 10H16z" fill="#F5E6C8"/>
+    <path d="M24 12v20M32 12v20M40 12v20" stroke="#C89B3C" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <text x="78" y="42" font-size="28" font-weight="700"
+    font-family="Poppins, Inter, system-ui, sans-serif" fill="#FDF6E3">P-Bakery</text>
+</svg>

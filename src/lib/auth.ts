@@ -115,4 +115,68 @@ export async function verifyEmail(token: string) {
   return data;
 }
 
+/* ================= PASSWORD RESET FLOW ================= */
+
+export type ForgotPasswordResponse = {
+  message: string;
+  email: string;
+};
+
+export async function requestPasswordReset(email: string): Promise<ForgotPasswordResponse> {
+  const res = await fetch(`${API_URL}/api/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error || data?.message || "Failed to send reset code");
+  }
+  return data;
+}
+
+export type VerifyResetCodeResponse = {
+  status: "valid";
+  message: string;
+  reset_token: string;
+  email: string;
+};
+
+export async function verifyResetCode(email: string, code: string): Promise<VerifyResetCodeResponse> {
+  const res = await fetch(`${API_URL}/api/verify-reset-code`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, code }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error || data?.message || "Invalid or expired reset code");
+  }
+  return data;
+}
+
+export type ResetPasswordResponse = {
+  message: string;
+  user: { id: number; email: string };
+};
+
+export async function resetPassword(resetToken: string, password: string, passwordConfirmation: string): Promise<ResetPasswordResponse> {
+  const res = await fetch(`${API_URL}/api/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${resetToken}`,
+    },
+    body: JSON.stringify({ password, password_confirmation: passwordConfirmation }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = data?.errors?.join?.(", ") || data?.error || data?.message || "Password reset failed";
+    throw new Error(msg);
+  }
+  return data;
+}
+
 

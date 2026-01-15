@@ -16,21 +16,41 @@ export default function AuthLayout({
       <ThemeProvider>
         <div className="relative flex lg:flex-row w-full h-screen justify-center flex-col  dark:bg-gray-900 sm:p-0">
           {children}
-          <div className="lg:w-1/2 w-full h-full bg-brand-950 dark:bg-white/5 lg:grid items-center hidden">
-            <div className="relative items-center justify-center  flex z-1">
+          <div className="lg:w-1/2 w-full h-full relative lg:grid items-center hidden overflow-hidden">
+            {/* Background image (light & dark) */}
+            <div className="absolute inset-0">
+              <Image
+                src="/images/auth/bakery-background.png"
+                alt="Auth Background"
+                fill
+                priority
+                className="object-cover object-center block dark:hidden"
+              />
+              <Image
+                src="/images/auth/bakery-background.png"
+                alt="Auth Background Dark"
+                fill
+                priority
+                className="object-cover object-center hidden dark:block"
+              />
+              {/* Overlay tint to control brand tone */}
+              <div className="absolute inset-0 bg-brand-950/60 dark:bg-black/40" />
+            </div>
+
+            <div className="relative items-center justify-center  flex z-10">
               {/* <!-- ===== Common Grid Shape Start ===== --> */}
               <GridShape />
               <div className="flex flex-col items-center max-w-xs">
-                <Link href="/" className="block mb-4">
+                <Link href="/signin" className="block mb-4">
                   <Image
                     width={231}
                     height={48}
-                    src="./images/logo/auth-logo.svg"
+                    src="/images/logo/auth-logo.svg"
                     alt="Logo"
                   />
                 </Link>
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  Free and Open-Source Tailwind CSS Admin Dashboard Template
+                  Fresh and Reliable Bakery Admin Dashboard Template
                 </p>
               </div>
             </div>
