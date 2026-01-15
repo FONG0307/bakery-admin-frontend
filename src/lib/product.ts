@@ -21,6 +21,15 @@ export async function getProducts() {
   return res.json();
 }
 
+export async function getDailyStock() {
+  const res = await fetch(`${API_URL}/api/daily_stocks`, {
+    headers: authHeaderOnly(),
+  });
+
+  if (!res.ok) throw new Error("GET daily_stocks failed");
+  return res.json();
+}
+
 // ====================
 // CREATE
 // ====================
@@ -49,9 +58,7 @@ export async function updateProduct(id: number, data: FormData) {
   return res.json();
 }
 
-// ====================
 // DELETE
-// ====================
 export async function deleteProduct(id: number) {
   const res = await fetch(`${API_URL}/api/products/${id}`, {
     method: "DELETE",
@@ -59,4 +66,18 @@ export async function deleteProduct(id: number) {
   });
 
   if (!res.ok) throw new Error("Delete failed");
+}
+// Export daily stock update function
+export async function updateDailyStock(productId: number, available: number) {
+  const res = await fetch(`${API_URL}/api/products/${productId}/daily_stock`, {
+    method: "PUT",
+    headers: {
+      ...authHeaderOnly(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ available }),
+  });
+
+  if (!res.ok) throw new Error("Daily stock update failed");
+  return res.json();
 }

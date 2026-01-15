@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -7,205 +9,570 @@ import {
 } from "@/components/ui/table";
 import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { addOrderItem, createOrder, getOrders, updateOrderStatus } from "@/lib/order";
+import { getUsers } from "@/lib/users";
+import { useAuth } from "@/context/AuthContext";
+import type  { CartItem }  from "@/context/AuthContext";
 
-// Define the TypeScript interface for the table rows
-interface Product {
-  id: number; // Unique identifier for each product
-  name: string; // Product name
-  variants: string; // Number of variants (e.g., "1 Variant", "2 Variants")
-  category: string; // Category of the product
-  price: string; // Price of the product (as a string with currency symbol)
-  // status: string; // Status of the product
-  image: string; // URL or path to the product image
-  status: "Delivered" | "Pending" | "Canceled"; // Status of the product
+interface OrderDisplay {
+  id: number;
+  name: string;
+  variants: string;
+  category: string;
+  price: string;
+  image: string;
+  status: "Delivered" | "Pending" | "Failed";
+  userName: string;
+  orderNumber: number;
+  createdAt: string;
 }
 
-// Define the table data using the interface
-const tableData: Product[] = [
-  {
-    id: 1,
-    name: "MacBook Pro 13”",
-    variants: "2 Variants",
-    category: "Laptop",
-    price: "$2399.00",
-    status: "Delivered",
-    image: "/images/product/product-01.jpg", // Replace with actual image URL
-  },
-  {
-    id: 2,
-    name: "Apple Watch Ultra",
-    variants: "1 Variant",
-    category: "Watch",
-    price: "$879.00",
-    status: "Pending",
-    image: "/images/product/product-02.jpg", // Replace with actual image URL
-  },
-  {
-    id: 3,
-    name: "iPhone 15 Pro Max",
-    variants: "2 Variants",
-    category: "SmartPhone",
-    price: "$1869.00",
-    status: "Delivered",
-    image: "/images/product/product-03.jpg", // Replace with actual image URL
-  },
-  {
-    id: 4,
-    name: "iPad Pro 3rd Gen",
-    variants: "2 Variants",
-    category: "Electronics",
-    price: "$1699.00",
-    status: "Canceled",
-    image: "/images/product/product-04.jpg", // Replace with actual image URL
-  },
-  {
-    id: 5,
-    name: "AirPods Pro 2nd Gen",
-    variants: "1 Variant",
-    category: "Accessories",
-    price: "$240.00",
-    status: "Delivered",
-    image: "/images/product/product-05.jpg", // Replace with actual image URL
-  },
-];
-
 export default function RecentOrders() {
+    /* STATE                        */
+  const [tableData, setTableData] = useState<OrderDisplay[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrderForStatus, setSelectedOrderForStatus] = useState<any>(null);
+  const [newStatus, setNewStatus] = useState<string>("pending");
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const perPage = 8;
+
+  const { fetchData } = useAuth();
+  const [openCreate, setOpenCreate] = useState(false);
+  const { products } = useAuth();
+  const [search, setSearch] = useState("");
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [dayPart, setDayPart] = useState("morning");
+
+  /* =================LOAD ORDERS  =======================*/
+  useEffect(() => {
+    loadUsers();
+    loadOrders();
+  }, []);
+
+  async function loadUsers() {
+    const usersData = await getUsers();
+    setUsers(usersData);
+  }
+
+  async function loadOrders() {
+    const ordersData = await getOrders();
+    setOrders(ordersData);
+
+    const sortedOrders = ordersData.sort((a: any, b: any) => new Date(b.ordered_at || b.created_at).getTime() - new Date(a.ordered_at || a.created_at).getTime());
+
+    const rows: OrderDisplay[] = sortedOrders.map((order: any, index: number) => {
+      const userName = order.user ? `${order.user.first_name || ''} ${order.user.last_name || ''}`.trim() || order.user.email : 'Unknown';
+      const orderNumber = index + 1;
+      const totalPrice = order.items.reduce((sum: number, item: any) => sum + Number(item.subtotal), 0);
+      return {
+        id: order.id,
+        name: `${userName} - Order ${orderNumber}st`,
+        variants: `${order.items.length} Items`,
+        category: "Bakery",
+        price: `${totalPrice.toLocaleString()} ₫`,
+        image: "", // not used
+        status:
+          order.status === "paid"
+            ? "Delivered"
+            : order.status === "pending"
+            ? "Pending"
+            : "Failed",
+        userName,
+        orderNumber,
+        createdAt: order.ordered_at || order.created_at,
+      };
+    });
+
+    setTableData(rows);
+  }
+
+  const filteredData = useMemo(() => {
+    if (selectedStatuses.length === 0) return tableData;
+    return tableData.filter(item => selectedStatuses.includes(item.status));
+  }, [tableData, selectedStatuses]);
+
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(filteredData.length / perPage));
+  }, [filteredData.length]);
+
+  const paginatedData = useMemo(() => {
+    const start = (page - 1) * perPage;
+    return filteredData.slice(start, start + perPage);
+  }, [filteredData, page]);
+
+  function nextPage() {
+    setPage((p) => Math.min(totalPages, p + 1));
+  }
+
+  function prevPage() {
+    setPage((p) => Math.max(1, p - 1));
+  }
+
+  /* ================= FILTER FUNCTIONS =======================*/
+  const [showFilter, setShowFilter] = useState(false);
+
+  function handleFilterChange(status: string, checked: boolean) {
+    setSelectedStatuses(prev =>
+      checked ? [...prev, status] : prev.filter(s => s !== status)
+    );
+    setPage(1); // reset page
+  }
+
+  function handleSeeAll() {
+    setSelectedStatuses([]);
+    setPage(1);
+  }
+
+  async function handleStatusChange(orderId: number, newStatus: string) {
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      loadOrders(); // reload
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
+  }
+
+  /* ================= FILTER PRODUCTS =======================*/
+  const filteredProducts = useMemo(() => {
+    return products.filter((p: any) =>
+      p.item_name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [products, search]);
+
+  /* ================= CART HANDLERS =======================*/
+  function toggleProduct(p: any) {
+    setCart((prev) =>
+      prev.find((i) => i.product_id === p.id)
+        ? prev.filter((i) => i.product_id !== p.id)
+        : [
+            ...prev,
+            {
+              product_id: p.id,
+              name: p.item_name,
+              price: Number(p.unit_price),
+              quantity: 1,
+            },
+          ]
+    );
+  }
+
+  function updateQty(id: number, delta: number) {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.product_id === id);
+      const newQty = (existing?.quantity || 0) + delta;
+      if (newQty <= 0) {
+        return prev.filter((i) => i.product_id !== id);
+      }
+      if (existing) {
+        return prev.map((i) =>
+          i.product_id === id ? { ...i, quantity: newQty } : i
+        );
+      } else {
+        // add new
+        const product = products.find(p => p.id === id);
+        return [
+          ...prev,
+          {
+            product_id: id,
+            name: product?.item_name || '',
+            price: Number(product?.unit_price || 0),
+            quantity: newQty,
+          },
+        ];
+      }
+    });
+  }
+
+  
+  async function handleCreateOrder() {
+    const order = await createOrder({
+      payment_method: paymentMethod,
+      day_part: dayPart,
+    });
+
+    for (const item of cart) {
+      await addOrderItem(order.id, item.product_id, item.quantity);
+    }
+
+    setOpenCreate(false);
+    setStep(1);
+    setCart([]);
+    await loadOrders();
+  }
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
-      <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] px-10 py-10">
+      {/* HEADER */}
+      <div className="flex items-center justify-between border-b py-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Recent Orders
+            Bakery Orders
           </h3>
+          <p className="text-sm text-gray-500">Order management & tracking</p>
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-            <svg
-              className="stroke-current fill-white dark:fill-gray-800"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M2.29004 5.90393H17.7067"
-                stroke=""
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M17.7075 14.0961H2.29085"
-                stroke=""
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M12.0826 3.33331C13.5024 3.33331 14.6534 4.48431 14.6534 5.90414C14.6534 7.32398 13.5024 8.47498 12.0826 8.47498C10.6627 8.47498 9.51172 7.32398 9.51172 5.90415C9.51172 4.48432 10.6627 3.33331 12.0826 3.33331Z"
-                fill=""
-                stroke=""
-                strokeWidth="1.5"
-              />
-              <path
-                d="M7.91745 11.525C6.49762 11.525 5.34662 12.676 5.34662 14.0959C5.34661 15.5157 6.49762 16.6667 7.91745 16.6667C9.33728 16.6667 10.4883 15.5157 10.4883 14.0959C10.4883 12.676 9.33728 11.525 7.91745 11.525Z"
-                fill=""
-                stroke=""
-                strokeWidth="1.5"
-              />
-            </svg>
+          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            onClick={() => setOpenCreate(true)}
+          >
+            Create Order
+          </button>
+          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            onClick={() => setShowFilter(true)}
+          >
             Filter
           </button>
-          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            onClick={handleSeeAll}
+          >
             See all
           </button>
         </div>
       </div>
+
       <div className="max-w-full overflow-x-auto">
         <Table>
-          {/* Table Header */}
           <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
             <TableRow>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Products
+              <TableCell isHeader className="font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                Orders
               </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell isHeader className="font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Price
               </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell isHeader className="font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Category
               </TableCell>
-              <TableCell
-                isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
+              <TableCell isHeader className="font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Status
+              </TableCell>
+              <TableCell isHeader className="font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">                Created At
+              </TableCell>
+              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">                Actions
               </TableCell>
             </TableRow>
           </TableHeader>
 
-          {/* Table Body */}
-
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {tableData.map((product) => (
-              <TableRow key={product.id} className="">
+            {paginatedData.map((product) => (
+              <TableRow key={product.id}>
                 <TableCell className="py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-                      <Image
-                        width={50}
-                        height={50}
-                        src={product.image}
-                        className="h-[50px] w-[50px]"
-                        alt={product.name}
-                      />
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                        {product.name}
-                      </p>
-                      <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                        {product.variants}
-                      </span>
-                    </div>
+                  <div>
+                    <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                      {product.name}
+                    </p>
+                    <span className="text-gray-500 text-theme-xs dark:text-gray-400">
+                      {product.variants}
+                    </span>
                   </div>
                 </TableCell>
+
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   {product.price}
                 </TableCell>
+
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   {product.category}
                 </TableCell>
+
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  <Badge
-                    size="sm"
-                    color={
-                      product.status === "Delivered"
-                        ? "success"
-                        : product.status === "Pending"
-                        ? "warning"
-                        : "error"
-                    }
+                  {product.status === "Pending" ? (
+                    <button
+                      onClick={() => {
+                        const order = orders.find(o => o.id === product.id);
+                        setSelectedOrderForStatus(order);
+                        setNewStatus(order.status === "paid" ? "paid" : order.status === "pending" ? "pending" : "failed");
+                      }}
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 cursor-pointer hover:bg-yellow-200 dark:hover:bg-yellow-800"
+                    >
+                      {product.status}
+                    </button>
+                  ) : (
+                    <Badge
+                      size="sm"
+                      color={
+                        product.status === "Delivered"
+                          ? "success"
+                          : "error"
+                      }
+                    >
+                      {product.status}
+                    </Badge>
+                  )}
+                </TableCell>
+
+                <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  {new Date(product.createdAt).toLocaleDateString()}
+                </TableCell>
+
+                <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  <button
+                    onClick={() => setSelectedOrder(orders.find(o => o.id === product.id))}
+                    className="text-blue-600 hover:underline"
                   >
-                    {product.status}
-                  </Badge>
+                    View Items
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      {/* PAGINATION */}
+      <div className="flex justify-between py-4 border-t">
+        <span className="text-sm text-gray-500">
+          Page {page} / {totalPages}
+        </span>
+
+        <div className="flex gap-2">
+          <button onClick={prevPage} className="px-3 py-1 border rounded">Prev</button>
+          <button onClick={nextPage} className="px-3 py-1 border rounded">Next</button>
+        </div>
+      </div>
+      
+      {openCreate && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
+          <div className="bg-white rounded-xl w-[600px] p-5 space-y-4">
+            <h3 className="text-lg font-semibold">
+              {step === 1 ? "Select Products" : "Order Information"}
+            </h3>
+
+            {/* STEP 1 */}
+            {step === 1 && (
+              <>
+                <input
+                  className="w-full border rounded px-3 py-2"
+                  placeholder="Search product..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+
+                <ul className="divide-y max-h-[240px] overflow-auto">
+                  {filteredProducts.map((p: any) => {
+                    const selected = cart.find(
+                      (i) => i.product_id === p.id
+                    );
+                    const qty = selected?.quantity || 0;
+                    return (
+                      <li
+                        key={p.id}
+                        className="flex justify-between items-center py-2"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={p.image_url || "/images/product/bakery-placeholder.png"}
+                            width={40}
+                            height={40}
+                            className="rounded object-cover"
+                            alt={p.item_name}
+                          />
+                          <span>{p.item_name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => updateQty(p.id, -1)}
+                            disabled={qty <= 0}
+                            className="px-2 py-1 border rounded disabled:opacity-50"
+                          >
+                            −
+                          </button>
+                          <span className="w-8 text-center">{qty}</span>
+                          <button
+                            onClick={() => updateQty(p.id, 1)}
+                            className="px-2 py-1 border rounded"
+                          >
+                            +
+                          </button>
+                          <button
+                            onClick={() => toggleProduct(p)}
+                            className={`px-3 py-1 rounded ${
+                              qty > 0
+                                ? "bg-green-500 text-white"
+                                : "border"
+                            }`}
+                          >
+                            ✓
+                          </button>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                <div className="flex justify-end gap-2 pt-3">
+                  <button onClick={() => setOpenCreate(false)}>Cancel</button>
+                  <button
+                    disabled={!cart.length}
+                    onClick={() => setStep(2)}
+                    className="bg-brand-500 text-white px-4 py-2 rounded"
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* STEP 2 */}
+            {step === 2 && (
+              <>
+                <select
+                  className="w-full border rounded px-3 py-2"
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                >
+                  <option value="cash">Cash</option>
+                  <option value="card">Card</option>
+                  <option value="transfer">Transfer</option>
+                </select>
+
+                <select
+                  className="w-full border rounded px-3 py-2"
+                  value={dayPart}
+                  onChange={(e) => setDayPart(e.target.value)}
+                >
+                  <option value="morning">Morning</option>
+                  <option value="afternoon">Afternoon</option>
+                  <option value="evening">Evening</option>
+                </select>
+
+                <div className="flex justify-end gap-2 pt-3">
+                  <button onClick={() => setStep(1)}>Back</button>
+                  <button
+                    onClick={handleCreateOrder}
+                    className="bg-brand-500 text-white px-4 py-2 rounded"
+                  >
+                    Create Order
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {selectedOrder && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-5 w-[600px] max-h-[80vh] overflow-y-auto space-y-3">
+            <h3 className="font-semibold text-lg">Order Items</h3>
+            <div className="space-y-2">
+              {selectedOrder.items.map((item: any) => (
+                <div key={item.id} className="flex items-center gap-3 border-b pb-2">
+                  <Image
+                    width={50}
+                    height={50}
+                    src={item.image_url || "/images/product/bakery-placeholder.png"}
+                    className="h-[50px] w-[50px] rounded"
+                    alt={item.name}
+                  />
+                  <div>
+                    <p className="font-medium">{item.name}</p>
+                    <p className="text-sm text-gray-500">Quantity: {item.quantity} | Subtotal: {Number(item.subtotal).toLocaleString()} ₫</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2 pt-3">
+              <button onClick={() => setSelectedOrder(null)} className="px-3 py-1 border rounded">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedOrderForStatus && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-[400px] space-y-4 border border-gray-200 dark:border-gray-700">
+            <h3 className="font-bold text-xl text-gray-900 dark:text-white text-center">
+              Change Order Status
+            </h3>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Status</label>
+              <select
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value)}
+                className="w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              >
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+            <div className="flex justify-end gap-3 pt-4">
+              <button onClick={() => setSelectedOrderForStatus(null)} className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    await updateOrderStatus(selectedOrderForStatus.id, newStatus);
+                    setSelectedOrderForStatus(null);
+                    loadOrders();
+                    fetchData();
+                  } catch (error) {
+                    console.error("Failed to update status", error);
+                  }
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Change
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFilter && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-[400px] space-y-4 border border-gray-200 dark:border-gray-700">
+            <h3 className="font-bold text-xl text-gray-900 dark:text-white text-center">
+              Filter Orders
+            </h3>
+            <div className="space-y-3">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedStatuses.includes("Pending")}
+                  onChange={(e) => handleFilterChange("Pending", e.target.checked)}
+                  className="mr-2"
+                />
+                Pending
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedStatuses.includes("Delivered")}
+                  onChange={(e) => handleFilterChange("Delivered", e.target.checked)}
+                  className="mr-2"
+                />
+                Delivered
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedStatuses.includes("Failed")}
+                  onChange={(e) => handleFilterChange("Failed", e.target.checked)}
+                  className="mr-2"
+                />
+                Failed
+              </label>
+            </div>
+            <div className="flex justify-end gap-3 pt-4">
+              <button onClick={() => setShowFilter(false)} className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

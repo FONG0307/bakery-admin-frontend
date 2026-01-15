@@ -1,8 +1,9 @@
 // src/context/AuthContext.tsx
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { getMe } from "@/lib/auth";
+import { getProducts, getDailyStock } from "@/lib/product";
 
 export type User = {
   id: number;
@@ -25,6 +26,10 @@ type AuthContextType = {
   loading: boolean;
   setUser: (u: User | null) => void;
   logout: () => void;
+  products: any[];
+  dailyStock: any[];
+  combinedProducts: any[];
+  fetchData: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -32,6 +37,16 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
+  const [dailyStock, setDailyStock] = useState<any[]>([]);
+  const combinedProducts = useMemo(() => {
+  return products.map((p: any) => ({
+    ...p,
+    daily_stock:
+      dailyStock.find((d: any) => d.product_id === p.id) || null,
+  }));
+}, [products, dailyStock]);
+
 
   useEffect(() => {
     const t = localStorage.getItem("token");
@@ -45,6 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     getMe(t)
       .then((res) => {
         setUser(res.user);
+        fetchData(); // Fetch products and daily stock after user is set
       })
       .catch(() => {
         localStorage.removeItem("token");
@@ -54,6 +70,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       });
   }, []);
+
+  async function fetchData() {
+    try {
+        console.log("👉 fetchData called");
+
+        const [prods, stocks] = await Promise.allSettled([
+          getProducts(),
+          getDailyStock(),
+        ]);
+
+        const productsData = prods.status === "fulfilled" ? prods.value : [];
+        const stocksData = stocks.status === "fulfilled" ? stocks.value : [];
+
+        setProducts(productsData);
+        setDailyStock(stocksData);
+      } catch (e) {
+        console.error(e);
+      }
+
+  }
 
   // 🔥 ADD LOGOUT IMPLEMENTATION
   function logout() {
@@ -68,6 +104,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         setUser,
         logout,
+        products,
+        dailyStock,
+        combinedProducts,
+        fetchData,
       }}
     >
       {children}
@@ -82,3 +122,9 @@ export function useAuth() {
   }
   return ctx;
 }
+export type CartItem = {
+  product_id: number;
+  name: string;
+  price: number;
+  quantity: number;
+};
