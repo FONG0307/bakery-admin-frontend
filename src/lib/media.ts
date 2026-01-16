@@ -16,13 +16,20 @@ export async function uploadMedia(file: File) {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    console.error(text);
-    throw new Error("Upload failed");
+    let message = "Upload failed";
+
+    try {
+      const data = await res.json();
+      message = data.error || data.errors?.[0] || message;
+    } catch (_) {}
+
+    throw new Error(message);
   }
 
   return res.json();
 }
+
+
 
 export async function fetchMedia(type: "video" | "image") {
   const token = localStorage.getItem("token");

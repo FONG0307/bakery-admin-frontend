@@ -19,6 +19,7 @@ export default function AdminMediaPage() {
   const [items, setItems] = useState<MediaItem[]>([]);
   const [preview, setPreview] = useState<MediaItem | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function loadMedia() {
     try {
@@ -32,23 +33,27 @@ export default function AdminMediaPage() {
     }
   }
 
-
   useEffect(() => {
     loadMedia();
   }, [type]);
 
   async function handleUpload() {
     if (!file) return;
+
     setLoading(true);
+    setError(null);
 
     try {
       await uploadMedia(file);
       setFile(null);
       await loadMedia();
+    } catch (err: any) {
+      setError(err.message || "Upload failed");
     } finally {
       setLoading(false);
     }
   }
+
 
   return (
     <div className="space-y-6">
@@ -131,7 +136,12 @@ export default function AdminMediaPage() {
           )}
         </ul>
       </div>
-
+      {error && (
+        <p className="text-red-600 text-sm mt-2">
+          {error}
+        </p>
+      )}
+    
       {/* ===== PREVIEW ===== */}
       {preview && (
         <div className="border rounded p-4 space-y-3">
