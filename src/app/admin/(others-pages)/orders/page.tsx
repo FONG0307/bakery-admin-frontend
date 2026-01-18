@@ -458,28 +458,105 @@ export default function RecentOrders() {
       )}
 
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-5 w-[600px] max-h-[80vh] overflow-y-auto space-y-3">
-            <h3 className="font-semibold text-lg">Order Items</h3>
-            <div className="space-y-2">
-              {selectedOrder.items.map((item: any) => (
-                <div key={item.id} className="flex items-center gap-3 border-b pb-2">
-                  <Image
-                    width={50}
-                    height={50}
-                    src={item.image_url || "/images/product/bakery-placeholder.png"}
-                    className="h-[50px] w-[50px] rounded"
-                    alt={item.name}
-                  />
-                  <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-gray-500">Quantity: {item.quantity} | Subtotal: {Number(item.subtotal).toLocaleString()} ₫</p>
-                  </div>
-                </div>
-              ))}
+        <div
+          className="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
+          onClick={() => setSelectedOrder(null)}
+        >
+          <div
+            className="bg-white rounded-xl p-6 w-[800px] max-h-[85vh] overflow-y-auto space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-xl">Order #{selectedOrder.id}</h3>
+              <Badge
+                size="sm"
+                color={
+                  selectedOrder.status === "paid"
+                    ? "success"
+                    : selectedOrder.status === "pending"
+                    ? "warning"
+                    : "error"
+                }
+              >
+                {selectedOrder.status}
+              </Badge>
             </div>
-            <div className="flex justify-end gap-2 pt-3">
-              <button onClick={() => setSelectedOrder(null)} className="px-3 py-1 border rounded">
+
+            {/* Summary and Customer */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="border rounded p-4">
+                <h4 className="font-medium mb-2">Summary</h4>
+                <div className="space-y-1 text-sm">
+                  <div><span className="text-gray-500">Amount:</span> {Number(selectedOrder.amount).toLocaleString()} ₫</div>
+                  <div><span className="text-gray-500">Ordered at:</span> {new Date(selectedOrder.ordered_at || selectedOrder.created_at).toLocaleString()}</div>
+                  <div><span className="text-gray-500">Address:</span> {selectedOrder.address || "N/A"}</div>
+                  <div><span className="text-gray-500">Payment method:</span> {selectedOrder.payment_method || "N/A"}</div>
+                  <div><span className="text-gray-500">Payment ref:</span> {selectedOrder.payment_ref || "N/A"}</div>
+                </div>
+              </div>
+
+              <div className="border rounded p-4">
+                <h4 className="font-medium mb-2">Customer</h4>
+                <div className="space-y-1 text-sm">
+                  <div><span className="text-gray-500">Email:</span> {selectedOrder.user?.email}</div>
+                  <div><span className="text-gray-500">Name:</span> {[
+                    selectedOrder.user?.first_name,
+                    selectedOrder.user?.last_name,
+                  ].filter(Boolean).join(" ") || "N/A"}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Items */}
+            <div className="border rounded p-4">
+              <h4 className="font-medium mb-3">Items</h4>
+              {selectedOrder.items?.length ? (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead>
+                      <tr className="text-left border-b">
+                        <th className="py-2 pr-4">Product</th>
+                        <th className="py-2 pr-4">Qty</th>
+                        <th className="py-2 pr-4">Unit Price</th>
+                        <th className="py-2 pr-4">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedOrder.items.map((item: any) => (
+                        <tr key={item.id} className="border-b last:border-0">
+                          <td className="py-2 pr-4">
+                            <div className="flex items-center gap-3">
+                              <Image
+                                width={40}
+                                height={40}
+                                src={item.image_url || "/images/product/bakery-placeholder.png"}
+                                className="h-10 w-10 rounded object-cover"
+                                alt={item.name}
+                              />
+                              <span>{item.name}</span>
+                            </div>
+                          </td>
+                          <td className="py-2 pr-4">{item.quantity}</td>
+                          <td className="py-2 pr-4">{Number(item.unit_price).toLocaleString()} ₫</td>
+                          <td className="py-2 pr-4">{Number(item.subtotal).toLocaleString()} ₫</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan={3} className="py-2 pr-4 text-right font-medium">Total</td>
+                        <td className="py-2 pr-4 font-medium">{Number(selectedOrder.amount).toLocaleString()} ₫</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500">No items</div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-2 pt-1">
+              <button onClick={() => setSelectedOrder(null)} className="px-3 py-2 border rounded">
                 Close
               </button>
             </div>

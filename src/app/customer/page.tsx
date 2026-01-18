@@ -16,12 +16,12 @@ export default function UsersPage() {
       return;
     }
 
-    if (user.role !== "admin" && user.role !== "staff") {
-      router.replace("/customer");
-    }
+    // Redirect customers to shop by default
+    if (user.role === "user") router.replace("/customer/shop");
+    else router.replace("/admin");
   }, [user, loading, router]);
 
   if (loading || !user) return null;
 
-  return <div className="p-4">Customer Page</div>;
+  return null;
 }

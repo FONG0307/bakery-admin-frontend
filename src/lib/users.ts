@@ -120,3 +120,38 @@ export async function deleteUser(id: number): Promise<void> {
     throw new Error("Failed to delete user");
   }
 }
+
+// ✅ UPDATE CURRENT USER (SELF)
+export async function updateMe(
+  data: Partial<User>,
+  avatar?: File
+): Promise<User> {
+  const formData = new FormData();
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(`user[${key}]`, String(value));
+    }
+  });
+
+  if (avatar) {
+    formData.append("avatar", avatar);
+  }
+
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_BASE}/api/me`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || err.errors?.join?.(", ") || "Update profile failed");
+  }
+
+  const payload = await res.json();
+  return payload.user || payload;
+}

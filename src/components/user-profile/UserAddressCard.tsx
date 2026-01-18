@@ -1,21 +1,48 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useAuth } from "@/context/AuthContext";
+import { updateMe } from "@/lib/users";
 
 
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const { user, loading } = useAuth();
-  console.log("AUTH USER:", user);
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
+  const { user, loading, setUser } = useAuth() as any;
+  const [country, setCountry] = useState("");
+  const [cityState, setCityState] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [taxId, setTaxId] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setCountry(user?.country || "");
+    setCityState([user?.city, user?.state].filter(Boolean).join(", "));
+    setPostalCode(user?.postal_code || "");
+    setTaxId(user?.tax_id || "");
+  }, [user, isOpen]);
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      const [city, state] = cityState.split(",").map((s) => s.trim());
+      const updated = await updateMe({
+        country,
+        city,
+        state,
+        postal_code: postalCode,
+        tax_id: taxId,
+      });
+      setUser(updated);
+      closeModal();
+    } catch (e: any) {
+      alert(e?.message || "Update failed");
+    } finally {
+      setSaving(false);
+    }
   };
   if (loading) {
     return (
@@ -110,22 +137,22 @@ export default function UserAddressCard() {
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div>
                   <Label>Country</Label>
-                  <Input type="text" defaultValue="United States" />
+                  <Input type="text" value={country} onChange={(e:any)=>setCountry(e.target.value)} />
                 </div>
 
                 <div>
                   <Label>City/State</Label>
-                  <Input type="text" defaultValue="Arizona, United States." />
+                  <Input type="text" value={cityState} onChange={(e:any)=>setCityState(e.target.value)} />
                 </div>
 
                 <div>
                   <Label>Postal Code</Label>
-                  <Input type="text" defaultValue="ERT 2489" />
+                  <Input type="text" value={postalCode} onChange={(e:any)=>setPostalCode(e.target.value)} />
                 </div>
 
                 <div>
                   <Label>TAX ID</Label>
-                  <Input type="text" defaultValue="AS4568384" />
+                  <Input type="text" value={taxId} onChange={(e:any)=>setTaxId(e.target.value)} />
                 </div>
               </div>
             </div>
@@ -134,7 +161,7 @@ export default function UserAddressCard() {
                 Close
               </Button>
               <Button size="sm" onClick={handleSave}>
-                Save Changes
+                {saving ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>

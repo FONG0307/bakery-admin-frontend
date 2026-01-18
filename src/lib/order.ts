@@ -13,6 +13,7 @@ function authHeader() {
 export async function createOrder(payload: {
   payment_method?: string;
   day_part?: string;
+  address?: string;
 }) {
   const res = await fetch(`${API_URL}/api/orders`, {
     method: "POST",
@@ -63,6 +64,18 @@ export async function getOrders() {
   return res.json();
 }
 
+export async function getMyOrders() {
+  const res = await fetch(`${API_URL}/api/my/orders`, {
+    headers: authHeader(),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch my orders");
+  }
+  return res.json();
+}
+
 export async function updateOrderStatus(orderId: number, status: string) {
   const res = await fetch(`${API_URL}/api/orders/${orderId}`, {
     method: "PATCH",
@@ -79,4 +92,28 @@ export async function updateOrderStatus(orderId: number, status: string) {
   }
 
   return res.json();
+}
+
+export async function getOrder(orderId: number) {
+  const res = await fetch(`${API_URL}/api/orders/${orderId}`, {
+    headers: authHeader(),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch order");
+  }
+  return res.json();
+}
+
+export async function deleteOrder(orderId: number) {
+  const res = await fetch(`${API_URL}/api/orders/${orderId}`, {
+    method: "DELETE",
+    headers: authHeader(),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Failed to delete order");
+  }
 }

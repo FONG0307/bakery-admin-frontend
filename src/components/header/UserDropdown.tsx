@@ -111,6 +111,34 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
               Edit profile
             </DropdownItem>
           </li>
+          {user?.role === "user" && (
+            <li>
+              <DropdownItem
+                onItemClick={() => {
+                  closeDropdown();
+                  router.push("/customer/orders");
+                }}
+                className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              >
+                <svg
+                  className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M7 5.75C6.58579 5.75 6.25 6.08579 6.25 6.5C6.25 6.91421 6.58579 7.25 7 7.25H19C19.4142 7.25 19.75 7.58579 19.75 8C19.75 8.41421 19.4142 8.75 19 8.75H8.25L7.72487 11.1401C7.61781 11.623 7.99938 12.0833 8.49455 12.0833H17C17.4142 12.0833 17.75 12.4191 17.75 12.8333C17.75 13.2476 17.4142 13.5833 17 13.5833H8.08333C6.78767 13.5833 5.82434 12.3732 6.10181 11.1073L6.91667 7.33333L6.75 7.33329L5 7.33329C4.58579 7.33329 4.25 6.9975 4.25 6.58329C4.25 6.16908 4.58579 5.83329 5 5.83329H6.25H7ZM8.5 18.5C8.5 19.3284 7.82843 20 7 20C6.17157 20 5.5 19.3284 5.5 18.5C5.5 17.6716 6.17157 17.0001 7 17.0001C7.82843 17.0001 8.5 17.6716 8.5 18.5ZM18.5 18.5C18.5 19.3284 17.8284 20 17 20C16.1716 20 15.5 19.3284 15.5 18.5C15.5 17.6716 16.1716 17.0001 17 17.0001C17.8284 17.0001 18.5 17.6716 18.5 18.5Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                My Orders
+              </DropdownItem>
+            </li>
+          )}
           <li>
             <DropdownItem
               onItemClick={() => {
