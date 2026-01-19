@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { createProduct,updateProduct,deleteProduct } from "@/lib/product";
+import { createProduct,updateProduct,deleteProduct, addProductStock } from "@/lib/product";
 import { useAuth } from "@/context/AuthContext";
 import {
   Table,
@@ -21,6 +21,8 @@ export default function TestProductsPage() {
   const [editing, setEditing] = useState<any | null>(null);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [showFilter, setShowFilter] = useState(false);
+  const [showAddStock, setShowAddStock] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
   const paginatedProducts = useMemo(() => {
     const start = (page - 1) * perPage;
@@ -301,6 +303,15 @@ export default function TestProductsPage() {
                   <div className="flex justify-end gap-2 text-sm">
                     <button
                       onClick={() => {
+                        setSelectedProduct(product);
+                        setShowAddStock(true);
+                      }}
+                      className="text-green-600 hover:underline"
+                    >
+                      Add Stock
+                    </button>
+                    <button
+                      onClick={() => {
                         setEditing(product);
                         setOpenForm(true);
                       }}
@@ -325,6 +336,20 @@ export default function TestProductsPage() {
           </TableBody>
         </Table>
       </div>
+      {showAddStock && selectedProduct && (
+        <AddStockForm
+          product={selectedProduct}
+          onClose={() => {
+            setShowAddStock(false);
+            setSelectedProduct(null);
+          }}
+          onSaved={() => {
+            fetchData();
+            setShowAddStock(false);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
       {openForm && (
         <ProductForm
           initial={editing}
@@ -376,5 +401,118 @@ export default function TestProductsPage() {
       )}
     </div>
   
+  );
+}
+
+function AddStockForm({
+  product,
+  onClose,
+  onSaved,
+}: {
+  product: any;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [quantity, setQuantity] = useState<number>(0);
+  const [date, setDate] = useState<string>(""); // YYYY-MM-DD
+  const [operation, setOperation] = useState<"add" | "set">("add");
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      setSubmitting(true);
+      const payload: any = { quantity: Number(quantity) };
+      if (date) payload.date = date;
+      if (operation) payload.operation = operation;
+      await addProductStock(product.id, payload);
+      onSaved();
+    } catch (err) {
+      alert("Add stock failed");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function quickAddToday(q: number) {
+    try {
+      setSubmitting(true);
+      await addProductStock(product.id, { quantity: q });
+      onSaved();
+    } catch (err) {
+      alert("Add stock failed");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-[460px] space-y-4 border border-gray-200 dark:border-gray-700">
+        <h3 className="font-bold text-xl text-gray-900 dark:text-white text-center">
+          Add Stock — {product.item_name}
+        </h3>
+
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quantity</label>
+            <input
+              type="number"
+              min={0}
+              className="w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              placeholder="e.g. 20"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date (optional)</label>
+            <input
+              type="date"
+              className="w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+            <p className="text-xs text-gray-500 mt-1">Leave blank to apply to today.</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Operation</label>
+            <select
+              className="w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              value={operation}
+              onChange={(e) => setOperation(e.target.value as any)}
+            >
+              <option value="add">Add (increase)</option>
+              <option value="set">Set exact stock</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => quickAddToday(20)}
+              className="px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-600 text-green-700 bg-green-50 hover:bg-green-100 dark:text-green-300 dark:bg-green-900/20"
+              disabled={submitting}
+              title="Quick add 20 to today's stock"
+            >
+              +20 today
+            </button>
+          </div>
+          <div className="flex gap-3">
+            <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              Cancel
+            </button>
+            <button disabled={submitting || quantity <= 0} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+              {submitting ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }

@@ -19,7 +19,7 @@ export async function signin(
 ): Promise<SigninResponse> {
   const res = await fetch(`${API_URL}/api/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({ email, password }),
   });
 
@@ -47,6 +47,7 @@ export async function getMe(token?: string) {
   const res = await fetch(`${API_URL}/api/me`, {
     headers: {
       Authorization: `Bearer ${t}`,
+      Accept: "application/json",
     },
   });
 
@@ -63,7 +64,7 @@ export async function signup(
 ): Promise<void> {
   const res = await fetch(`${API_URL}/api/signup`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({
       email,
       password,
@@ -87,6 +88,7 @@ export async function signout() {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
+        Accept: "application/json",
       },
     });
   } catch {
@@ -125,7 +127,7 @@ export type ForgotPasswordResponse = {
 export async function requestPasswordReset(email: string): Promise<ForgotPasswordResponse> {
   const res = await fetch(`${API_URL}/api/forgot-password`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({ email }),
   });
 
@@ -146,7 +148,7 @@ export type VerifyResetCodeResponse = {
 export async function verifyResetCode(email: string, code: string): Promise<VerifyResetCodeResponse> {
   const res = await fetch(`${API_URL}/api/verify-reset-code`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({ email, code }),
   });
   const data = await res.json().catch(() => ({}));
@@ -167,6 +169,7 @@ export async function resetPassword(resetToken: string, password: string, passwo
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${resetToken}`,
+      Accept: "application/json",
     },
     body: JSON.stringify({ password, password_confirmation: passwordConfirmation }),
   });

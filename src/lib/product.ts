@@ -6,6 +6,7 @@ function authHeaderOnly() {
 
   return {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 }
 
@@ -79,5 +80,32 @@ export async function updateDailyStock(productId: number, available: number) {
   });
 
   if (!res.ok) throw new Error("Daily stock update failed");
+  return res.json();
+}
+
+// ====================
+// ADD STOCK (new API)
+// ====================
+type AddStockPayload = {
+  quantity: number;
+  date?: string; // YYYY-MM-DD
+  operation?: "add" | "set"; // default add
+};
+
+export async function addProductStock(
+  productId: number,
+  payload: AddStockPayload
+) {
+  const res = await fetch(`${API_URL}/api/products/${productId}/add_stock`, {
+    method: "POST",
+    headers: {
+      ...authHeaderOnly(),
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error("Add stock failed");
   return res.json();
 }

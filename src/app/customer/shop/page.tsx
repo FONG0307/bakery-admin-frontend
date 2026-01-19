@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useMemo, useState } from "react";
-import { createOrder, addOrderItem } from "@/lib/order";
+import { createOrder, addOrderItem, createStripeCheckout } from "@/lib/order";
 import { useRouter } from "next/navigation";
 
 export default function CustomerShopPage() {
@@ -54,11 +54,19 @@ export default function CustomerShopPage() {
       for (const item of cart) {
         await addOrderItem(order.id, item.id, item.qty);
       }
-      alert("Order placed successfully");
-      setCart([]);
-      setCheckoutOpen(false);
-      // Optionally route to an order confirmation page
-      // router.push(`/customer/orders/${order.id}`)
+      if (paymentMethod === "card") {
+        const session = await createStripeCheckout(order.id);
+        if (session?.url) {
+          window.location.href = session.url; // redirect to Stripe Checkout
+          return;
+        } else {
+          alert("Failed to start payment session");
+        }
+      } else {
+        alert("Order placed successfully");
+        setCart([]);
+        setCheckoutOpen(false);
+      }
     } catch (e: any) {
       alert(e?.message || "Checkout failed");
     } finally {

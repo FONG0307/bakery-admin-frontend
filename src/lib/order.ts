@@ -6,6 +6,7 @@ function authHeader() {
 
   return {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
     "Content-Type": "application/json",
   };
 }
@@ -116,4 +117,25 @@ export async function deleteOrder(orderId: number) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || "Failed to delete order");
   }
+}
+
+// ====================
+// Stripe Checkout
+// ====================
+export async function createStripeCheckout(orderId: number) {
+  const res = await fetch(
+    `${API_URL}/api/orders/${orderId}/create_stripe_checkout`,
+    {
+      method: "POST",
+      headers: authHeader(),
+    }
+  );
+
+  if (!res.ok) {
+    const errTxt = await res.text().catch(() => "");
+    console.error("createStripeCheckout error:", errTxt);
+    throw new Error("Failed to create Stripe checkout session");
+  }
+
+  return res.json(); // expected { id, url }
 }
