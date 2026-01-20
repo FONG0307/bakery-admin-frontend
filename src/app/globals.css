@@ -323,15 +323,15 @@
   .button-style:hover { background: rgba(255,255,255,0.8); }
 
   /* Background helpers mapping to placeholder until real images are added */
-  .bg-main-cupcake-one { background-image: url('/images/product/bakery-placeholder.png'); }
-  .bg-main-cupcake-two { background-image: url('/images/product/bakery-placeholder.png'); }
-  .bg-main-cupcake-three { background-image: url('/images/product/bakery-placeholder.png'); }
-  .bg-main-cupcake-four { background-image: url('/images/product/bakery-placeholder.png'); }
-  .bg-main-cupcake-six { background-image: url('/images/product/bakery-placeholder.png'); }
-  .bg-main-cupcake-seven { background-image: url('/images/product/bakery-placeholder.png'); }
-  .bg-main-cupcake-eight { background-image: url('/images/product/bakery-placeholder.png'); }
-  .bg-main-cupcake-nine { background-image: url('/images/product/bakery-placeholder.png'); }
-  .bg-chef-about-bg { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-one { background-image: url('../../public/images/product/bakery1'); }
+  .bg-main-cupcake-two { background-image: url('../../public/images/product/bakery2.jpg'); }
+  .bg-main-cupcake-three { background-image: url('../../public/images/product/bakery3.jpg'); }
+  .bg-main-cupcake-four { background-image: url('../../public/images/product/bakery4.jpg'); }
+  .bg-main-cupcake-six { background-image: url('../../public/images/product/bakery3.jpg'); }
+  .bg-main-cupcake-seven { background-image: url('../../public/images/product/bakery3.jpg'); }
+  .bg-main-cupcake-eight { background-image: url('../../public/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-nine { background-image: url('../../public/images/product/bakery-placeholder.png'); }
+  .bg-chef-about-bg { background-image: url('../../public/images/product/bakery-placeholder.png'); }
 }
 
 /* third-party libraries CSS */

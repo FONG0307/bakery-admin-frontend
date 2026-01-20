@@ -3,7 +3,7 @@ import { kalam } from "./fonts";
 
 export default function Header() {
   return (
-    <header className="bg-Lemon_Zest px-6 py-8 border-8 fixed w-full z-10">
+    <header className="bg-yellow-800 px-6 py-8 border-8 fixed w-full z-10">
       <nav className="sm:hidden flex justify-between">
         <Link className="text-base font-bold" href="/shop">Shop</Link>
         <Link className={`text-xl font-bold ${kalam.className}`} href="/">Bakery~</Link>

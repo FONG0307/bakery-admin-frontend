@@ -14,12 +14,12 @@ export default function HomePublic() {
           <Link className="button-style" href="/shop">Order Now</Link>
         </div>
 
-        <div className="hidden sm:hidden md:block md:bg-main-cupcake-three md:bg-cover md:bg-center md:bg-no-repeat md:col-span-2 md:border-b-8 md:border-r-8 xl:col-span-3 xl:row-span-2"></div>
+        <div className="bg-main-cupcake-three md:bg-cover md:bg-center md:bg-no-repeat md:col-span-2 md:border-b-8 md:border-r-8 xl:col-span-3 xl:row-span-2"></div>
 
         <div className="bg-Pink_Passion col-span-2 border-l-8 border-b-8 flex flex-col justify-center gap-2 items-start pl-4 md:col-span-3 xl:py-10 xl:gap-6">
-            <h2 className="text-base font-extrabold xl:text-2xl">Get more than just cupcakes!</h2>
+            <h2 className="text-base font-extrabold xl:text-2xl">Get more than just cakes!</h2>
             <p className="text-base xl:text-xl">
-              We pride ourselves on making the best tasting gluten-free cupcakes
+              We pride ourselves on making the best tasting gluten-free cakes
               possible.
             </p>
         </div>
@@ -33,13 +33,13 @@ export default function HomePublic() {
         <div className="bg-main-cupcake-four bg-no-repeat bg-cover xl:h-[50rem] col-start-1 col-end-3 border-x-8 border-b-8"></div>
         <section className="bg-Lemon_Zest border-r-8 border-b-8 p-4 col-span-2 xl:flex xl:flex-col xl:items-start xl:justify-center xl:p-20 xl:gap-10">
           <h2 className="text-base font-extrabold mb-4 xl:text-xl">
-            Made with love and care, our gluten-free cupcakes not only look
+            Made with love and care, our gluten-free cakes not only look
             great but also taste amazing. Each one is meticulously crafted to
             order in our dedicated kitchen
           </h2>
           <p className="text-sm font-semibold xl:text-xl">
             At Bakery~, we believe in the importance of delivering pure joy
-            through delicious, wholesome gluten-free treats. Our cupcakes are
+            through delicious, wholesome gluten-free treats. Our cakes are
             crafted with care and passion to ensure they are just as good as
             those made with traditional ingredients. What sets us apart is our
             commitment to using only natural, non-GMO ingredients, and our
@@ -53,9 +53,9 @@ export default function HomePublic() {
       <section className="flex flex-col xl:grid xl:grid-cols-4 xl:grid-rows-2">
         <div className="bg-Sky_Whisper border-x-8 border-b-8 p-4 xl:col-span-2">
           <h2 className="font-bold">
-            Discover the magic of our gluten-free cupcakes! Our creations are a
+            Discover the magic of our gluten-free cakes! Our creations are a
             delightful fusion of flavors and artistry, sure to please any
-            palate. From zesty lemon to velvety red velvet, there&apos;s a cupcake
+            palate. From zesty lemon to velvety red velvet, there&apos;s a cake
             for every taste preference.
           </h2>
         </div>
@@ -92,10 +92,10 @@ export default function HomePublic() {
           </div>
         </div>
 
-        <div className="cupcake-background-blue"></div>
+        <div className="bg-main-cupcake-one"></div>
 
 
-        <div className="cupcake-background-red"></div>
+        <div className="bg-main-cupcake-two"></div>
       </section>
     </>
   );

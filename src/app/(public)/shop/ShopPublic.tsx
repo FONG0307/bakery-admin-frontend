@@ -35,7 +35,7 @@ export default function ShopPublic() {
   }, [products, q, category]);
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-10">
+    <main className="max-w-6xl mx-auto px-4 py-10 mt-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-semibold">Shop</h1>
         <div className="flex items-center gap-3">

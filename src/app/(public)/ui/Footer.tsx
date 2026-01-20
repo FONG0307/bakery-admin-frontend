@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-Coral_Sunset px-10 py-4 border-8">
+    <footer className="bg-yellow-800 px-10 py-4 border-8">
       <nav className="flex flex-col items-center justify-center gap-2 sm:hidden">
         <a className="font-base font-bold" href="#">FAQ</a>
         <a className="font-base font-bold" href="#">Terms & Conditions</a>
