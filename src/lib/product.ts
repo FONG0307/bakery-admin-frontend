@@ -6,7 +6,6 @@ function authHeaderOnly() {
 
   return {
     Authorization: `Bearer ${token}`,
-    Accept: "application/json",
   };
 }
 
@@ -28,6 +27,21 @@ export async function getDailyStock() {
   });
 
   if (!res.ok) throw new Error("GET daily_stocks failed");
+  return res.json();
+}
+
+// ====================
+// PUBLIC (no auth)
+// ====================
+export async function getProductsPublic() {
+  const res = await fetch(`${API_URL}/api/public/products`);
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export async function getProductPublic(id: number) {
+  const res = await fetch(`${API_URL}/api/public/products/${id}`);
+  if (!res.ok) return null;
   return res.json();
 }
 
@@ -100,7 +114,6 @@ export async function addProductStock(
     method: "POST",
     headers: {
       ...authHeaderOnly(),
-      Accept: "application/json",
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),

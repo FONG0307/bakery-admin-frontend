@@ -1,4 +1,4 @@
-import SignUpForm from "@/components/auth/SignUpForm";
+import SignUpSwitcher from "@/components/auth/SignUpSwitcher";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function SignUp() {
-  return <SignUpForm />;
+  return <SignUpSwitcher />;
 }

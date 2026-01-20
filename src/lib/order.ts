@@ -6,7 +6,6 @@ function authHeader() {
 
   return {
     Authorization: `Bearer ${token}`,
-    Accept: "application/json",
     "Content-Type": "application/json",
   };
 }

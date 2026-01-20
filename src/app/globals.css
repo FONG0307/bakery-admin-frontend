@@ -165,6 +165,12 @@
   --z-index-9999: 9999;
   --z-index-99999: 99999;
   --z-index-999999: 999999;
+  /* Bakery-shop custom colors */
+  --color-Pink_Passion: #F27EB4;
+  --color-Sky_Whisper: #91E0F2;
+  --color-Lemon_Zest: #F2EB8D;
+  --color-Golden_Honey: #F2C879;
+  --color-Coral_Sunset: #F2856D;
 }
 
 /*
@@ -290,6 +296,42 @@
     display: none;
     -webkit-appearance: none;
   }
+}
+
+/* ===== Bakery-shop UI additions ===== */
+@layer utilities {
+  .button-style {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    background: #FFFFFF;
+    color: #000;
+    cursor: pointer;
+    border: 3px solid;
+    padding: 0.8rem 2rem;
+    box-shadow: 10px 10px 0 0, 10px 10px 0 0, 10px 10px 0 0, 10px 10px 0 0, 10px 10px 0 0;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    align-self: start;
+    text-align: center;
+  }
+  .button-style:active { box-shadow: 0 0 0 0; top: 5px; left: 5px; }
+  .button-style:hover { background: rgba(255,255,255,0.8); }
+
+  /* Background helpers mapping to placeholder until real images are added */
+  .bg-main-cupcake-one { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-two { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-three { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-four { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-six { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-seven { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-eight { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-nine { background-image: url('/images/product/bakery-placeholder.png'); }
+  .bg-chef-about-bg { background-image: url('/images/product/bakery-placeholder.png'); }
 }
 
 /* third-party libraries CSS */
