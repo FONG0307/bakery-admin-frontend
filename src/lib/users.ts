@@ -121,37 +121,47 @@ export async function deleteUser(id: number): Promise<void> {
   }
 }
 
-// ✅ UPDATE CURRENT USER (SELF)
+
+
 export async function updateMe(
   data: Partial<User>,
   avatar?: File
 ): Promise<User> {
-  const formData = new FormData();
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("Unauthorized");
+
+  const fd = new FormData();
 
   Object.entries(data).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      formData.append(`user[${key}]`, String(value));
+    if (value !== undefined && value !== null && value !== "") {
+      fd.append(`user[${key}]`, String(value));
     }
   });
 
   if (avatar) {
-    formData.append("avatar", avatar);
+    fd.append("avatar", avatar);
   }
 
-  const token = localStorage.getItem("token");
-  const res = await fetch(`${API_BASE}/api/me`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: fd,
+    }
+  );
+
+  const payload = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || err.errors?.join?.(", ") || "Update profile failed");
+    throw new Error(
+      payload.errors?.join(", ") ||
+      payload.error ||
+      "Update profile failed"
+    );
   }
 
-  const payload = await res.json();
-  return payload.user || payload;
+  return payload;
 }

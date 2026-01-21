@@ -51,11 +51,14 @@ export async function addOrderItem(
   return res.json();
 }
 
-export async function getOrders() {
-  const res = await fetch(`${API_URL}/api/orders`, {
-    headers: authHeader(),
-    cache: "no-store",
-  });
+export async function getOrders(page = 1, perPage = 10) {
+  const res = await fetch(
+    `${API_URL}/api/orders?page=${page}&per_page=${perPage}`,
+    {
+      headers: authHeader(),
+      cache: "no-store",
+    }
+  );
 
   if (!res.ok) {
     throw new Error("Failed to fetch orders");
@@ -64,17 +67,22 @@ export async function getOrders() {
   return res.json();
 }
 
-export async function getMyOrders() {
-  const res = await fetch(`${API_URL}/api/my/orders`, {
-    headers: authHeader(),
-    cache: "no-store",
-  });
+export async function getMyOrders(page = 1, perPage = 10) {
+  const res = await fetch(
+    `${API_URL}/api/my/orders?page=${page}&per_page=${perPage}`,
+    {
+      headers: authHeader(),
+      cache: "no-store",
+    }
+  );
 
   if (!res.ok) {
     throw new Error("Failed to fetch my orders");
   }
-  return res.json();
+
+  return res.json(); // { orders, meta }
 }
+
 
 export async function updateOrderStatus(orderId: number, status: string) {
   const res = await fetch(`${API_URL}/api/orders/${orderId}`, {

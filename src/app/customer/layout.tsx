@@ -2,9 +2,9 @@
 "use client";
 
 import { useSidebar } from "@/context/SidebarContext";
-import AppHeader from "@/layout/AppHeader";
-import AppSidebar from "@/layout/AppSidebar";
-import Backdrop from "@/layout/Backdrop";
+import React from "react";
+import Header from "@/app/(public)/ui/Header";
+
 
 
 export default function CustomerLayout({
@@ -21,12 +21,11 @@ export default function CustomerLayout({
     : "lg:ml-[90px]";
 
   return (
-    <div className="min-h-screen xl:flex">
-      <Backdrop />
-      <div className={`flex-1 transition-all ${mainContentMargin}`}>
-        <AppHeader />
-        <div className="p-4 md:p-6">{children}</div>
-      </div>
+    <div className={`flex flex-col min-h-screen transition-all duration-300 `}>
+      <Header />
+      <main className="flex-1">
+        {children}
+      </main>
     </div>
   );
 }

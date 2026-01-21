@@ -12,11 +12,11 @@ export default function Header() {
 
   async function handleSignout() {
     try {
-      await signout();       // gọi API /logout
+      await signout();
     } finally {
-      setUser(null);         // clear user local
+      setUser(null);       
       router.replace("/signin");
-      router.refresh();      // rất quan trọng với App Router
+      router.refresh();     
     }
   }
 
@@ -45,7 +45,9 @@ export default function Header() {
           {loading ? null : user ? (
             <>
               <span className="text-xl font-bold">
-                Hi, {user.first_name || user.email}
+                <a href="/customer/profile">
+                  Hi, {user.first_name || user.email}
+                </a>
               </span>
 
               <button
