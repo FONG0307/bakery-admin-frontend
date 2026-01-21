@@ -22,7 +22,7 @@ export default function SignInPage() {
     }
 
     if (user.role === "user") {
-      router.replace("/customer");
+      router.replace("/shop");
     }
   }, [user, loading, router]);
 

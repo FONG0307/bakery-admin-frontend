@@ -49,13 +49,13 @@ export default function TemplateSignIn({ onAdminClick }: { onAdminClick: () => v
           <button className="button-style w-full" style={{ alignSelf: "center", padding: "0.4rem" }} disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </button>
-          <button
+          {/* <button
             type="button"
             onClick={onAdminClick}
             className="self-end text-xs text-gray-500 opacity-70 hover:opacity-90 hover:text-gray-700"
           >
             Sign in with admin account
-          </button>
+          </button> */}
         </div>
 
         <Link className="text-base my-3" href="/signup">Don&apos;t have an account? <span className="font-bold underline">Sign up</span></Link>

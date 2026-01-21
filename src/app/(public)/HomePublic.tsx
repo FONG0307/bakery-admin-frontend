@@ -1,6 +1,16 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getProducts } from "@/lib/product";
 import Link from "next/link";
 
 export default function HomePublic() {
+  const [products, setProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    getProducts().then(setProducts).catch(console.error);
+  }, []);
+
   return (
     <>
       <main className="h-screen grid grid-cols-3 md:grid-cols-6 xl:grid-cols-9 xl:grid-rows-2 xl:h-screen pt-20">
@@ -65,32 +75,24 @@ export default function HomePublic() {
         </div>
 
 
-        <div className="hidden xl:grid xl:grid-cols-6 xl:col-span-2 w-full xl:row-span-2 ">
-          <div className="xl:col-span-3 xl:col-start-1 xl:w-full xl:h-96">
-            <div className="bg-main-cupcake-six bg-no-repeat bg-cover h-full w-full border-r-8 border-y-0 flex items-end">
-              <h3 className="bg-Lemon_Zest text-center text-xl font-bold border-0-8 border-y-8 w-full">Sprinkle Surprise</h3>
-            </div>
-
+        <section className="hidden xl:grid xl:grid-cols-6 xl:col-span-2 w-full xl:row-span-2">
+        {products.slice(0, 4).map((product, index) => (
+          <div
+            key={product.id}
+            className="xl:col-span-3 xl:h-96 border-r-8 flex items-end bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${product.image_url})`,
+            }}
+          >
+            <Link
+              href={`/shop/${product.id}`}
+              className="bg-Lemon_Zest text-center text-xl font-bold border-t-8 w-full py-2 hover:underline"
+            >
+              {product.item_name}
+            </Link>
           </div>
-
-          <div className="xl:col-span-3 xl:col-start-4 xl:w-full xl:h-96 xl:row-start-1">
-            <div className="bg-main-cupcake-seven bg-no-repeat bg-cover h-full bg-[-0rem] w-full border-r-8 border-y-0 flex items-end">
-              <h3 className="bg-Lemon_Zest text-center text-xl font-bold border-x-0 border-y-8 w-full">Super Oreo</h3>
-            </div>
-          </div>
-
-          <div className="xl:col-span-3 xl:col-start-1 xl:row-start-3 xl:h-96">
-            <div className="bg-main-cupcake-eight bg-no-repeat bg-cover h-full bg-[0rem] border-r-8 w-full flex items-end">
-              <h3 className="bg-Lemon_Zest text-center text-xl font-bold border-t-8 border-y-0 w-full">Choco mint</h3>
-            </div>
-          </div>
-
-          <div className="xl:col-span-3 xl:col-start-4 xl:row-start-3 xl:h-96">
-            <div className="bg-main-cupcake-nine bg-no-repeat bg-cover bg-[-1rem] h-full w-full flex items-end border-r-8">
-              <h3 className="bg-Lemon_Zest text-center text-xl font-bold border-r-0 border-t-8 w-full">Butterbear</h3>
-            </div>
-          </div>
-        </div>
+        ))}
+      </section>
 
         <div className="bg-main-cupcake-one"></div>
 
