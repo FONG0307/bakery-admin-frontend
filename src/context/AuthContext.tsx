@@ -73,23 +73,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function fetchData() {
     try {
-        console.log("👉 fetchData called");
+      console.log("👉 fetchData called");
 
-        const [prods, stocks] = await Promise.allSettled([
-          getProducts(),
-          getDailyStock(),
-        ]);
+      const [prods, stocks] = await Promise.allSettled([
+        getProducts(),
+        getDailyStock(),
+      ]);
 
-        const productsData = prods.status === "fulfilled" ? prods.value : [];
-        const stocksData = stocks.status === "fulfilled" ? stocks.value : [];
+      const productsData =
+        prods.status === "fulfilled" && Array.isArray(prods.value?.products)
+          ? prods.value.products
+          : [];
 
-        setProducts(productsData);
-        setDailyStock(stocksData);
-      } catch (e) {
-        console.error(e);
-      }
+      const stocksData =
+        stocks.status === "fulfilled" && Array.isArray(stocks.value)
+          ? stocks.value
+          : [];
 
+      setProducts(productsData);
+      setDailyStock(stocksData);
+    } catch (e) {
+      console.error(e);
+    }
   }
+
 
   // 🔥 ADD LOGOUT IMPLEMENTATION
   function logout() {

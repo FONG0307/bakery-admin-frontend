@@ -70,6 +70,7 @@ export default function UsersPage() {
                         src={u.avatar_url || "../images/user/avatar-placeholder.png"}
                         alt="avatar"
                         className="h-8 w-8 rounded-full object-cover"
+                        
                       />
                       <div>
                         <p className="text-sm font-medium text-gray-800 dark:text-white">

@@ -26,7 +26,7 @@ export default function Header() {
       <nav className="sm:hidden flex justify-between">
         <Link className="text-base font-bold" href="/shop">Shop</Link>
         <Link className={`text-xl font-bold ${kalam.className}`} href="/">Bakery~</Link>
-        <Link className="text-base font-bold" href="/contact">Contact Us</Link>
+        {/* <Link className="text-base font-bold" href="/contact">Contact Us</Link> */}
       </nav>
 
       {/* Desktop */}
@@ -34,7 +34,7 @@ export default function Header() {
         <div className="flex items-center gap-5">
           <Link className="text-xl font-bold hover:underline" href="/shop">Shop</Link>
           <Link className="text-xl font-bold hover:underline" href="/about">About</Link>
-          <Link className="text-xl font-bold hover:underline" href="/contact">Contact Us</Link>
+          {/* <Link className="text-xl font-bold hover:underline" href="/contact">Contact Us</Link> */}
         </div>
 
         <Link className={`text-3xl font-bold ${kalam.className}`} href="/">
@@ -49,13 +49,18 @@ export default function Header() {
                   Hi, {user.first_name || user.email}
                 </a>
               </span>
-
+              <span className="text-xl font-bold">
+                <a href="/customer/orders">
+                  See Orders
+                </a>
+              </span>
               <button
                 onClick={handleSignout}
                 className="text-xl font-bold hover:underline"
               >
                 Sign out
               </button>
+
             </>
           ) : (
             <>

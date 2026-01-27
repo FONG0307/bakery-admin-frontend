@@ -134,7 +134,7 @@ export async function updateMe(
 
   Object.entries(data).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
-      fd.append(`user[${key}]`, String(value));
+      fd.append(key, String(value));
     }
   });
 
@@ -143,7 +143,7 @@ export async function updateMe(
   }
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/me`,
     {
       method: "PATCH",
       headers: {
@@ -163,5 +163,6 @@ export async function updateMe(
     );
   }
 
-  return payload;
+  return payload.user;
 }
+

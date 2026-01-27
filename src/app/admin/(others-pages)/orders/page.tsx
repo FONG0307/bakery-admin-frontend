@@ -61,22 +61,41 @@ export default function RecentOrders() {
   }
 
   async function loadOrders() {
-    const ordersData = await getOrders();
-    setOrders(ordersData);
+    const data = await getOrders(); 
+    // backend trả { orders, meta }
 
-    const sortedOrders = ordersData.sort((a: any, b: any) => new Date(b.ordered_at || b.created_at).getTime() - new Date(a.ordered_at || a.created_at).getTime());
+    const list = Array.isArray(data.orders) ? data.orders : [];
+
+    // giữ state orders để dùng cho View Items / Change Status
+    setOrders(list);
+
+    // sort AN TOÀN trên ARRAY
+    const sortedOrders = [...list].sort(
+      (a: any, b: any) =>
+        new Date(b.ordered_at || b.created_at).getTime() -
+        new Date(a.ordered_at || a.created_at).getTime()
+    );
 
     const rows: OrderDisplay[] = sortedOrders.map((order: any, index: number) => {
-      const userName = order.user ? `${order.user.first_name || ''} ${order.user.last_name || ''}`.trim() || order.user.email : 'Unknown';
-      const orderNumber = index + 1;
-      const totalPrice = order.items.reduce((sum: number, item: any) => sum + Number(item.subtotal), 0);
+      const userName = order.user
+        ? `${order.user.first_name || ""} ${order.user.last_name || ""}`.trim() ||
+          order.user.email
+        : "Unknown";
+
+      const totalPrice = Array.isArray(order.items)
+        ? order.items.reduce(
+            (sum: number, item: any) => sum + Number(item.subtotal || 0),
+            0
+          )
+        : 0;
+
       return {
         id: order.id,
-        name: `${userName} - Order ${orderNumber}st`,
-        variants: `${order.items.length} Items`,
+        name: `${userName} - Order ${index + 1}`,
+        variants: `${order.items?.length || 0} Items`,
         category: "Bakery",
         price: `${totalPrice.toLocaleString()} ₫`,
-        image: "", // not used
+        image: "",
         status:
           order.status === "paid"
             ? "Delivered"
@@ -84,13 +103,14 @@ export default function RecentOrders() {
             ? "Pending"
             : "Failed",
         userName,
-        orderNumber,
+        orderNumber: index + 1,
         createdAt: order.ordered_at || order.created_at,
       };
     });
 
     setTableData(rows);
   }
+
 
   const filteredData = useMemo(() => {
     if (selectedStatuses.length === 0) return tableData;

@@ -9,17 +9,44 @@ function authHeaderOnly() {
   };
 }
 
-// ====================
-// GET
-// ====================
-export async function getProducts() {
-  const res = await fetch(`${API_URL}/api/products`, {
-    headers: authHeaderOnly(),
-  });
 
-  if (!res.ok) throw new Error("GET failed");
-  return res.json();
+type ProductsResponse = {
+  products: any[];
+  meta?: {
+    page: number;
+    per_page: number;
+    total_pages: number;
+    total_count?: number;
+  };
+};
+
+export async function getProducts(
+  page = 1,
+  perPage = 8
+): Promise<ProductsResponse> {
+  const res = await fetch(
+    `${API_URL}/api/products?page=${page}&per_page=${perPage}`,
+    {
+      headers: authHeaderOnly(),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(`GET products failed (${res.status})`);
+  }
+
+  const data = await res.json();
+
+  return {
+    products: Array.isArray(data?.products) ? data.products : [],
+    meta: data?.meta ?? {
+      page: 1,
+      per_page: perPage,
+      total_pages: 1,
+    },
+  };
 }
+
 
 export async function getDailyStock() {
   const res = await fetch(`${API_URL}/api/daily_stocks`, {

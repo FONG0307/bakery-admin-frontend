@@ -8,8 +8,13 @@ export default function HomePublic() {
   const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
-    getProducts().then(setProducts).catch(console.error);
+    getProducts()
+      .then((res) => {
+        setProducts(res.products); // 👈 đúng kiểu
+      })
+      .catch(console.error);
   }, []);
+
 
   return (
     <>

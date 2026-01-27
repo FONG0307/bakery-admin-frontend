@@ -42,6 +42,7 @@ export default function Profile() {
     state: "",
     postal_code: "",
     avatar_url: "",
+    tax_id: "",
   });
 
   /* ===== AUTH GUARD ===== */
@@ -64,6 +65,7 @@ export default function Profile() {
       state: user.state ?? "",
       postal_code: user.postal_code ?? "",
       avatar_url: user.avatar_url ?? "",
+      tax_id: user.tax_id ?? "",
     });
     setPreviewUrl(null); // Reset preview khi load lại user gốc
     setSelectedFile(null);
@@ -91,29 +93,18 @@ export default function Profile() {
       setSaving(true);
       let finalAvatarUrl = form.avatar_url;
 
-      // 1. Nếu có chọn file mới, thực hiện upload trước
       if (selectedFile) {
-        try {
-          finalAvatarUrl = await uploadAvatarImage(selectedFile);
-        } catch (uploadError) {
-          console.error("Upload ảnh thất bại:", uploadError);
-          alert("Không thể upload ảnh mới. Vui lòng thử lại.");
-          setSaving(false);
-          return; // Dừng lại nếu upload lỗi
-        }
+        finalAvatarUrl = await uploadAvatarImage(selectedFile);
       }
 
-      // 2. Chuẩn bị dữ liệu form cuối cùng với URL ảnh mới (nếu có)
-      const updatedFormData = {
+      await updateMe({
         ...form,
-        avatar_url: finalAvatarUrl
-      };
+        avatar_url: finalAvatarUrl,
+      });
 
-      // 3. Gọi API update thông tin user
-      const updatedUser = await updateMe(updatedFormData);
-      setUser(updatedUser);
-
-      // 4. Reset các state tạm
+      // 🔥 FIX QUAN TRỌNG
+      await router.refresh(); // refresh server data (Next 13+)
+      
       setEditing(false);
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -125,6 +116,7 @@ export default function Profile() {
       setSaving(false);
     }
   }
+
 
   if (loading || !user) {
     return (
@@ -217,6 +209,16 @@ export default function Profile() {
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 />
               </Field>
+              <Field label="Tax ID">
+                <Input
+                  value={form.tax_id}
+                  disabled={!editing}
+                  onChange={(e) =>
+                    setForm({ ...form, tax_id: e.target.value })
+                  }
+                />
+              </Field>
+
             </div>
           </section>
 

@@ -14,9 +14,10 @@ import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
 
 export default function TestProductsPage() {
-  const { combinedProducts, fetchData } = useAuth();
+  const [products, setProducts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
-  const perPage = 8;
+  const [perPage] = useState(8);
+  const [totalPages, setTotalPages] = useState(1);
   const [openForm, setOpenForm] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
@@ -24,27 +25,45 @@ export default function TestProductsPage() {
   const [showAddStock, setShowAddStock] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
-  const paginatedProducts = useMemo(() => {
-    const start = (page - 1) * perPage;
-    return combinedProducts.slice(start, start + perPage);
-  }, [combinedProducts, page]);
 
-  const filteredData = useMemo(() => {
-    if (selectedStatuses.length === 0) return combinedProducts;
-    return combinedProducts.filter(product => {
-      const status = statusText(product);
-      return selectedStatuses.includes(status);
-    });
-  }, [combinedProducts, selectedStatuses]);
 
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredData.length / perPage));
-  }, [filteredData.length]);
 
-  const paginatedFilteredProducts = useMemo(() => {
-    const start = (page - 1) * perPage;
-    return filteredData.slice(start, start + perPage);
-  }, [filteredData, page]);
+
+
+  useEffect(() => {
+    loadProducts();
+  }, [page]);
+
+  async function loadProducts() {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/products?page=${page}&per_page=${perPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to load products");
+
+      const data = await res.json();
+
+      setProducts(Array.isArray(data.products) ? data.products : []);
+      setTotalPages(data.meta?.total_pages || 1);
+    } catch (err) {
+      console.error(err);
+      setProducts([]);
+      setTotalPages(1);
+    }
+  }
+  const filteredProducts = useMemo(() => {
+    if (selectedStatuses.length === 0) return products;
+    return products.filter((p) =>
+      selectedStatuses.includes(statusText(p))
+    );
+  }, [products, selectedStatuses]);
+
 
   function nextPage() {
     setPage((p) => Math.min(totalPages, p + 1));
@@ -76,14 +95,14 @@ export default function TestProductsPage() {
   }
 
   function statusText(product: any) {
-    const a = product?.daily_stock?.available ?? 0;
+    const a = product?.today_stock?.remaining ?? 0;
     if (a <= 0) return "Sold Out";
     if (a < 5) return "Low Stock";
     return "Available";
   }
 
   function statusClass(product: any) {
-    const a = product?.daily_stock?.available ?? 0;
+    const a = product?.today_stock?.remaining ?? 0;
     if (a <= 0) return "bg-red-100 text-red-700";
     if (a < 5) return "bg-yellow-100 text-yellow-700";
     return "bg-green-100 text-green-700";
@@ -247,7 +266,7 @@ export default function TestProductsPage() {
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {paginatedFilteredProducts.map((product: any) => (
+            {filteredProducts.map((product: any) => (
               <TableRow key={product.id}>
                 <TableCell className="py-3">
                   <div className="flex items-center gap-3">
@@ -323,7 +342,6 @@ export default function TestProductsPage() {
                       onClick={async () => {
                         if (!confirm("Delete this product?")) return;
                         await deleteProduct(product.id);
-                        fetchData();
                       }}
                       className="text-red-600 hover:underline"
                     >
@@ -344,7 +362,6 @@ export default function TestProductsPage() {
             setSelectedProduct(null);
           }}
           onSaved={() => {
-            fetchData();
             setShowAddStock(false);
             setSelectedProduct(null);
           }}
@@ -355,7 +372,6 @@ export default function TestProductsPage() {
           initial={editing}
           onClose={() => setOpenForm(false)}
           onSaved={(saved) => {
-            fetchData();
           }}
         />
       )}

@@ -80,8 +80,10 @@ export async function getMyOrders(page = 1, perPage = 10) {
     throw new Error("Failed to fetch my orders");
   }
 
-  return res.json(); // { orders, meta }
+  return res.json();
 }
+
+
 
 
 export async function updateOrderStatus(orderId: number, status: string) {
