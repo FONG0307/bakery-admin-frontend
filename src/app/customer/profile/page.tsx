@@ -5,20 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { updateMe } from "@/lib/users";
 
-// --- HÀM GIẢ LẬP UPLOAD ẢNH (BẠN CẦN THAY THẾ BẰNG LOGIC THẬT) ---
-// Hàm này nhận vào một File, upload lên server và trả về URL string.
-async function uploadAvatarImage(file: File): Promise<string> {
-  console.log("Đang upload file...", file.name);
-  // TODO: Thay thế đoạn này bằng code upload thật lên Firebase/S3/Cloudinary...
-  // Ví dụ giả lập delay 1 giây rồi trả về một URL tạm
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  // LƯU Ý: URL.createObjectURL chỉ là URL tạm thời trên trình duyệt này.
-  // Bạn cần trả về URL thực tế từ server lưu trữ của bạn.
-  return URL.createObjectURL(file); 
-}
-// ------------------------------------------------------------------
-
 
 export default function Profile() {
   const { user, loading, setUser } = useAuth();
@@ -67,16 +53,14 @@ export default function Profile() {
       avatar_url: user.avatar_url ?? "",
       tax_id: user.tax_id ?? "",
     });
-    setPreviewUrl(null); // Reset preview khi load lại user gốc
+    setPreviewUrl(null);
     setSelectedFile(null);
   }, [user]);
 
-  /* ===== XỬ LÝ CHỌN FILE ẢNH ===== */
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      // Tạo URL preview cục bộ ngay lập tức để người dùng thấy ảnh đã chọn
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
@@ -87,24 +71,28 @@ export default function Profile() {
     }
   };
 
-  /* ===== SAVE ===== */
   async function handleSave() {
     try {
       setSaving(true);
-      let finalAvatarUrl = form.avatar_url;
 
-      if (selectedFile) {
-        finalAvatarUrl = await uploadAvatarImage(selectedFile);
-      }
+      // ✅ chỉ gửi data text + FILE (nếu có)
+      const updatedUser = await updateMe(
+        {
+          first_name: form.first_name,
+          last_name: form.last_name,
+          phone: form.phone,
+          bio: form.bio,
+          country: form.country,
+          city: form.city,
+          state: form.state,
+          postal_code: form.postal_code,
+          tax_id: form.tax_id,
+        },
+        selectedFile ?? undefined
+      );
 
-      await updateMe({
-        ...form,
-        avatar_url: finalAvatarUrl,
-      });
+      setUser(updatedUser);
 
-      // 🔥 FIX QUAN TRỌNG
-      await router.refresh(); // refresh server data (Next 13+)
-      
       setEditing(false);
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -116,6 +104,7 @@ export default function Profile() {
       setSaving(false);
     }
   }
+
 
 
   if (loading || !user) {

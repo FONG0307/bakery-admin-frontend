@@ -129,6 +129,7 @@ export function useAuth() {
   }
   return ctx;
 }
+
 export type CartItem = {
   product_id: number;
   name: string;

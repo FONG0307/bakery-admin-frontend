@@ -10,7 +10,7 @@ export default function HomePublic() {
   useEffect(() => {
     getProducts()
       .then((res) => {
-        setProducts(res.products); // 👈 đúng kiểu
+        setProducts(res.products);
       })
       .catch(console.error);
   }, []);

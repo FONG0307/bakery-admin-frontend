@@ -95,14 +95,18 @@ export default function TestProductsPage() {
   }
 
   function statusText(product: any) {
-    const a = product?.today_stock?.remaining ?? 0;
+    const a = product?.daily_stock?.available ?? 0;
     if (a <= 0) return "Sold Out";
     if (a < 5) return "Low Stock";
     return "Available";
   }
 
+  function isCake(product: any) {
+    return product?.category?.toLowerCase() === "cake";
+  }
+
   function statusClass(product: any) {
-    const a = product?.today_stock?.remaining ?? 0;
+    const a = product?.daily_stock?.available ?? 0;
     if (a <= 0) return "bg-red-100 text-red-700";
     if (a < 5) return "bg-yellow-100 text-yellow-700";
     return "bg-green-100 text-green-700";
@@ -121,6 +125,9 @@ export default function TestProductsPage() {
     const [category, setCategory] = useState(initial?.category || "");
     const [price, setPrice] = useState(initial?.unit_price || "");
     const [image, setImage] = useState<File | null>(null);
+    const [description, setDescription] = useState(initial?.description || "");
+    
+
 
     async function handleSubmit(e: React.FormEvent) {
       e.preventDefault();
@@ -129,6 +136,8 @@ export default function TestProductsPage() {
       fd.append("product[item_name]", itemName);
       fd.append("product[category]", category);
       fd.append("product[unit_price]", price);
+      fd.append("product[description]", description);
+
       if (image) fd.append("image", image);
 
       const saved = initial
@@ -177,6 +186,21 @@ export default function TestProductsPage() {
               onChange={(e) => setPrice(e.target.value)}
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Description
+            </label>
+            <textarea
+              rows={3}
+              className="w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg
+                        focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                        dark:bg-gray-700 dark:text-white"
+              placeholder="Short description for product"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image</label>
@@ -296,23 +320,29 @@ export default function TestProductsPage() {
                 </TableCell>
 
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  {product.daily_stock?.available ?? 0}
+                  {isCake(product) ? "-" : product.daily_stock?.available ?? 0}
                 </TableCell>
 
+
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  <Badge
-                    size="sm"
-                    color={
-                      statusText(product) === "Sold Out"
-                        ? "error"
-                        : statusText(product) === "Low Stock"
-                        ? "warning"
-                        : "success"
-                    }
-                  >
-                    {statusText(product)}
-                  </Badge>
+                  {isCake(product) ? (
+                    <Badge size="sm" color="info">Made to order</Badge>
+                  ) : (
+                    <Badge
+                      size="sm"
+                      color={
+                        statusText(product) === "Sold Out"
+                          ? "error"
+                          : statusText(product) === "Low Stock"
+                          ? "warning"
+                          : "success"
+                      }
+                    >
+                      {statusText(product)}
+                    </Badge>
+                  )}
                 </TableCell>
+
 
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   {formatDate(product.created_at)}
@@ -321,14 +351,23 @@ export default function TestProductsPage() {
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   <div className="flex justify-end gap-2 text-sm">
                     <button
+                      disabled={isCake(product)}
                       onClick={() => {
+                        if (isCake(product)) return;
                         setSelectedProduct(product);
                         setShowAddStock(true);
                       }}
-                      className="text-green-600 hover:underline"
+                      title={isCake(product) ? "Cake is made to order – no stock" : "Add stock"}
+                      className={`hover:underline
+                        ${
+                          isCake(product)
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-green-600"
+                        }`}
                     >
                       Add Stock
                     </button>
+
                     <button
                       onClick={() => {
                         setEditing(product);

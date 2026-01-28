@@ -8,7 +8,11 @@ function authHeaderOnly() {
     Authorization: `Bearer ${token}`,
   };
 }
-
+export async function getProduct(id: number) {
+  const res = await fetch(`${API_URL}/api/products/${id}`);
+  if (!res.ok) throw new Error("Failed");
+  return res.json();
+}
 
 type ProductsResponse = {
   products: any[];

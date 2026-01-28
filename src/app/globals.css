@@ -332,6 +332,7 @@
   .bg-main-cupcake-eight { background-image: url('../../public/images/product/bakery-placeholder.png'); }
   .bg-main-cupcake-nine { background-image: url('../../public/images/product/bakery-placeholder.png'); }
   .bg-chef-about-bg { background-image: url('../../public/images/product/bakery-placeholder.png'); }
+  .bg-main-cupcake-background { background-image: url('../../public/images/product/background.jpg'); }
 }
 
 /* third-party libraries CSS */

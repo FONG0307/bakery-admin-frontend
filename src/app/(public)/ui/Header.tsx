@@ -21,7 +21,7 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-yellow-800 px-6 py-8 border-8 fixed w-full z-10">
+    <header className="bg-yellow-800 px-6 py-8 border-8 fixed w-full z-10 h-32">
       {/* Mobile */}
       <nav className="sm:hidden flex justify-between">
         <Link className="text-base font-bold" href="/shop">Shop</Link>
