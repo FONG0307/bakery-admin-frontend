@@ -4,24 +4,31 @@ import { useEffect, useState } from "react";
 import { getUsers, deleteUser } from "@/lib/users";
 import AddUserModal from "@/components/admin/AddUserModel";
 import EditUserModal from "@/components/admin/EditUserModal";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [openAdd, setOpenAdd] = useState(false);
   const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);  
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState<any>({});
+  const dPage = useDebounce(page);
+  const dPerPage = useDebounce(perPage);
+  const dSearch = useDebounce(search);
+  const dFilters = useDebounce(filters);
 
   useEffect(() => {
     loadUsers();
-  }, [page, perPage]);
+  }, [dPage, dPerPage, dSearch, dFilters]);
 
   async function loadUsers() {
     try {
       setLoading(true);
-      const res = await getUsers(page, perPage);
+      const res = await getUsers(dPage, dPerPage);
       setUsers(res.users);
       setTotalPages(res.meta.total_pages);
     } catch (e) {
@@ -35,8 +42,9 @@ export default function UsersPage() {
   async function handleDelete(id: number) {
     if (!confirm("Are you sure you want to delete this user?")) return;
     await deleteUser(id);
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+    loadUsers();
   }
+
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-gray-900">
