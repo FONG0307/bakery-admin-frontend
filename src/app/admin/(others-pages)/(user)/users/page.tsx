@@ -1,50 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getUsers, deleteUser } from "@/lib/users";
+import { deleteUser, getUsers } from "@/lib/users";
 import AddUserModal from "@/components/admin/AddUserModel";
 import EditUserModal from "@/components/admin/EditUserModal";
-import { useDebounce } from "@/hooks/useDebounce";
+import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
+import { useState } from "react";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<any[]>([]);
+  const {
+    data: users,
+    meta,
+    loading,
+
+    page,
+    perPage,
+    search,
+
+    setPage,
+    setPerPage,
+    setSearch,
+    reload,
+  } = usePaginatedFetch(getUsers);
+
   const [openAdd, setOpenAdd] = useState(false);
   const [editingUser, setEditingUser] = useState<any | null>(null);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);  
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState<any>({});
-  const dPage = useDebounce(page);
-  const dPerPage = useDebounce(perPage);
-  const dSearch = useDebounce(search);
-  const dFilters = useDebounce(filters);
-
-  useEffect(() => {
-    loadUsers();
-  }, [dPage, dPerPage, dSearch, dFilters]);
-
-  async function loadUsers() {
-    try {
-      setLoading(true);
-      const res = await getUsers(dPage, dPerPage);
-      setUsers(res.users);
-      setTotalPages(res.meta.total_pages);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  }
-
 
   async function handleDelete(id: number) {
-    if (!confirm("Are you sure you want to delete this user?")) return;
+    if (!confirm("Delete this user?")) return;
     await deleteUser(id);
-    loadUsers();
+    reload(); // 🔥 debounce-safe reload
   }
-
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-gray-900">
@@ -153,23 +138,23 @@ export default function UsersPage() {
         </table>
       </div>
           
-      <div className="flex items-center justify-between px-5 py-4 border-t">
-        <span className="text-sm text-gray-500">
-          Page {page} / {totalPages}
+      {/* PAGINATION */}
+      <div className="flex justify-between px-5 py-4">
+        <span className="text-sm">
+          Page {meta.page} / {meta.total_pages}
         </span>
 
         <div className="flex gap-2">
           <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+            onClick={() => setPage((p) => p - 1)}
             className="rounded border px-3 py-1 text-sm disabled:opacity-50"
           >
             Prev
           </button>
-
           <button
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page >= meta.total_pages}
+            onClick={() => setPage((p) => p + 1)}
             className="rounded border px-3 py-1 text-sm disabled:opacity-50"
           >
             Next
@@ -177,11 +162,12 @@ export default function UsersPage() {
         </div>
       </div>
 
+
       {/* MODALS */}
       <AddUserModal
         open={openAdd}
         onClose={() => setOpenAdd(false)}
-        onCreated={(user) => setUsers((prev) => [...prev, user])}
+        onCreated={reload}
       />
 
       {editingUser && (
@@ -189,11 +175,7 @@ export default function UsersPage() {
           open
           user={editingUser}
           onClose={() => setEditingUser(null)}
-          onUpdated={(updated) =>
-            setUsers((prev) =>
-              prev.map((u) => (u.id === updated.id ? updated : u))
-            )
-          }
+          onUpdated={reload}
         />
       )}
     </div>

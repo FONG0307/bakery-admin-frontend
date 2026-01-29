@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { signin } from "@/lib/auth";
 import { useAuth } from "@/context/AuthContext";
 
-export default function TemplateSignIn({ onAdminClick }: { onAdminClick: () => void }) {
+export default function TemplateSignIn() {
   const { setUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,20 +42,21 @@ export default function TemplateSignIn({ onAdminClick }: { onAdminClick: () => v
           <label htmlFor="password" className="text-base font-semibold">Password</label>
           <input type="password" name="password" id="password" className="border-4 px-3 py-2" required />
         </div>
-
+        <div className="mt-2 text-right">
+          <Link
+            href="/forgot-password"
+            className="text-sm font-semibold underline hover:opacity-80"
+          >
+            Forgot password?
+          </Link>
+        </div>
         {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
         <div className="mt-4 flex flex-col gap-3">
           <button className="button-style w-full" style={{ alignSelf: "center", padding: "0.4rem" }} disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </button>
-          {/* <button
-            type="button"
-            onClick={onAdminClick}
-            className="self-end text-xs text-gray-500 opacity-70 hover:opacity-90 hover:text-gray-700"
-          >
-            Sign in with admin account
-          </button> */}
+
         </div>
 
         <Link className="text-base my-3" href="/signup">Don&apos;t have an account? <span className="font-bold underline">Sign up</span></Link>

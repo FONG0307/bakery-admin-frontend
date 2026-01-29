@@ -41,28 +41,38 @@ function authJsonHeaders() {
 
 
 // ✅ GET USERS
-export async function getUsers(
-  page = 1,
-  perPage = 10
-): Promise<{ users: User[]; meta: any }> {
+export async function getUsers(params: {
+  page?: number;
+  per_page?: number;
+  q?: string;
+}) {
+  const token = localStorage.getItem("token");
+
+  const qs = new URLSearchParams(
+    Object.entries(params).filter(([, v]) => v !== undefined) as any
+  ).toString();
+
   const res = await fetch(
-    `${API_BASE}/api/users?page=${page}&per_page=${perPage}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users?${qs}`,
     {
-      headers: authHeaderOnly(),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
 
-  const data = await res.json();
+  const json = await res.json();
 
   if (!res.ok) {
-    throw new Error("Failed to load users");
+    throw new Error(json.error || "Fetch users failed");
   }
 
   return {
-    users: data.users ?? [],
-    meta: data.meta,
+    data: json.users,
+    meta: json.meta,
   };
 }
+
 
 
 // ✅ CREATE USER (JSON only)

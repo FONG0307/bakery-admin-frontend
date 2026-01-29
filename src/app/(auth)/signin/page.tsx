@@ -26,21 +26,7 @@ export default function SignInPage() {
     }
   }, [user, loading, router]);
 
-  if (adminMode) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <div className="w-full max-w-md sm:pt-10 mx-auto mb-3">
-          <button
-            className="text-sm underline"
-            onClick={() => setAdminMode(false)}
-          >
-            Back to simple login
-          </button>
-        </div>
-        <SignInForm />
-      </div>
-    );
-  }
 
-  return <TemplateSignIn onAdminClick={() => setAdminMode(true)} />;
+
+  return <TemplateSignIn />;
 }

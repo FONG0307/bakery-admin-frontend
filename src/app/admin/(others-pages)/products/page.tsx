@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { createProduct,updateProduct,deleteProduct, addProductStock } from "@/lib/product";
 import { useAuth } from "@/context/AuthContext";
+import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
+import { getProductsPaginated } from "@/lib/product";
 import {
   Table,
   TableBody,
@@ -14,10 +16,7 @@ import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
 
 export default function TestProductsPage() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
-  const [perPage] = useState(8);
-  const [totalPages, setTotalPages] = useState(1);
+
   const [openForm, setOpenForm] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
@@ -25,38 +24,14 @@ export default function TestProductsPage() {
   const [showAddStock, setShowAddStock] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
+  const {
+    data: products,
+    meta,
+    page,
+    setPage,
+    reload,
+  } = usePaginatedFetch(getProductsPaginated, { debounce: 300 });
 
-
-
-
-
-  useEffect(() => {
-    loadProducts();
-  }, [page]);
-
-  async function loadProducts() {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/products?page=${page}&per_page=${perPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      if (!res.ok) throw new Error("Failed to load products");
-
-      const data = await res.json();
-
-      setProducts(Array.isArray(data.products) ? data.products : []);
-      setTotalPages(data.meta?.total_pages || 1);
-    } catch (err) {
-      console.error(err);
-      setProducts([]);
-      setTotalPages(1);
-    }
-  }
   const filteredProducts = useMemo(() => {
     if (selectedStatuses.length === 0) return products;
     return products.filter((p) =>
@@ -66,11 +41,15 @@ export default function TestProductsPage() {
 
 
   function nextPage() {
-    setPage((p) => Math.min(totalPages, p + 1));
+    if (page < meta?.total_pages) {
+      setPage(page + 1);
+    }
   }
 
   function prevPage() {
-    setPage((p) => Math.max(1, p - 1));
+    if (page > 1) {
+      setPage(page - 1);
+    }
   }
 
   function handleFilterChange(status: string, checked: boolean) {
@@ -381,6 +360,7 @@ export default function TestProductsPage() {
                       onClick={async () => {
                         if (!confirm("Delete this product?")) return;
                         await deleteProduct(product.id);
+                        reload();
                       }}
                       className="text-red-600 hover:underline"
                     >
@@ -396,6 +376,7 @@ export default function TestProductsPage() {
       {showAddStock && selectedProduct && (
         <AddStockForm
           product={selectedProduct}
+          reload={reload}
           onClose={() => {
             setShowAddStock(false);
             setSelectedProduct(null);
@@ -406,18 +387,20 @@ export default function TestProductsPage() {
           }}
         />
       )}
+
       {openForm && (
         <ProductForm
           initial={editing}
           onClose={() => setOpenForm(false)}
           onSaved={(saved) => {
+            reload();
           }}
         />
       )}
       {/* PAGINATION */}
       <div className="flex justify-between py-4 border-t">
         <span className="text-sm text-gray-500">
-          Page {page} / {totalPages}
+          Page {meta?.page} / {meta?.total_pages}
         </span>
 
         <div className="flex gap-2">
@@ -463,10 +446,12 @@ function AddStockForm({
   product,
   onClose,
   onSaved,
+  reload,
 }: {
   product: any;
   onClose: () => void;
   onSaved: () => void;
+  reload: () => void;
 }) {
   const [quantity, setQuantity] = useState<number>(0);
   const [date, setDate] = useState<string>(""); // YYYY-MM-DD
@@ -482,6 +467,7 @@ function AddStockForm({
       if (operation) payload.operation = operation;
       await addProductStock(product.id, payload);
       onSaved();
+      reload();
     } catch (err) {
       alert("Add stock failed");
     } finally {

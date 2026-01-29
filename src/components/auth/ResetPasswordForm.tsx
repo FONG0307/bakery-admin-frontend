@@ -1,21 +1,15 @@
 "use client";
 
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { verifyResetCode, resetPassword } from "@/lib/auth";
 
-export default function ResetPasswordForm() {
+export default function TemplateResetPassword() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const emailFromQuery = searchParams.get("email") || "";
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [step, setStep] = useState<"verify" | "reset">("verify");
   const [email, setEmail] = useState(emailFromQuery);
   const [code, setCode] = useState("");
@@ -23,51 +17,57 @@ export default function ResetPasswordForm() {
 
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const passwordValid = useMemo(() => {
     return (
-      password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)
+      password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /[0-9]/.test(password)
     );
   }, [password]);
 
+  /* ================= VERIFY CODE ================= */
   async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
 
-    if (!email || !code || code.length !== 6) {
-      setError("Vui lòng nhập email và mã 6 số");
+    if (!email || code.length !== 6) {
+      setError("Please enter email and 6-digit code");
       return;
     }
 
     setLoading(true);
     try {
-      const data = await verifyResetCode(email, code);
-      setResetToken(data.reset_token);
+      const res = await verifyResetCode(email, code);
+      setResetToken(res.reset_token);
       setStep("reset");
     } catch (err: any) {
-      setError(err.message || "Có lỗi xảy ra");
+      setError(err?.message || "Verification failed");
     } finally {
       setLoading(false);
     }
   }
 
+  /* ================= RESET PASSWORD ================= */
   async function handleReset(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
 
     if (!resetToken) {
-      setError("Thiếu mã xác thực đặt lại mật khẩu");
+      setError("Missing reset token");
       return;
     }
     if (password !== passwordConfirm) {
-      setError("Mật khẩu xác nhận không khớp");
+      setError("Password confirmation does not match");
       return;
     }
     if (!passwordValid) {
-      setError("Mật khẩu phải ≥8 ký tự, gồm chữ hoa, chữ thường và số");
+      setError("Password must be at least 8 characters and include upper, lower case and number");
       return;
     }
 
@@ -77,149 +77,116 @@ export default function ResetPasswordForm() {
       setSuccess(true);
       setTimeout(() => router.push("/signin"), 1800);
     } catch (err: any) {
-      setError(err.message || "Có lỗi xảy ra");
+      setError(err?.message || "Reset password failed");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar">
-      <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
-        <Link
-          href="/signin"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <ChevronLeftIcon />
-          Back to Sign In
-        </Link>
-      </div>
+    <section className="bg-Pink_Passion flex items-center justify-center min-h-[80vh] pt-20 border-8 border-b-0">
+      <form
+        onSubmit={step === "verify" ? handleVerify : handleReset}
+        className="flex flex-col justify-center items-stretch border-8 p-10 bg-Sky_Whisper w-full max-w-md"
+      >
+        <h1 className="text-xl font-bold mb-2">
+          {step === "verify" ? "Verify Reset Code 🍰" : "Reset Password 🔐"}
+        </h1>
 
-      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
-        <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Đặt lại mật khẩu
-            </h1>
-            {step === "verify" ? (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Nhập email và mã 6 chữ số đã được gửi qua email của bạn.
-              </p>
-            ) : (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Nhập mật khẩu mới của bạn. Yêu cầu: tối thiểu 8 ký tự, có chữ hoa, chữ thường và số.
-              </p>
-            )}
-          </div>
+        <p className="text-sm mb-4">
+          {step === "verify"
+            ? "Enter your email and the 6-digit code sent to you."
+            : "Enter your new password. Minimum 8 characters, includes upper/lower case and number."}
+        </p>
 
-          {success ? (
-            <div className="mb-6 p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
-              <p className="text-sm text-green-800 dark:text-green-200">
-                Password reset successfully! Redirecting to sign in...
-              </p>
+        {/* ===== EMAIL ===== */}
+        {step === "verify" && (
+          <>
+            <div className="flex flex-col gap-1 mt-2">
+              <label className="text-base font-semibold">Email</label>
+              <input
+                type="email"
+                className="border-4 px-3 py-2"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={loading}
+              />
             </div>
-          ) : null}
 
-          {error ? (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
+            <div className="flex flex-col gap-1 mt-4">
+              <label className="text-base font-semibold">6-digit code</label>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                className="border-4 px-3 py-2"
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
+                required
+                disabled={loading}
+              />
             </div>
-          ) : null}
+          </>
+        )}
 
-          {step === "verify" ? (
-            <form onSubmit={handleVerify} className="space-y-4 sm:space-y-6">
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Nhập email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={loading || success}
-                />
-              </div>
-              <div>
-                <Label htmlFor="code">Mã xác minh (6 số)</Label>
-                <Input
-                  id="code"
-                  name="code"
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  maxLength={6}
-                  placeholder="Nhập mã 6 số"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
-                  required
-                  disabled={loading || success}
-                />
-              </div>
-              <Button disabled={loading || success} className="w-full">
-                {loading ? "Đang kiểm tra..." : "Xác minh mã"}
-              </Button>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Mã hết hạn sau 3 phút</p>
-            </form>
-          ) : (
-            <form onSubmit={handleReset} className="space-y-4 sm:space-y-6">
-              <div>
-                <Label htmlFor="password">Mật khẩu mới</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Nhập mật khẩu mới"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={loading || success}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                  >
-                    {showPassword ? <EyeIcon /> : <EyeCloseIcon />}
-                  </button>
-                </div>
-                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                  Yêu cầu: ≥8 ký tự, gồm chữ hoa, chữ thường và số
-                </p>
-              </div>
+        {/* ===== RESET PASSWORD ===== */}
+        {step === "reset" && (
+          <>
+            <div className="flex flex-col gap-1 mt-2">
+              <label className="text-base font-semibold">New password</label>
+              <input
+                type="password"
+                className="border-4 px-3 py-2"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="passwordConfirm">Xác nhận mật khẩu</Label>
-                <div className="relative">
-                  <Input
-                    id="passwordConfirm"
-                    name="passwordConfirm"
-                    type={showPasswordConfirm ? "text" : "password"}
-                    placeholder="Nhập lại mật khẩu"
-                    value={passwordConfirm}
-                    onChange={(e) => setPasswordConfirm(e.target.value)}
-                    required
-                    disabled={loading || success}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                  >
-                    {showPasswordConfirm ? <EyeIcon /> : <EyeCloseIcon />}
-                  </button>
-                </div>
-              </div>
+            <div className="flex flex-col gap-1 mt-4">
+              <label className="text-base font-semibold">Confirm password</label>
+              <input
+                type="password"
+                className="border-4 px-3 py-2"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+          </>
+        )}
 
-              <Button disabled={loading || success} className="w-full">
-                {loading ? "Đang đặt lại..." : "Đặt lại mật khẩu"}
-              </Button>
-            </form>
-          )}
+        {/* ===== ERROR / SUCCESS ===== */}
+        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        {success && (
+          <p className="mt-3 text-sm text-green-700">
+            Password reset successfully! Redirecting to sign in...
+          </p>
+        )}
+
+        {/* ===== BUTTON ===== */}
+        <div className="mt-4 flex flex-col gap-3">
+          <button
+            className="button-style w-full"
+            style={{ padding: "0.4rem" }}
+            disabled={loading || success}
+          >
+            {loading
+              ? "Processing..."
+              : step === "verify"
+              ? "Verify code"
+              : "Reset password"}
+          </button>
         </div>
-      </div>
-    </div>
+
+        {/* ===== BACK ===== */}
+        <Link className="text-base my-3" href="/signin">
+          Back to <span className="font-bold underline">Sign in</span>
+        </Link>
+      </form>
+    </section>
   );
 }

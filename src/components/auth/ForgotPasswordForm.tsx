@@ -1,114 +1,99 @@
 "use client";
 
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import { ChevronLeftIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { requestPasswordReset } from "@/lib/auth";
 
-export default function ForgotPasswordForm() {
+export default function TemplateForgotPassword() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    const form = new FormData(e.currentTarget);
-    const userEmail = form.get("email") as string;
-
     try {
-      await requestPasswordReset(userEmail);
+      await requestPasswordReset(email);
       setSuccess(true);
-      setEmail("");
+
       setTimeout(() => {
-        router.push(`/reset-password?email=${encodeURIComponent(userEmail)}`);
+        router.push(`/reset-password?email=${encodeURIComponent(email)}`);
       }, 800);
     } catch (err: any) {
-      setError(err.message || "An error occurred");
+      setError(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar">
-      <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
-        <Link
-          href="/signin"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <ChevronLeftIcon />
-          Back to Sign In
-        </Link>
-      </div>
+    <section className="bg-Pink_Passion flex items-center justify-center min-h-[80vh] pt-20 border-8 border-b-0">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col justify-center items-stretch border-8 p-10 bg-Sky_Whisper w-full max-w-md"
+      >
+        <h1 className="text-xl font-bold mb-2">
+          Forgot Password 🍰
+        </h1>
 
-      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
-        <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Forgot Password
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Nhập email của bạn, chúng tôi sẽ gửi mã 6 chữ số để đặt lại mật khẩu. Mã hết hạn sau 3 phút.
-            </p>
-          </div>
+        <p className="text-sm mb-4">
+          Enter your email and we’ll send you a 6-digit reset code.
+        </p>
 
-          {success ? (
-            <div className="mb-6 p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
-              <p className="text-sm text-green-800 dark:text-green-200">
-                Vui lòng kiểm tra email! Mã đặt lại mật khẩu đã được gửi.
-              </p>
-            </div>
-          ) : null}
-
-          {error ? (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
-            </div>
-          ) : null}
-
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={loading || success}
-              />
-            </div>
-
-            <Button disabled={loading || success} className="w-full">
-              {loading ? "Đang gửi..." : "Gửi mã đặt lại"}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Nhớ mật khẩu rồi?
-              <Link
-                href="/signin"
-                className="font-semibold text-primary transition-colors hover:text-primary/90"
-              >
-                Đăng nhập
-              </Link>
-            </p>
-          </div>
+        {/* EMAIL */}
+        <div className="flex flex-col gap-1 mt-2">
+          <label htmlFor="email" className="text-base font-semibold">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            className="border-4 px-3 py-2"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading || success}
+          />
         </div>
-      </div>
-    </div>
+
+        {/* SUCCESS */}
+        {success && (
+          <p className="mt-3 text-sm text-green-700">
+            Reset code sent! Please check your email 📩
+          </p>
+        )}
+
+        {/* ERROR */}
+        {error && (
+          <p className="mt-3 text-sm text-red-600">
+            {error}
+          </p>
+        )}
+
+        {/* BUTTON */}
+        <div className="mt-4 flex flex-col gap-3">
+          <button
+            className="button-style w-full"
+            style={{ alignSelf: "center", padding: "0.4rem" }}
+            disabled={loading || success}
+          >
+            {loading ? "Sending..." : "Send reset code"}
+          </button>
+        </div>
+
+        {/* BACK */}
+        <Link className="text-base my-3" href="/signin">
+          Remember your password?{" "}
+          <span className="font-bold underline">Sign in</span>
+        </Link>
+      </form>
+    </section>
   );
 }

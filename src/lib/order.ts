@@ -67,6 +67,36 @@ export async function getOrders(page = 1, perPage = 10) {
   return res.json();
 }
 
+// src/lib/order.ts
+export async function getOrdersPaginated(params: {
+  page?: number;
+  per_page?: number;
+  q?: string;
+  status?: string;
+}) {
+  const qs = new URLSearchParams(
+    Object.entries(params).filter(([, v]) => v !== undefined) as any
+  ).toString();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/orders?${qs}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+
+  const json = await res.json();
+  if (!res.ok) throw new Error("Fetch orders failed");
+
+  return {
+    data: json.orders,
+    meta: json.meta,
+  };
+}
+
+
 export async function getMyOrders(page = 1, perPage = 10) {
   const res = await fetch(
     `${API_URL}/api/my/orders?page=${page}&per_page=${perPage}`,

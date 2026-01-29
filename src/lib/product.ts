@@ -24,6 +24,35 @@ type ProductsResponse = {
   };
 };
 
+// src/lib/product.ts
+export async function getProductsPaginated(params: {
+  page?: number;
+  per_page?: number;
+  q?: string;
+}) {
+  const qs = new URLSearchParams(
+    Object.entries(params).filter(([, v]) => v !== undefined) as any
+  ).toString();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/products?${qs}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+
+  const json = await res.json();
+  if (!res.ok) throw new Error("Fetch products failed");
+
+  return {
+    data: json.products,
+    meta: json.meta,
+  };
+}
+
+
 export async function getProducts(
   page = 1,
   perPage = 8

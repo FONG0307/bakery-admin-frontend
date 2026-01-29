@@ -9,12 +9,18 @@ import {
 } from "@/components/ui/table";
 import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
-import { addOrderItem, createOrder, getOrders, updateOrderStatus } from "@/lib/order";
-import { getUsers } from "@/lib/users";
+import { useMemo, useState } from "react";
+import {
+  addOrderItem,
+  createOrder,
+  updateOrderStatus,
+  getOrdersPaginated,
+} from "@/lib/order";
 import { useAuth } from "@/context/AuthContext";
-import type  { CartItem }  from "@/context/AuthContext";
+import type { CartItem } from "@/context/AuthContext";
+import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 
+/* ================= TYPES ================= */
 interface OrderDisplay {
   id: number;
   name: string;
@@ -29,69 +35,45 @@ interface OrderDisplay {
 }
 
 export default function RecentOrders() {
-    /* STATE                        */
-  const [tableData, setTableData] = useState<OrderDisplay[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
+  const { products, fetchData } = useAuth();
+
+  const {
+    data: orders,
+    meta,
+    page,
+    setPage,
+    reload,
+  } = usePaginatedFetch(getOrdersPaginated, { debounce: 300 });
+
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [selectedOrderForStatus, setSelectedOrderForStatus] = useState<any>(null);
-  const [newStatus, setNewStatus] = useState<string>("pending");
+  const [newStatus, setNewStatus] = useState("pending");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
-  const perPage = 8;
-
-  const { fetchData } = useAuth();
   const [openCreate, setOpenCreate] = useState(false);
-  const { products } = useAuth();
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [step, setStep] = useState<1 | 2>(1);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [dayPart, setDayPart] = useState("morning");
+  const [showFilter, setShowFilter] = useState(false);
 
-  /* =================LOAD ORDERS  =======================*/
-  useEffect(() => {
-    loadUsers();
-    loadOrders();
-  }, []);
-
-  async function loadUsers() {
-    const usersData = await getUsers();
-    setUsers(usersData);
-  }
-
-  async function loadOrders() {
-    const data = await getOrders(); 
-    // backend trả { orders, meta }
-
-    const list = Array.isArray(data.orders) ? data.orders : [];
-
-    // giữ state orders để dùng cho View Items / Change Status
-    setOrders(list);
-
-    // sort AN TOÀN trên ARRAY
-    const sortedOrders = [...list].sort(
-      (a: any, b: any) =>
-        new Date(b.ordered_at || b.created_at).getTime() -
-        new Date(a.ordered_at || a.created_at).getTime()
-    );
-
-    const rows: OrderDisplay[] = sortedOrders.map((order: any, index: number) => {
+  /* ================= MAP ORDERS ================= */
+  const tableData: OrderDisplay[] = useMemo(() => {
+    return orders.map((order: any, index: number) => {
       const userName = order.user
         ? `${order.user.first_name || ""} ${order.user.last_name || ""}`.trim() ||
           order.user.email
         : "Unknown";
 
-      const totalPrice = Array.isArray(order.items)
-        ? order.items.reduce(
-            (sum: number, item: any) => sum + Number(item.subtotal || 0),
-            0
-          )
-        : 0;
+      const totalPrice =
+        order.items?.reduce(
+          (sum: number, item: any) => sum + Number(item.subtotal || 0),
+          0
+        ) || 0;
 
       return {
         id: order.id,
-        name: `${userName} - Order ${index + 1}`,
+        name: `${userName} - Order ${order.id}`,
         variants: `${order.items?.length || 0} Items`,
         category: "Bakery",
         price: `${totalPrice.toLocaleString()} ₫`,
@@ -107,65 +89,21 @@ export default function RecentOrders() {
         createdAt: order.ordered_at || order.created_at,
       };
     });
-
-    setTableData(rows);
-  }
-
+  }, [orders]);
 
   const filteredData = useMemo(() => {
-    if (selectedStatuses.length === 0) return tableData;
-    return tableData.filter(item => selectedStatuses.includes(item.status));
+    if (!selectedStatuses.length) return tableData;
+    return tableData.filter((i) => selectedStatuses.includes(i.status));
   }, [tableData, selectedStatuses]);
 
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredData.length / perPage));
-  }, [filteredData.length]);
-
-  const paginatedData = useMemo(() => {
-    const start = (page - 1) * perPage;
-    return filteredData.slice(start, start + perPage);
-  }, [filteredData, page]);
-
-  function nextPage() {
-    setPage((p) => Math.min(totalPages, p + 1));
-  }
-
-  function prevPage() {
-    setPage((p) => Math.max(1, p - 1));
-  }
-
-  /* ================= FILTER FUNCTIONS =======================*/
-  const [showFilter, setShowFilter] = useState(false);
-
-  function handleFilterChange(status: string, checked: boolean) {
-    setSelectedStatuses(prev =>
-      checked ? [...prev, status] : prev.filter(s => s !== status)
-    );
-    setPage(1); // reset page
-  }
-
-  function handleSeeAll() {
-    setSelectedStatuses([]);
-    setPage(1);
-  }
-
-  async function handleStatusChange(orderId: number, newStatus: string) {
-    try {
-      await updateOrderStatus(orderId, newStatus);
-      loadOrders(); // reload
-    } catch (error) {
-      console.error("Failed to update status", error);
-    }
-  }
-
-  /* ================= FILTER PRODUCTS =======================*/
+  /* ================= FILTER PRODUCTS (STEP 1) ================= */
   const filteredProducts = useMemo(() => {
     return products.filter((p: any) =>
       p.item_name.toLowerCase().includes(search.toLowerCase())
     );
   }, [products, search]);
 
-  /* ================= CART HANDLERS =======================*/
+  /* ================= CART ================= */
   function toggleProduct(p: any) {
     setCart((prev) =>
       prev.find((i) => i.product_id === p.id)
@@ -183,33 +121,28 @@ export default function RecentOrders() {
   }
 
   function updateQty(id: number, delta: number) {
-    setCart((prev) => {
-      const existing = prev.find((i) => i.product_id === id);
-      const newQty = (existing?.quantity || 0) + delta;
-      if (newQty <= 0) {
-        return prev.filter((i) => i.product_id !== id);
-      }
-      if (existing) {
-        return prev.map((i) =>
-          i.product_id === id ? { ...i, quantity: newQty } : i
-        );
-      } else {
-        // add new
-        const product = products.find(p => p.id === id);
-        return [
-          ...prev,
-          {
-            product_id: id,
-            name: product?.item_name || '',
-            price: Number(product?.unit_price || 0),
-            quantity: newQty,
-          },
-        ];
-      }
-    });
+    setCart((prev) =>
+      prev.map((i) =>
+        i.product_id === id
+          ? { ...i, quantity: Math.max(0, i.quantity + delta) }
+          : i
+      ).filter((i) => i.quantity > 0)
+    );
   }
 
-  
+  /* ================= HANDLERS ================= */
+  function handleFilterChange(status: string, checked: boolean) {
+    setSelectedStatuses((prev) =>
+      checked ? [...prev, status] : prev.filter((s) => s !== status)
+    );
+    setPage(1);
+  }
+
+  function handleSeeAll() {
+    setSelectedStatuses([]);
+    setPage(1);
+  }
+
   async function handleCreateOrder() {
     const order = await createOrder({
       payment_method: paymentMethod,
@@ -223,8 +156,11 @@ export default function RecentOrders() {
     setOpenCreate(false);
     setStep(1);
     setCart([]);
-    await loadOrders();
+    reload();
+    fetchData();
   }
+
+
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] px-10 py-10">
@@ -280,7 +216,7 @@ export default function RecentOrders() {
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {paginatedData.map((product) => (
+            {filteredData.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="py-3">
                   <div>
@@ -348,12 +284,24 @@ export default function RecentOrders() {
       {/* PAGINATION */}
       <div className="flex justify-between py-4 border-t">
         <span className="text-sm text-gray-500">
-          Page {page} / {totalPages}
+          Page {meta?.page} / {meta?.total_pages}
         </span>
 
         <div className="flex gap-2">
-          <button onClick={prevPage} className="px-3 py-1 border rounded">Prev</button>
-          <button onClick={nextPage} className="px-3 py-1 border rounded">Next</button>
+          <button 
+            disabled={page <= 1}
+            onClick={() => setPage(page - 1)}
+            className="px-3 py-1 border rounded"
+          >
+            Prev
+          </button>
+          <button 
+            disabled={page >= meta?.total_pages}
+            onClick={() => setPage(page + 1)}
+            className="px-3 py-1 border rounded"
+          >
+            Next
+          </button>
         </div>
       </div>
       
@@ -375,7 +323,7 @@ export default function RecentOrders() {
                 />
 
                 <ul className="divide-y max-h-[240px] overflow-auto">
-                  {filteredProducts.map((p: any) => {
+                  {filteredData.map((p: any) => {
                     const selected = cart.find(
                       (i) => i.product_id === p.id
                     );
@@ -611,7 +559,7 @@ export default function RecentOrders() {
                   try {
                     await updateOrderStatus(selectedOrderForStatus.id, newStatus);
                     setSelectedOrderForStatus(null);
-                    loadOrders();
+                    reload();
                     fetchData();
                   } catch (error) {
                     console.error("Failed to update status", error);
