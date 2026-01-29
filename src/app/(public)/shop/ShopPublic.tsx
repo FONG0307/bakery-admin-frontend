@@ -130,7 +130,6 @@ export default function ShopPublic() {
                       {p.category}
                     </p>
 
-                    {/* DESCRIPTION (1–2 lines) */}
                     {p.description && (
                       <p className="mt-2 text-sm leading-snug text-gray-700">
                         {shortDesc(p.description)}

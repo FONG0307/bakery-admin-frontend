@@ -9,10 +9,28 @@ export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [openAdd, setOpenAdd] = useState(false);
   const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getUsers().then(setUsers);
-  }, []);
+    loadUsers();
+  }, [page, perPage]);
+
+  async function loadUsers() {
+    try {
+      setLoading(true);
+      const res = await getUsers(page, perPage);
+      setUsers(res.users);
+      setTotalPages(res.meta.total_pages);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   async function handleDelete(id: number) {
     if (!confirm("Are you sure you want to delete this user?")) return;
@@ -34,8 +52,25 @@ export default function UsersPage() {
         >
           + Add User
         </button>
-      </div>
+        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+          <span>Show</span>
+          <select
+            value={perPage}
+            onChange={(e) => {
+              setPerPage(Number(e.target.value));
+              setPage(1); // reset về trang 1
+            }}
+            className="rounded-md border px-2 py-1 text-sm dark:bg-gray-800"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+          </select>
+          <span>users</span>
+        </div>
 
+      </div>
+      
       {/* TABLE */}
       <div className="overflow-x-auto px-5 sm:px-6">
         <table className="min-w-full">
@@ -108,6 +143,30 @@ export default function UsersPage() {
             )}
           </tbody>
         </table>
+      </div>
+          
+      <div className="flex items-center justify-between px-5 py-4 border-t">
+        <span className="text-sm text-gray-500">
+          Page {page} / {totalPages}
+        </span>
+
+        <div className="flex gap-2">
+          <button
+            disabled={page === 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="rounded border px-3 py-1 text-sm disabled:opacity-50"
+          >
+            Prev
+          </button>
+
+          <button
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            className="rounded border px-3 py-1 text-sm disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {/* MODALS */}

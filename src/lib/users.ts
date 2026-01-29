@@ -41,25 +41,29 @@ function authJsonHeaders() {
 
 
 // ✅ GET USERS
-export async function getUsers(): Promise<User[]> {
-  try {
-    const res = await fetch(`${API_BASE}/api/users`, {
+export async function getUsers(
+  page = 1,
+  perPage = 10
+): Promise<{ users: User[]; meta: any }> {
+  const res = await fetch(
+    `${API_BASE}/api/users?page=${page}&per_page=${perPage}`,
+    {
       headers: authHeaderOnly(),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("GET USERS FAILED:", data);
-      return [];
     }
+  );
 
-    return Array.isArray(data) ? data : data.users ?? [];
-  } catch (err) {
-    console.error("GET USERS ERROR:", err);
-    return [];
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error("Failed to load users");
   }
+
+  return {
+    users: data.users ?? [],
+    meta: data.meta,
+  };
 }
+
 
 // ✅ CREATE USER (JSON only)
 export async function createUser(payload: any) {
