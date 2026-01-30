@@ -29,14 +29,17 @@ export interface CartResponse {
 /* =========================
    HELPER
 ========================= */
+
 async function fetchJSON(
   url: string,
   options: RequestInit = {}
 ) {
+  const token = localStorage.getItem("token");
+
   const res = await fetch(`${API_URL}${url}`, {
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     ...options,
   });
@@ -81,24 +84,15 @@ export function addToCart(
 }
 
 /**
- * Xoá item khỏi cart (nếu backend có)
+ * Xoá sản phẩm khỏi cart
+ * DELETE /api/cart
+ * body: { product_id }
  */
-export function removeFromCart(product_id: number): Promise<CartResponse> {
+export function removeFromCart(
+  product_id: number
+): Promise<CartResponse> {
   return fetchJSON("/api/cart", {
     method: "DELETE",
     body: JSON.stringify({ product_id }),
-  });
-}
-
-/**
- * Update số lượng (nếu backend có)
- */
-export function updateCartItem(
-  itemId: number,
-  quantity: number
-): Promise<CartResponse> {
-  return fetchJSON(`/api/cart/items/${itemId}`, {
-    method: "PATCH",
-    body: JSON.stringify({ quantity }),
   });
 }

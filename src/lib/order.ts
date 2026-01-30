@@ -113,9 +113,6 @@ export async function getMyOrders(page = 1, perPage = 10) {
   return res.json();
 }
 
-
-
-
 export async function updateOrderStatus(orderId: number, status: string) {
   const res = await fetch(`${API_URL}/api/orders/${orderId}`, {
     method: "PATCH",
@@ -176,5 +173,20 @@ export async function createStripeCheckout(orderId: number) {
     throw new Error("Failed to create Stripe checkout session");
   }
 
-  return res.json(); // expected { id, url }
+  return res.json();
+}
+
+export function createOrderFromCart() {
+  const token = localStorage.getItem("token");
+
+  return fetch(`${API_URL}/api/orders/from_cart`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((res) => {
+    if (!res.ok) throw new Error("ORDER_FAILED");
+    return res.json();
+  });
 }

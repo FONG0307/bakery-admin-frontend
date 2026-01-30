@@ -1,4 +1,3 @@
-// src/context/AuthContext.tsx
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -39,28 +38,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
   const [dailyStock, setDailyStock] = useState<any[]>([]);
+
   const combinedProducts = useMemo(() => {
-  return products.map((p: any) => ({
-    ...p,
-    daily_stock:
-      dailyStock.find((d: any) => d.product_id === p.id) || null,
-  }));
-}, [products, dailyStock]);
+    return products.map((p: any) => ({
+      ...p,
+      daily_stock:
+        dailyStock.find((d: any) => d.product_id === p.id) || null,
+    }));
+  }, [products, dailyStock]);
 
-
+  /* ================= AUTH BOOTSTRAP ================= */
   useEffect(() => {
-    const t = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-    if (!t) {
+    if (!token) {
       setUser(null);
       setLoading(false);
       return;
     }
 
-    getMe(t)
+    getMe()
       .then((res) => {
         setUser(res.user);
-        fetchData(); // Fetch products and daily stock after user is set
+        fetchData();
       })
       .catch(() => {
         localStorage.removeItem("token");
@@ -71,34 +71,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
+  /* ================= FETCH DATA ================= */
   async function fetchData() {
     try {
-      console.log("👉 fetchData called");
-
       const [prods, stocks] = await Promise.allSettled([
         getProducts(),
         getDailyStock(),
       ]);
 
-      const productsData =
-        prods.status === "fulfilled" && Array.isArray(prods.value?.products)
-          ? prods.value.products
-          : [];
+      setProducts(
+        prods.status === "fulfilled" ? prods.value.products ?? [] : []
+      );
 
-      const stocksData =
-        stocks.status === "fulfilled" && Array.isArray(stocks.value)
-          ? stocks.value
-          : [];
-
-      setProducts(productsData);
-      setDailyStock(stocksData);
+      setDailyStock(
+        stocks.status === "fulfilled" ? stocks.value ?? [] : []
+      );
     } catch (e) {
       console.error(e);
     }
   }
 
-
-  // 🔥 ADD LOGOUT IMPLEMENTATION
+  /* ================= LOGOUT ================= */
   function logout() {
     localStorage.removeItem("token");
     setUser(null);
@@ -124,15 +117,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth must be used inside AuthProvider");
-  }
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
   return ctx;
 }
-
-export type CartItem = {
-  product_id: number;
-  name: string;
-  price: number;
-  quantity: number;
-};

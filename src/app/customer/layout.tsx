@@ -23,7 +23,7 @@ export default function CustomerLayout({
   return (
     <div className={`flex flex-col min-h-screen transition-all duration-300 `}>
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 mt-8">
         {children}
       </main>
     </div>
