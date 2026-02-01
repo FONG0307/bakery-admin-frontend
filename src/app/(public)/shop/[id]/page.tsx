@@ -12,14 +12,17 @@ import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
 
+type LoadState = "loading" | "success" | "error";
+
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
 
+  const [state, setState] = useState<LoadState>("loading");
+
   /* ================= STATE ================= */
   const [product, setProduct] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [deliveryDate, setDeliveryDate] = useState("");
@@ -32,11 +35,49 @@ export default function ProductDetailPage() {
   useEffect(() => {
     if (!id) return;
 
-    getProductPublic(Number(id))
-      .then(setProduct)
-      .catch(() => router.replace("/shop"))
-      .finally(() => setLoading(false));
-  }, [id, router]);
+    let mounted = true;
+
+    async function load() {
+      try {
+        setState("loading");
+
+        const res = await getProductPublic(Number(id));
+
+        if (!mounted) return;
+
+        if (!isValidProduct(res)) {
+          throw new Error("INVALID_PRODUCT");
+        }
+
+        setProduct(res);
+        setState("success");
+      } catch (e) {
+        console.error(e);
+        if (mounted) setState("error");
+      }
+    }
+
+    load();
+
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
+  useEffect(() => {
+    if (state === "error") {
+      router.replace("/shop");
+    }
+  }, [state, router]);
+
+  function isValidProduct(p: any) {
+    return (
+      p &&
+      typeof p.id === "number" &&
+      typeof p.item_name === "string" &&
+      p.unit_price !== undefined &&
+      !isNaN(Number(p.unit_price))
+    );
+  }
 
   async function handleAddToCart() {
     if (!user) {
@@ -64,11 +105,36 @@ export default function ProductDetailPage() {
     }
   }
 
-  if (loading || !product) return null;
 
+
+  function ProductDetailSkeleton() {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 animate-pulse">
+        <div className="bg-white border-4 p-6 grid grid-cols-1 lg:grid-cols-[450px_1fr] gap-8">
+          <div className="h-[450px] bg-gray-200" />
+          <div className="space-y-4">
+            <div className="h-10 bg-gray-200 w-3/4" />
+            <div className="h-4 bg-gray-200 w-1/4" />
+            <div className="h-6 bg-gray-200 w-1/3" />
+            <div className="h-20 bg-gray-200" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (state === "loading") {
+    return <ProductDetailSkeleton />;
+  }
+
+
+  if (state === "error") return null;
+  
+  if (state !== "success") return null;
+  
   const isCake = product.category?.toLowerCase() === "cake";
   const available = product.daily_stock?.available ?? 0;
-
+  
   return (
     <div className="bg-main-cupcake-background">
       <main className="max-w-7xl mx-auto px-4 py-20 bg-Sky_Whisper border-x-8 border-b-8 border-gray-200">

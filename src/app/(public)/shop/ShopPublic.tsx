@@ -5,19 +5,60 @@ import { getProductsPublic } from "@/lib/product";
 import Image from "next/image";
 import Link from "next/link";
 
+type LoadState = "loading" | "success" | "error";
+
 export default function ShopPublic() {
+  const [state, setState] = useState<LoadState>("loading");
   const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [category, setCategory] = useState<string>("all");
 
   useEffect(() => {
-    getProductsPublic()
-      .then(setProducts)
-      .finally(() => setLoading(false));
+    let mounted = true;
+
+    async function load() {
+      try {
+        setState("loading");
+
+        const res = await getProductsPublic();
+
+        if (!mounted) return;
+
+        if (!Array.isArray(res)) {
+          throw new Error("INVALID_PRODUCTS");
+        }
+
+        // filter + normalize nhẹ
+        const valid = res.filter(isValidProduct).map((p: any) => ({
+          ...p,
+          unit_price:
+            p.unit_price != null ? Number(p.unit_price) : null,
+        }));
+
+        setProducts(valid);
+        setState("success");
+      } catch (e) {
+        console.error(e);
+        if (mounted) setState("error");
+      }
+    }
+
+    load();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   /* ================= HELPERS ================= */
+  function isValidProduct(p: any) {
+    return (
+      p &&
+      typeof p.id === "number" &&
+      typeof p.item_name === "string"
+    );
+  }
+
   function isCake(p: any) {
     return p?.category?.toLowerCase() === "cake";
   }
@@ -44,6 +85,30 @@ export default function ShopPublic() {
       return okName && okCat;
     });
   }, [products, q, category]);
+
+  /* ================= SKELETON ================= */
+  function ShopSkeleton() {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="border-4 border-gray-200 bg-white flex flex-col"
+          >
+            <div className="h-52 bg-gray-200 border-b-4 border-gray-200" />
+            <div className="p-4 space-y-3 flex-1">
+              <div className="h-5 bg-gray-200 w-3/4" />
+              <div className="h-3 bg-gray-200 w-1/4" />
+              <div className="h-4 bg-gray-200 w-full" />
+              <div className="h-4 bg-gray-200 w-2/3" />
+              <div className="h-10 bg-gray-200 mt-auto" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  /* =========================================== */
 
   return (
     <div className="bg-main-cupcake-background">
@@ -77,9 +142,11 @@ export default function ShopPublic() {
         </div>
 
         {/* CONTENT */}
-        {loading ? (
+        {state === "loading" ? (
+          <ShopSkeleton />
+        ) : state === "error" ? (
           <div className="text-center font-bold uppercase tracking-wide">
-            Loading…
+            Cannot load products
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center font-bold uppercase tracking-wide">
@@ -136,7 +203,7 @@ export default function ShopPublic() {
                       </p>
                     )}
 
-                    {/* STOCK — chỉ cho sản phẩm KHÔNG phải cake */}
+                    {/* STOCK */}
                     {!isCake(p) && available !== null && (
                       <p
                         className={`text-xs font-bold uppercase mt-2 ${

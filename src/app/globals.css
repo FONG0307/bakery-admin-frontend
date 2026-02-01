@@ -322,6 +322,20 @@
   .button-style:active { box-shadow: 0 0 0 0; top: 5px; left: 5px; }
   .button-style:hover { background: rgba(255,255,255,0.8); }
 
+
+  /* 🔽 MINI VERSION – cho + / − */
+  .button-style-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 0;
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   /* Background helpers mapping to placeholder until real images are added */
   .bg-main-cupcake-one { background-image: url('../../public/images/product/bakery1'); }
   .bg-main-cupcake-two { background-image: url('../../public/images/product/bakery2.jpg'); }
@@ -798,4 +812,51 @@ span.flatpickr-weekday,
 }
 .dropdown-enter-active {
   @apply opacity-100 scale-100 translate-y-0 transition-all duration-200 ease-out;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.3s ease-out forwards;
+}
+@keyframes toast-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.95);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+.animate-toast-drop {
+  animation: toast-drop 3s ease-in-out forwards;
 }

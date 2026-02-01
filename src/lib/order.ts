@@ -176,8 +176,11 @@ export async function createStripeCheckout(orderId: number) {
   return res.json();
 }
 
-export function createOrderFromCart() {
+export function createOrderFromCart(payload: {
+  address: string;
+}) {
   const token = localStorage.getItem("token");
+  if (!token) throw new Error("NO_AUTH");
 
   return fetch(`${API_URL}/api/orders/from_cart`, {
     method: "POST",
@@ -185,8 +188,13 @@ export function createOrderFromCart() {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-  }).then((res) => {
-    if (!res.ok) throw new Error("ORDER_FAILED");
+    body: JSON.stringify(payload),
+  }).then(async (res) => {
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("ORDER_FROM_CART_ERROR:", err);
+      throw new Error("ORDER_FAILED");
+    }
     return res.json();
   });
 }

@@ -1,20 +1,58 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getProducts } from "@/lib/product";
+import { getProductsPublic } from "@/lib/product";
 import Link from "next/link";
 
 export default function HomePublic() {
   const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
-    getProducts()
-      .then((res) => {
-        setProducts(res.products);
-      })
-      .catch(console.error);
-  }, []);
+    let mounted = true;
 
+    async function load() {
+      try {
+        // ✅ DÙNG API PUBLIC – KHÔNG AUTH
+        const res = await getProductsPublic();
+
+        if (!mounted) return;
+        if (!Array.isArray(res)) return;
+
+        // ✅ LẤY 4 SẢN PHẨM – ƯU TIÊN KHÁC CATEGORY
+        const picked: any[] = [];
+        const usedCategories = new Set<string>();
+
+        // vòng 1: ưu tiên category khác nhau
+        for (const p of res) {
+          if (picked.length >= 4) break;
+          const cat = p.category || "unknown";
+          if (!usedCategories.has(cat)) {
+            picked.push(p);
+            usedCategories.add(cat);
+          }
+        }
+
+        // vòng 2: nếu chưa đủ 4 thì lấy thêm (cho phép trùng)
+        if (picked.length < 4) {
+          for (const p of res) {
+            if (picked.length >= 4) break;
+            if (!picked.includes(p)) {
+              picked.push(p);
+            }
+          }
+        }
+
+        setProducts(picked);
+      } catch (e) {
+        console.error("HomePublic load error:", e);
+      }
+    }
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <>
@@ -80,24 +118,24 @@ export default function HomePublic() {
         </div>
 
 
-        <section className="hidden xl:grid xl:grid-cols-6 xl:col-span-2 w-full xl:row-span-2">
-        {products.slice(0, 4).map((product, index) => (
-          <div
-            key={product.id}
-            className="xl:col-span-3 xl:h-96 border-r-8 flex items-end bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${product.image_url})`,
-            }}
-          >
-            <Link
-              href={`/shop/${product.id}`}
-              className="bg-Lemon_Zest text-center text-xl font-bold border-t-8 w-full py-2 hover:underline"
+       <section className="hidden xl:grid xl:grid-cols-6 xl:col-span-2 w-full xl:row-span-2">
+          {products.slice(0, 4).map((product) => (
+            <div
+              key={product.id}
+              className="xl:col-span-3 xl:h-96 border-r-8 flex items-end bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${product.image_url})`,
+              }}
             >
-              {product.item_name}
-            </Link>
-          </div>
-        ))}
-      </section>
+              <Link
+                href={`/shop/${product.id}`}
+                className="bg-Lemon_Zest text-center text-xl font-bold border-t-8 w-full py-2 hover:underline"
+              >
+                {product.item_name}
+              </Link>
+            </div>
+          ))}
+        </section>
 
         <div className="bg-main-cupcake-one"></div>
 

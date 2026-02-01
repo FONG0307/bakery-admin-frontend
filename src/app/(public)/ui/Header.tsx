@@ -147,7 +147,7 @@ export default function Header() {
                       </div>
 
                       <Link
-                        href="customer/cart"
+                        href="/customer/cart"
                         onClick={() => setOpenCart(false)}
                         className="block text-center font-extrabold p-3 border-t-4 border-black hover:bg-gray-100"
                       >

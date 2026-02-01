@@ -17,10 +17,15 @@ import {
   getOrdersPaginated,
 } from "@/lib/order";
 import { useAuth } from "@/context/AuthContext";
-import type { CartItem } from "@/context/AuthContext";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 
-/* ================= TYPES ================= */
+interface AdminCartItem {
+  product_id: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 interface OrderDisplay {
   id: number;
   name: string;
@@ -51,7 +56,7 @@ export default function RecentOrders() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [openCreate, setOpenCreate] = useState(false);
   const [search, setSearch] = useState("");
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<AdminCartItem[]>([]);
   const [step, setStep] = useState<1 | 2>(1);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [dayPart, setDayPart] = useState("morning");
@@ -323,7 +328,7 @@ export default function RecentOrders() {
                 />
 
                 <ul className="divide-y max-h-[240px] overflow-auto">
-                  {filteredData.map((p: any) => {
+                  {filteredProducts.map((p: any) => {
                     const selected = cart.find(
                       (i) => i.product_id === p.id
                     );

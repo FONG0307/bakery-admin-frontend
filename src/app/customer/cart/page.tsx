@@ -3,47 +3,54 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
-import { removeFromCart } from "@/lib/cart";
-import { createOrderFromCart } from "@/lib/order";
+import { removeCartItem } from "@/lib/cart";
 
 export default function CartPage() {
-  const { cart, setCart } = useCart();
-  const { showSuccess, showError } = useToast();
+  const {
+    draftCart,
+    changeQtyLocal,
+    syncCartToBackend,
+  } = useCart();
+
+  const { showError } = useToast();
   const router = useRouter();
 
-  const items = cart?.items || [];
+  const items = draftCart?.items || [];
 
   const totalPrice = items.reduce(
     (sum: number, i: any) => sum + i.price * i.quantity,
     0
   );
 
-  async function handleRemove(itemId: number) {
-    try {
-      const newCart = await removeFromCart(itemId);
-      setCart(newCart);
-    } catch {
-      showError("Không thể xoá sản phẩm");
-    }
-  }
+  /* ===== Sync cart khi rời page / reload ===== */
+  useEffect(() => {
+    const handleUnload = () => {
+      syncCartToBackend();
+    };
 
-  async function handleCheckout() {
-    try {
-      await createOrderFromCart();
-      setCart(null);
-      showSuccess("Đặt hàng thành công! Thanh toán khi nhận hàng 🚚");
-      router.push("/customer/orders");
-    } catch {
-      showError("Không thể tạo đơn hàng");
+    window.addEventListener("beforeunload", handleUnload);
+    return () =>
+      window.removeEventListener("beforeunload", handleUnload);
+  }, [syncCartToBackend]);
+
+  function handleGoCheckout() {
+    if (items.length === 0) {
+      showError("Giỏ hàng đang trống");
+      return;
     }
+
+    // ✅ sync 1 lần trước khi checkout
+    syncCartToBackend().then(() => {
+      router.push("/customer/checkout");
+    });
   }
 
   return (
     <div className="bg-main-cupcake-background min-h-screen">
       <main className="max-w-6xl mx-auto px-4 py-32 bg-Sky_Whisper border-x-8 border-b-8 border-gray-200">
-
         <h1 className="text-5xl font-extrabold uppercase mb-10">
           Your Cart
         </h1>
@@ -62,7 +69,6 @@ export default function CartPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10">
-
             {/* LEFT – ITEMS */}
             <div className="flex flex-col gap-6">
               {items.map((item: any, idx: number) => (
@@ -94,24 +100,51 @@ export default function CartPage() {
                     </h3>
 
                     {item.size && (
-                      <p className="text-sm font-bold opacity-70">
+                      <p className="text-xs opacity-60 mt-1">
                         Size: {item.size}
                       </p>
                     )}
 
+                    {/* PRICE */}
                     <p className="font-bold mt-2">
-                      {Number(item.price).toLocaleString()} ₫ ×{" "}
-                      {item.quantity}
+                      {Number(item.price).toLocaleString()} ₫
+                    </p>
+
+                    {/* QTY CONTROLS – OPTIMISTIC */}
+                    <div className="mt-3 flex items-center gap-4">
+                      <button
+                        onClick={() => changeQtyLocal(item.id, -1)}
+                        className="button-style button-style-icon"
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
+
+                      <span className="min-w-[24px] text-center font-extrabold text-lg">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        onClick={() => changeQtyLocal(item.id, +1)}
+                        className="button-style button-style-icon"
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => removeCartItem(item.id)}
+                        className="absolute top-2 right-2 w-7 h-7 border-2 border-black flex items-center justify-center font-black"
+                      >
+                        ×
+                      </button>
+                    </div>
+
+
+                    {/* SUBTOTAL */}
+                    <p className="font-extrabold text-lg mt-2">
+                      {(item.price * item.quantity).toLocaleString()} ₫
                     </p>
                   </div>
-
-                  {/* REMOVE */}
-                  <button
-                    onClick={() => handleRemove(item.id)}
-                    className="self-start font-bold text-sm underline hover:text-red-600"
-                  >
-                    Remove
-                  </button>
                 </div>
               ))}
             </div>
@@ -135,7 +168,7 @@ export default function CartPage() {
               </div>
 
               <button
-                onClick={handleCheckout}
+                onClick={handleGoCheckout}
                 className="w-full border-2 border-black px-6 py-4 font-extrabold uppercase hover:bg-black hover:text-white transition"
               >
                 Order – Cash on Delivery
