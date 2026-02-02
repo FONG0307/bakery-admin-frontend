@@ -13,29 +13,25 @@ export type SigninResponse = {
   user: User;
 }
 
-export async function signin(
-  email: string,
-  password: string
-): Promise<SigninResponse> {
+// src/lib/auth.ts
+export async function signin(email: string, password: string) {
   const res = await fetch(`${API_URL}/api/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ email, password }),
   });
 
   const data = await res.json();
 
   if (!res.ok) {
-    if (res.status === 403) {
-      throw new Error("PLEASE_VERIFY_EMAIL");
-    }
-
-    throw new Error(data.error || "Login failed");
+    throw new Error(data.error || "UNKNOWN_ERROR");
   }
 
-  localStorage.setItem("token", data.token);
   return data;
 }
+
 
 
 /* ================= ME ================= */

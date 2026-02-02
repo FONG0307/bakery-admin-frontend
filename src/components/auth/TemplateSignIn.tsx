@@ -47,9 +47,9 @@ export default function TemplateSignIn() {
       const res = await signin(email, password);
       setUser(res.user);
     } catch (err: any) {
-      if (err?.message === "PLEASE_VERIFY_EMAIL") {
+      if (err?.message === "EMAIL_NOT_VERIFIED") {
         setError("Please verify your email before logging in.");
-      } 
+      }
       else if (err?.message === "ACCOUNT_DELETED") {
         setEmailForRestore(email);
         setShowRestore(true);
