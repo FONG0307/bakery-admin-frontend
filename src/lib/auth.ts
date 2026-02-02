@@ -183,3 +183,19 @@ export async function resetPassword(resetToken: string, password: string, passwo
 }
 
 
+// ================= RESTORE ACCOUNT =================
+export async function sendRestoreAccountEmail(email: string): Promise<void> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/request-restore-account`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    }
+  );
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data?.error || "FAILED_TO_SEND_RESTORE_EMAIL");
+  }
+}
