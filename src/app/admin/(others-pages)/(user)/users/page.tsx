@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteUser, getUsers } from "@/lib/users";
+import { deleteUser, getUsers, restoreUser } from "@/lib/users";
 import AddUserModal from "@/components/admin/AddUserModel";
 import EditUserModal from "@/components/admin/EditUserModal";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
@@ -26,11 +26,15 @@ export default function UsersPage() {
   const [editingUser, setEditingUser] = useState<any | null>(null);
 
   async function handleDelete(id: number) {
-    if (!confirm("Delete this user?")) return;
+    if (!confirm("Soft delete this user? They can be restored later.")) return;
     await deleteUser(id);
-    reload(); // 🔥 debounce-safe reload
+    reload();
   }
-
+  async function handleRestore(id: number) {
+    if (!confirm("Restore this user account?")) return;
+    await restoreUser(id);
+    reload();
+  }
   return (
     <div className="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-gray-900">
       {/* HEADER */}
@@ -75,6 +79,9 @@ export default function UsersPage() {
               <th className="py-3 text-left text-sm text-gray-500">
                 Role
               </th>
+              <th className="py-3 text-left text-sm text-gray-500">
+                Status
+              </th>
               <th className="py-3 text-right text-sm text-gray-500">
                 Actions
               </th>
@@ -84,7 +91,7 @@ export default function UsersPage() {
           <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={3} className="py-8 text-center text-gray-400">
+                <td colSpan={4} className="py-8 text-center text-gray-400">
                   No users found
                 </td>
               </tr>
@@ -109,6 +116,19 @@ export default function UsersPage() {
                     </div>
                   </td>
 
+                  {/* STATUS */}
+                  <td className="py-4 text-sm">
+                    {u.status === "active" ? (
+                      <span className="rounded-full bg-green-50 px-2 py-1 text-xs text-green-600">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-yellow-50 px-2 py-1 text-xs text-yellow-600">
+                        Deleted
+                      </span>
+                    )}
+                  </td>
+
                   {/* ROLE */}
                   <td className="py-4 text-sm text-gray-700 dark:text-gray-300">
                     {u.role}
@@ -123,12 +143,21 @@ export default function UsersPage() {
                       >
                         Edit
                       </button>
-                      <button
-                        onClick={() => handleDelete(u.id)}
-                        className="rounded-lg bg-red-50 px-3 py-1 text-xs text-red-600"
-                      >
-                        Delete
-                      </button>
+                      {u.status === "deleted" ? (
+                        <button
+                          onClick={() => handleRestore(u.id)}
+                          className="rounded-lg bg-green-50 px-3 py-1 text-xs text-green-600"
+                        >
+                          Restore
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleDelete(u.id)}
+                          className="rounded-lg bg-red-50 px-3 py-1 text-xs text-red-600"
+                        >
+                          Delete
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

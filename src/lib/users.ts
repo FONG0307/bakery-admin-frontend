@@ -180,3 +180,14 @@ export async function updateMe(
   return payload.user;
 }
 
+export async function restoreUser(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/users/${id}/restore`, {
+    method: "PATCH",
+    headers: authHeaderOnly(),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Restore user failed");
+  }
+}

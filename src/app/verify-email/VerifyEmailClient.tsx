@@ -1,4 +1,3 @@
-// src/app/verify-email/VerifyEmailClient.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,7 +13,7 @@ export default function VerifyEmailClient() {
   const { setUser, logout } = useAuth();
 
   const [status, setStatus] = useState<Status>("loading");
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const token = params.get("token");
@@ -26,106 +25,109 @@ export default function VerifyEmailClient() {
     }
 
     verifyEmail(token)
-    .then((res) => {
-        /**
-         * res.status có thể là:
-         * - "verified_now"
-         * - "already_verified"
-         */
-
+      .then((res) => {
         if (res.status === "verified_now") {
-        // logout user cũ (nếu có)
-        logout();
+          logout();
+          setUser(res.user);
 
-        // login user mới
-        setUser(res.user);
-
-        setStatus("success");
-        setMessage(
+          setStatus("success");
+          setMessage(
             "Your email has been verified successfully.\nYou will be logged in automatically."
-        );
+          );
 
-        setTimeout(() => {
+          setTimeout(() => {
             router.replace("/customer");
-        }, 2500);
-        return;
+          }, 2500);
+          return;
         }
 
         if (res.status === "already_verified") {
-        setStatus("info");
-        setMessage(
+          setStatus("info");
+          setMessage(
             "This account has already been verified.\nPlease do not spam the verification link."
-        );
-        return;
+          );
+          return;
         }
 
-        // fallback an toàn
         throw new Error("Unknown verification status");
-    })
-    .catch((err) => {
+      })
+      .catch((err) => {
         console.error("VERIFY FAILED:", err);
         setStatus("error");
         setMessage("Invalid or expired verification link.");
-    });
-
-    }, []);
+      });
+  }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-8 text-center bg-white rounded-2xl shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
+      <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-xl transition-all duration-500 animate-fadeIn">
+
+        {/* LOADING */}
         {status === "loading" && (
-          <>
-            <div className="mb-4 text-4xl animate-spin">⏳</div>
-            <h2 className="mb-2 text-xl font-semibold">
-              Verifying your email…
+          <div className="space-y-4">
+            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-gray-800" />
+            <h2 className="text-lg font-semibold text-gray-800">
+              Verifying your email
             </h2>
-            <p className="text-gray-500">
-              Please wait while we confirm your account.
+            <p className="text-sm text-gray-500">
+              Please wait a moment…
             </p>
-          </>
+          </div>
         )}
 
+        {/* SUCCESS */}
         {status === "success" && (
-          <>
-            <div className="mb-4 text-5xl">✅</div>
-            <h2 className="mb-2 text-xl font-semibold text-green-600">
-              Email verified successfully!
+          <div className="space-y-4 animate-scaleIn">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-3xl">
+              ✓
+            </div>
+            <h2 className="text-xl font-semibold text-green-600">
+              Email verified!
             </h2>
-            <p className="text-gray-600 whitespace-pre-line">
+            <p className="whitespace-pre-line text-sm text-gray-600">
               {message}
             </p>
-            <p className="mt-4 text-sm text-gray-400">
-              Redirecting you now…
+            <p className="text-xs text-gray-400">
+              Redirecting you shortly…
             </p>
-          </>
+          </div>
         )}
 
+        {/* ERROR */}
         {status === "error" && (
-          <>
-            <div className="mb-4 text-5xl">❌</div>
-            <h2 className="mb-2 text-xl font-semibold text-red-600">
+          <div className="space-y-4 animate-scaleIn">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-3xl">
+              ✕
+            </div>
+            <h2 className="text-xl font-semibold text-red-600">
               Verification failed
             </h2>
-            <p className="text-gray-600">{message}</p>
+            <p className="text-sm text-gray-600">
+              {message}
+            </p>
 
             <button
               onClick={() => router.replace("/signin")}
-              className="mt-6 px-6 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
+              className="mt-4 w-full rounded-lg bg-gray-900 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
             >
-              Go to Sign In
+              Back to Sign In
             </button>
-          </>
+          </div>
         )}
+
+        {/* INFO */}
         {status === "info" && (
-        <>
-            <div className="mb-4 text-5xl">ℹ️</div>
-            <h2 className="mb-2 text-xl font-semibold text-blue-600">
-            Account already verified
+          <div className="space-y-4 animate-scaleIn">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-3xl">
+              i
+            </div>
+            <h2 className="text-xl font-semibold text-blue-600">
+              Already verified
             </h2>
-            <p className="text-gray-600 whitespace-pre-line">
-            {message}
+            <p className="whitespace-pre-line text-sm text-gray-600">
+              {message}
             </p>
-        </>
+          </div>
         )}
 
       </div>
