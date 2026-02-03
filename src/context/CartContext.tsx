@@ -45,10 +45,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<Cart | null>(null);
   const [draftCart, setDraftCart] = useState<Cart | null>(null);
 
-  // tránh sync chồng
   const syncingRef = useRef(false);
-
-  /* ===== LOAD CART TỪ BACKEND ===== */
+  const loadingCartRef = useRef(false);
   async function reloadCart() {
     if (!user) {
       setCart(null);
@@ -57,15 +55,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
+      loadingCartRef.current = true;
       const data = await getCart();
       setCart(data);
-      setDraftCart(data); // 👈 clone để user chỉnh
+      setDraftCart(data);
     } catch (e) {
       console.error("Failed to load cart", e);
       setCart({ items: [] });
       setDraftCart({ items: [] });
+    } finally {
+      loadingCartRef.current = false;
     }
   }
+
 
   /* ===== OPTIMISTIC UPDATE (KHÔNG GỌI API) ===== */
   function changeQtyLocal(itemId: number, delta: number) {
@@ -77,7 +79,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       const newQty = item.quantity + delta;
 
-      // 🔴 Nếu quantity <= 0 → REMOVE ITEM
       if (newQty <= 0) {
         // gọi backend remove
         removeCartItem(itemId).catch(console.error);
@@ -124,16 +125,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   /* ===== AUTO LOAD CART ===== */
   useEffect(() => {
     if (loading) return;
+    if (!user) return;
+    if (user.role !== "user") {
+      setCart(null);
+      setDraftCart(null);
+      return;
+    }
     reloadCart();
   }, [user, loading]);
+
 
   /* ===== AUTO SYNC SAU KHI USER DỪNG THAO TÁC ===== */
   useEffect(() => {
     if (!draftCart) return;
+    if (loadingCartRef.current) return;
 
     const t = setTimeout(() => {
       syncCartToBackend();
-    }, 800); // 👈 debounce
+    }, 800);
 
     return () => clearTimeout(t);
   }, [draftCart]);
@@ -146,7 +155,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
-  }, [draftCart]);
+  }, []);
 
   return (
     <CartContext.Provider

@@ -12,6 +12,11 @@ async function fetchJSON(url: string, options: RequestInit = {}) {
     ...options,
   });
 
+  if (res.status === 401) {
+  // 🔥 Chưa login / token invalid → KHÔNG throw error
+    return null;
+  }
+
   if (!res.ok) {
     const text = await res.text();
     throw new Error(text || "Request failed");

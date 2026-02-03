@@ -23,18 +23,21 @@ export type User = {
   avatar_url?: string;
 };
 
-function authHeaderOnly() {
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("No auth token");
+function authHeaderOnly(): HeadersInit {
+  const token = getCleanToken();
+  if (!token) return {};
 
   return {
     Authorization: `Bearer ${token}`,
   };
 }
 
-function authJsonHeaders() {
+function authJsonHeaders(): HeadersInit {
+  const auth = authHeaderOnly();
+  if (!("Authorization" in auth)) return {};
+
   return {
-    ...authHeaderOnly(),
+    ...auth,
     "Content-Type": "application/json",
   };
 }
@@ -46,14 +49,17 @@ export async function getUsers(params: {
   per_page?: number;
   q?: string;
 }) {
-  const token = localStorage.getItem("token");
+  const token = getCleanToken();
+  if (!token) {
+    throw new Error("NOT_AUTHENTICATED");
+  }
 
   const qs = new URLSearchParams(
     Object.entries(params).filter(([, v]) => v !== undefined) as any
   ).toString();
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users?${qs}`,
+    `${API_BASE}/api/users?${qs}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -61,7 +67,7 @@ export async function getUsers(params: {
     }
   );
 
-  const json = await res.json();
+  const json = await res.json().catch(() => ({}));
 
   if (!res.ok) {
     throw new Error(json.error || "Fetch users failed");
@@ -72,6 +78,7 @@ export async function getUsers(params: {
     meta: json.meta,
   };
 }
+
 
 
 
@@ -141,9 +148,12 @@ export async function updateMe(
   data: Partial<User>,
   avatar?: File
 ): Promise<User> {
-  const token = localStorage.getItem("token");
+  const token = getCleanToken();
   if (!token) throw new Error("Unauthorized");
-
+  const headers = authHeaderOnly();
+  if (!("Authorization" in headers)) {
+    throw new Error("Unauthorized");
+  }
   const fd = new FormData();
 
   Object.entries(data).forEach(([key, value]) => {
@@ -190,4 +200,12 @@ export async function restoreUser(id: number): Promise<void> {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || "Restore user failed");
   }
+}
+function getCleanToken(): string | null {
+  const raw = localStorage.getItem("token");
+  if (!raw) return null;
+
+  return raw.startsWith("Bearer ")
+    ? raw.replace("Bearer ", "")
+    : raw;
 }

@@ -14,31 +14,34 @@ export type SigninResponse = {
 }
 
 // src/lib/auth.ts
-export async function signin(email: string, password: string) {
+export async function signin(email: string, password: string): Promise<SigninResponse> {
   const res = await fetch(`${API_URL}/api/login`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
 
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
     throw new Error(data.error || "UNKNOWN_ERROR");
   }
 
+  // 🔥 BẮT BUỘC: set token sớm
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+  }
+
   return data;
 }
-
-
 
 /* ================= ME ================= */
 
 export async function getMe(token?: string) {
-  const t = token ?? localStorage.getItem("token");
-  if (!t) throw new Error("No token");
+  const t = getCleanToken(token);
+  if (!t) {
+    return Promise.reject(new Error("UNAUTHENTICATED"));
+  }
 
   const res = await fetch(`${API_URL}/api/me`, {
     headers: {
@@ -47,9 +50,13 @@ export async function getMe(token?: string) {
     },
   });
 
-  if (!res.ok) throw new Error("Unauthorized");
+  if (!res.ok) {
+    throw new Error("UNAUTHORIZED");
+  }
+
   return res.json();
 }
+
 
 /* ================= SIGNUP (FIX LỖI BUILD) ================= */
 
@@ -75,24 +82,26 @@ export async function signup(
 }
 
 /* ================= LOGOUT ================= */
-
 export async function signout() {
-  const token = localStorage.getItem("token");
+  const token = getCleanToken();
 
   try {
-    await fetch(`${API_URL}/api/logout`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    });
+    if (token) {
+      await fetch(`${API_URL}/api/logout`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+    }
   } catch {
     // ignore
   } finally {
     localStorage.removeItem("token");
   }
 }
+
 /* ================= VERIFY EMAIL ================= */
 
 export async function verifyEmail(token: string) {
@@ -194,4 +203,13 @@ export async function sendRestoreAccountEmail(email: string): Promise<void> {
     const data = await res.json().catch(() => ({}));
     throw new Error(data?.error || "FAILED_TO_SEND_RESTORE_EMAIL");
   }
+}
+
+function getCleanToken(explicit?: string): string | null {
+  const raw = explicit ?? localStorage.getItem("token");
+  if (!raw) return null;
+
+  return raw.startsWith("Bearer ")
+    ? raw.replace("Bearer ", "")
+    : raw;
 }
