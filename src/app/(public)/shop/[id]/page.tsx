@@ -154,7 +154,7 @@ export default function ProductDetailPage() {
                 lg:w-[450px] lg:h-[450px]
               ">
                 <Image
-                  src={product.image_url || "/images/product/bakery-placeholder.png"}
+                  src={product.image_medium_url || "/images/product/bakery-placeholder.png"}
                   alt={product.item_name}
                   fill
                   className="object-cover"

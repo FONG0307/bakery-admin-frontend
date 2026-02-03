@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
+import ImageCropModal from "@/components/admin/ImageCropModal";
 
 export default function TestProductsPage() {
 
@@ -23,6 +24,8 @@ export default function TestProductsPage() {
   const [showFilter, setShowFilter] = useState(false);
   const [showAddStock, setShowAddStock] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [rawImage, setRawImage] = useState<File | null>(null);
+  const [showCrop, setShowCrop] = useState(false);
 
   const {
     data: products,
@@ -123,7 +126,7 @@ export default function TestProductsPage() {
         ? await updateProduct(initial.id, fd)
         : await createProduct(fd);
 
-      onSaved(saved);
+      await onSaved(null);
       onClose();
     }
 
@@ -186,11 +189,25 @@ export default function TestProductsPage() {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setImage(e.target.files?.[0] || null)}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (!f) return;
+                setRawImage(f);
+                setShowCrop(true);
+              }}
               className="w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
           </div>
-
+          {showCrop && rawImage && (
+            <ImageCropModal
+                file={rawImage}
+                onCancel={() => setShowCrop(false)}
+                onCropped={(file) => {
+                  setImage(file); // <- file đã crop
+                  setShowCrop(false);
+                }}
+              />
+           )}
           <div className="flex justify-end gap-3 pt-4">
             <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               Cancel
@@ -203,6 +220,7 @@ export default function TestProductsPage() {
       </div>
     );
   }
+
 
 
 // =============================================================
@@ -277,7 +295,11 @@ export default function TestProductsPage() {
                       <Image
                         width={50}
                         height={50}
-                        src={product.image_url || "/images/product/bakery-placeholder.png"}
+                        src={
+                          product.image_thumb_url ||
+                          product.image_url ||
+                          "/images/product/bakery-placeholder.png"
+                        }                        
                         className="h-[50px] w-[50px]"
                         alt={product.item_name}
                       />
@@ -373,6 +395,7 @@ export default function TestProductsPage() {
           </TableBody>
         </Table>
       </div>
+      
       {showAddStock && selectedProduct && (
         <AddStockForm
           product={selectedProduct}
@@ -389,6 +412,7 @@ export default function TestProductsPage() {
       )}
 
       {openForm && (
+        
         <ProductForm
           initial={editing}
           onClose={() => setOpenForm(false)}
