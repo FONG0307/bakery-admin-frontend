@@ -58,18 +58,18 @@ export default function HomePublic() {
     <>
       <main className="h-screen grid grid-cols-3 md:grid-cols-6 xl:grid-cols-9 xl:grid-rows-2 xl:h-screen pt-20">
        
-        <div className="bg-main-cupcake-one bg-cover bg-no-repeat border-x-8 border-b-8 row-start-1 col-span-1 md:col-span-2 xl:col-span-2"></div>
+        <div className="bg-main-cupcake-one bg-cover bg-no-repeat border-x-4 border-black border-b-4 border-black row-start-1 col-span-1 md:col-span-2 xl:col-span-2"></div>
 
-        <div className="bg-Coral_Sunset w-full h-full col-start-2 col-span-full row-start-1 border-r-8 border-b-8 flex flex-col justify-center gap-2 items-start pl-4 md:col-span-2 xl:col-span-4 xl:gap-3 xl:pl-20">
+        <div className="bg-Coral_Sunset w-full h-full col-start-2 col-span-full row-start-1 border-r-4 border-black border-b-4 border-black flex flex-col justify-center gap-2 items-start pl-4 md:col-span-2 xl:col-span-4 xl:gap-3 xl:pl-20">
           <h1 className="text-3xl font-bold uppercase xl:text-5xl">
             100% <br /> <span>Gluten free</span> <br /> Goodness
           </h1>
           <Link className="button-style" href="/shop">Order Now</Link>
         </div>
 
-        <div className="bg-main-cupcake-three md:bg-cover md:bg-center md:bg-no-repeat md:col-span-2 md:border-b-8 md:border-r-8 xl:col-span-3 xl:row-span-2"></div>
+        <div className="bg-main-cupcake-three md:bg-cover md:bg-center md:bg-no-repeat md:col-span-2 md:border-b-4 border-black md:border-r-4 border-black xl:col-span-3 xl:row-span-2"></div>
 
-        <div className="bg-Pink_Passion col-span-2 border-l-8 border-b-8 flex flex-col justify-center gap-2 items-start pl-4 md:col-span-3 xl:py-10 xl:gap-6">
+        <div className="bg-Pink_Passion col-span-2 border-l-4 border-black border-b-4 border-black flex flex-col justify-center gap-2 items-start pl-4 md:col-span-3 xl:py-10 xl:gap-6">
             <h2 className="text-base font-extrabold xl:text-2xl">Get more than just cakes!</h2>
             <p className="text-base xl:text-xl">
               We pride ourselves on making the best tasting gluten-free cakes
@@ -77,14 +77,14 @@ export default function HomePublic() {
             </p>
         </div>
 
-        <div className="bg-main-cupcake-two bg-cover bg-center bg-no-repeat col-start-3 md:col-start-4 md:col-span-3 border-x-8 border-b-8 xl:col-span-2"></div>
+        <div className="bg-main-cupcake-two bg-cover bg-center bg-no-repeat col-start-3 md:col-start-4 md:col-span-3 border-x-4 border-black border-b-4 border-black xl:col-span-2"></div>
 
-        <div className="hidden xl:block xl:col-span-1 bg-Sky_Whisper border-r-8 border-b-8"></div>
+        <div className="hidden xl:block xl:col-span-1 bg-Sky_Whisper border-r-4 border-black border-b-4 border-black"></div>
       </main>
 
       <section className="learn-more-section grid grid-cols-4">
-        <div className="bg-main-cupcake-four bg-no-repeat bg-cover xl:h-[50rem] col-start-1 col-end-3 border-x-8 border-b-8"></div>
-        <section className="bg-Lemon_Zest border-r-8 border-b-8 p-4 col-span-2 xl:flex xl:flex-col xl:items-start xl:justify-center xl:p-20 xl:gap-10">
+        <div className="bg-main-cupcake-four bg-no-repeat bg-cover xl:h-[50rem] col-start-1 col-end-3 border-x-4 border-black border-b-4 border-black"></div>
+        <section className="bg-Lemon_Zest border-r-4 border-black border-b-4 border-black p-4 col-span-2 xl:flex xl:flex-col xl:items-start xl:justify-center xl:p-20 xl:gap-10">
           <h2 className="text-base font-extrabold mb-4 xl:text-xl">
             Made with love and care, our gluten-free cakes not only look
             great but also taste amazing. Each one is meticulously crafted to
@@ -104,7 +104,7 @@ export default function HomePublic() {
       </section>
 
       <section className="flex flex-col xl:grid xl:grid-cols-4 xl:grid-rows-2">
-        <div className="bg-Sky_Whisper border-x-8 border-b-8 p-4 xl:col-span-2">
+        <div className="bg-Sky_Whisper border-x-4 border-black border-b-4 border-black p-4 xl:col-span-2">
           <h2 className="font-bold">
             Discover the magic of our gluten-free cakes! Our creations are a
             delightful fusion of flavors and artistry, sure to please any
@@ -113,7 +113,7 @@ export default function HomePublic() {
           </h2>
         </div>
 
-        <div className="bg-Pink_Passion border-x-8 border-b-0 p-10 xl:col-span-2 xl:row-start-2">
+        <div className="bg-Pink_Passion border-x-4 border-black border-b-0 p-10 xl:col-span-2 xl:row-start-2">
           <Link className="button-style " href="/shop">Go To Shop</Link>
         </div>
 
@@ -122,14 +122,14 @@ export default function HomePublic() {
           {products.slice(0, 4).map((product) => (
             <div
               key={product.id}
-              className="xl:col-span-3 xl:h-96 border-r-8 flex items-end bg-cover bg-center"
+              className="xl:col-span-3 xl:h-96 border-r-4 border-black flex items-end bg-cover bg-center"
               style={{
                 backgroundImage: `url(${product.image_url})`,
               }}
             >
               <Link
                 href={`/shop/${product.id}`}
-                className="bg-Lemon_Zest text-center text-xl font-bold border-t-8 w-full py-2 hover:underline"
+                className="bg-Lemon_Zest text-center text-xl font-bold border-t-4 border-black w-full py-2 hover:underline"
               >
                 {product.item_name}
               </Link>

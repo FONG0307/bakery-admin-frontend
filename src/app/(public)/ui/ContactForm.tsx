@@ -1,6 +1,6 @@
 export default function ContactForm() {
   return (
-    <div className="bg-Sky_Whisper border-x-8 border-b-8 p-8 md:border-r-0 md:border-b-0 md:w-8/12 ">
+    <div className="bg-Sky_Whisper border-x-4 border-black border-b-4 border-black p-8 md:border-r-0 md:border-b-0 md:w-8/12 ">
       <h1 className="text-xl font-bold my-6 md:text-4xl">Talk to us.</h1>
       <form className="flex flex-col gap-6 justify-center md:gap-10 ">
         <div>

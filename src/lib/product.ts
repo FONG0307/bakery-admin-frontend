@@ -93,9 +93,38 @@ export async function getDailyStock() {
 // ====================
 // PUBLIC (no auth)
 // ====================
-export async function getProductsPublic() {
-  const res = await fetch(`${API_URL}/api/public/products`);
-  if (!res.ok) return [];
+export async function getProductsPublic(
+  params: {
+    page?: number;
+    per_page?: number;
+    category?: string;
+    subcategory?: string;
+    q?: string;
+  } = {} // 👈 QUAN TRỌNG
+) {
+  const qs = new URLSearchParams(
+    Object.entries(params)
+      .filter(([, v]) => v !== undefined && v !== null)
+      .map(([k, v]) => [k, String(v)])
+  ).toString();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/public/products${qs ? `?${qs}` : ""}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch products");
+  return res.json();
+}
+
+
+export async function getProductPublicBySlug(slug: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/public/products/slug/${slug}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) throw new Error("Product not found");
   return res.json();
 }
 
@@ -123,15 +152,21 @@ export async function createProduct(data: FormData) {
 // UPDATE
 // ====================
 export async function updateProduct(id: number, data: FormData) {
+  const token = localStorage.getItem("token");
+  
   const res = await fetch(`${API_URL}/api/products/${id}`, {
-    method: "PUT",
-    headers: authHeaderOnly(),
+    method: "PATCH",
+    headers: token
+      ? { Authorization: `Bearer ${token}` }
+      : undefined,
     body: data,
+    
   });
 
   if (!res.ok) throw new Error("Update failed");
   return res.json();
 }
+
 
 // DELETE
 export async function deleteProduct(id: number) {
@@ -180,5 +215,24 @@ export async function addProductStock(
   });
 
   if (!res.ok) throw new Error("Add stock failed");
+  return res.json();
+}
+export async function getCategories() {
+  const res = await fetch(`${API_URL}/api/categories`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  if (!res.ok) throw new Error("Failed to load categories");
+  return res.json();
+}
+
+export async function getSubcategories() {
+  const res = await fetch(`${API_URL}/api/subcategories`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  if (!res.ok) throw new Error("Failed to load subcategories");
   return res.json();
 }

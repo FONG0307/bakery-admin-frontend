@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { createProduct,updateProduct,deleteProduct, addProductStock } from "@/lib/product";
-import { useAuth } from "@/context/AuthContext";
+import { createProduct,updateProduct,deleteProduct, addProductStock, getCategories, getSubcategories } from "@/lib/product";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import { getProductsPaginated } from "@/lib/product";
 import {
@@ -24,8 +23,7 @@ export default function TestProductsPage() {
   const [showFilter, setShowFilter] = useState(false);
   const [showAddStock, setShowAddStock] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
-  const [rawImage, setRawImage] = useState<File | null>(null);
-  const [showCrop, setShowCrop] = useState(false);
+
 
   const {
     data: products,
@@ -84,7 +82,7 @@ export default function TestProductsPage() {
   }
 
   function isCake(product: any) {
-    return product?.category?.toLowerCase() === "cake";
+    return product?.category?.slug === "cake";
   }
 
   function statusClass(product: any) {
@@ -103,25 +101,45 @@ export default function TestProductsPage() {
     onClose: () => void;
     onSaved: (p: any) => void;
   }) {
+    useEffect(() => {
+      async function load() {
+        const [cats, subs] = await Promise.all([
+          getCategories(),
+          getSubcategories(),
+        ]);
+        setCategories(cats);
+        setSubcategories(subs);
+      }
+      load();
+    }, []);
+    
     const [itemName, setItemName] = useState(initial?.item_name || "");
-    const [category, setCategory] = useState(initial?.category || "");
+    const [categoryId, setCategoryId] = useState<number | "">(
+      initial?.category?.id ?? ""
+    );
+    const [subcategoryId, setSubcategoryId] = useState<number | "">(
+      initial?.subcategory?.id ?? ""
+    );
     const [price, setPrice] = useState(initial?.unit_price || "");
     const [image, setImage] = useState<File | null>(null);
     const [description, setDescription] = useState(initial?.description || "");
-    
-
+    const [rawImage, setRawImage] = useState<File | null>(null);
+    const [showCrop, setShowCrop] = useState(false);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [subcategories, setSubcategories] = useState<any[]>([]);
 
     async function handleSubmit(e: React.FormEvent) {
       e.preventDefault();
 
       const fd = new FormData();
       fd.append("product[item_name]", itemName);
-      fd.append("product[category]", category);
+      fd.append("product[category_id]", String(categoryId));
+      fd.append("product[subcategory_id]", String(subcategoryId));
       fd.append("product[unit_price]", price);
       fd.append("product[description]", description);
 
       if (image) fd.append("image", image);
-
+      console.log("IMAGE FILE:", image);
       const saved = initial
         ? await updateProduct(initial.id, fd)
         : await createProduct(fd);
@@ -150,14 +168,40 @@ export default function TestProductsPage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-            <input
-              className="w-full border border-gray-300 dark:border-gray-600 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              placeholder="Enter category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
+            <select
+              value={categoryId}
+              onChange={(e) => {
+                setCategoryId(Number(e.target.value));
+                setSubcategoryId("");
+              }}
+            >
+              <option value="">Select category</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
-
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Subcategory
+            </label>
+            <select
+              value={subcategoryId}
+              onChange={(e) => setSubcategoryId(Number(e.target.value))}
+              disabled={!categoryId}
+            >
+              <option value="">Select subcategory</option>
+              {subcategories
+                .filter((s) => s.category_id === categoryId)
+                .map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+              ))}
+                          </select>
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price</label>
             <input
@@ -203,7 +247,8 @@ export default function TestProductsPage() {
                 file={rawImage}
                 onCancel={() => setShowCrop(false)}
                 onCropped={(file) => {
-                  setImage(file); // <- file đã crop
+                    console.log("CROPPED VALUE:", file, file?.constructor?.name);
+                  setImage(file);
                   setShowCrop(false);
                 }}
               />
@@ -255,7 +300,7 @@ export default function TestProductsPage() {
           >
             See all
           </button>
-        </div>
+        </div>  
 
       </div>
 
@@ -269,6 +314,9 @@ export default function TestProductsPage() {
               </TableCell>
               <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Category
+              </TableCell>
+              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                SubCategory
               </TableCell>
               <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Price
@@ -313,7 +361,11 @@ export default function TestProductsPage() {
                 </TableCell>
 
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  {product.category}
+                  {product.category?.name ?? "-"}
+                </TableCell>
+
+                <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  {product.subcategory?.name ?? "-"}
                 </TableCell>
 
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">

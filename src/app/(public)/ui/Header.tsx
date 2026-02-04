@@ -49,7 +49,7 @@ export default function Header() {
     ) || 0;
 
   return (
-    <header className="bg-yellow-800 px-6 py-8 border-8 fixed w-full z-10 h-32">
+    <header className="bg-yellow-800 px-6 py-8 border-4 border-black fixed w-full z-10 h-32 fixed z-50">
       <nav className="hidden sm:flex justify-between items-center relative">
         {/* LEFT */}
         <div className="flex items-center gap-5">

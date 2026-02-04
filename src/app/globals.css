@@ -889,3 +889,19 @@ span.flatpickr-weekday,
 .animate-scaleIn {
   animation: scaleIn 0.3s ease-out;
 }
+@layer components {
+  .neo-frame {
+    @apply border-4 border-black;
+  }
+}
+@layer components {
+  .neo {
+    @apply border-4 border-black;
+  }
+  .neo-r {
+    @apply border-r-4 border-black;
+  }
+  .neo-b {
+    @apply border-b-4 border-black;
+  }
+}
