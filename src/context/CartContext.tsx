@@ -70,18 +70,34 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
 
   /* ===== OPTIMISTIC UPDATE (KHÔNG GỌI API) ===== */
+  let reloadTimeout: NodeJS.Timeout | null = null;
+
+  function debouncedReloadCart() {
+    if (reloadTimeout) clearTimeout(reloadTimeout);
+    reloadTimeout = setTimeout(() => {
+      reloadCart().catch(console.error);
+      reloadTimeout = null;
+    }, 500); // đợi 500ms mới call reloadCart
+  }
+
   function changeQtyLocal(itemId: number, delta: number) {
     setDraftCart((prev) => {
       if (!prev) return prev;
 
       const item = prev.items.find((i) => i.id === itemId);
-      if (!item) return prev;
+      if (!item) {
+        // Item không tồn tại trong draftCart, nên reload cart để đồng bộ
+        if (!reloadTimeout) reloadCart().catch(console.error);
+        return prev;
+      }
 
       const newQty = item.quantity + delta;
 
       if (newQty <= 0) {
         // gọi backend remove
-        removeCartItem(itemId).catch(console.error);
+        removeCartItem(itemId)
+          .then(() => reloadCart())
+          .catch(console.error);
 
         return {
           ...prev,
@@ -90,7 +106,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
 
       // 🟢 Update quantity
-      updateCartItem(itemId, newQty).catch(console.error);
+      updateCartItem(itemId, newQty)
+        .then(() => debouncedReloadCart())
+        .catch(console.error);
 
       return {
         ...prev,

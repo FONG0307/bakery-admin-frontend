@@ -103,7 +103,7 @@ export default function Header() {
                           return (
                             <Link
                               key={item.id}
-                              href={`/shop/${item.product_id}`}
+                              href={"/shop"}
                               onClick={() => setOpenCart(false)}
                               className={`block ${bgColor} hover:brightness-95 transition`}
                             >
