@@ -8,15 +8,21 @@ import Link from "next/link";
 /* ================= TYPES ================= */
 type LoadState = "loading" | "success" | "error";
 
+type Taxonomy = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
 type Product = {
   id: number;
   item_name: string;
-  category?: string;
-  subcategory?: string;
+  category?: Taxonomy;
+  subcategory?: Taxonomy;
   description?: string;
   unit_price?: number;
   image_url?: string;
-  slug: string; 
+  slug: string;
 };
 
 /* ================= PROPS ================= */
@@ -167,13 +173,13 @@ export default function ShopGrid({
                   >
                     {/* Header: Subcategory */}
                     <div className={`border-b-4 border-black p-2 ${style.accent} font-black text-xs uppercase text-center truncate tracking-widest`}>
-                        {p.subcategory || "Special Item"}
+                        {p.subcategory?.name || "Special Item"}
                     </div>
 
                     {/* Image Area with Zoom Effect */}
                     <div className="relative aspect-square border-b-4 border-black overflow-hidden bg-gray-100">
                         {/* Link to detail on Image */}
-                        <Link href={`/shop/${p.category}/${p.subcategory}/${p.slug}`} className="block w-full h-full">
+                        <Link href={`/shop/${p.category?.slug}/${p.subcategory?.slug}/${p.slug}`} className="block w-full h-full">
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 z-10 transition-colors duration-300" />
                             <Image
                                 src={p.image_url || "/images/placeholder.png"}
@@ -198,7 +204,7 @@ export default function ShopGrid({
 
                     {/* Info Body */}
                     <div className="p-5 flex flex-col flex-1 justify-between">
-                        <Link href={`/shop/${p.category}/${p.subcategory}/${p.slug}`} className="group/text">
+                        <Link href={`/shop/${p.category?.slug}/${p.subcategory?.slug}/${p.slug}`} className="group/text">
                             <h3 className="text-2xl font-black uppercase leading-none mb-2 drop-shadow-sm group-hover/text:underline decoration-4 decoration-black underline-offset-4">
                                 {p.item_name}
                             </h3>
@@ -211,7 +217,11 @@ export default function ShopGrid({
                     {/* Footer: Price & Button */}
                     <div className="flex border-t-4 border-black bg-white mt-auto">
                       <div className="flex-1 p-3 font-black text-xl flex items-center justify-center border-r-4 border-black">
-                        ${p.unit_price}
+                        { 
+                          new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 })
+                            .format(p.unit_price ?? 0)
+                            .replace(/,/g, ' ') 
+                        } VND                      
                       </div>
                       <button
                         onClick={() => setOrderProduct(p)}
@@ -293,7 +303,7 @@ export default function ShopGrid({
                 <div className="flex flex-col gap-4">
                     <div>
                         <span className="bg-[#BAFCA2] border-2 border-black px-2 py-1 text-xs font-bold uppercase mb-2 inline-block">
-                            {orderProduct.category || "General"}
+                            {orderProduct.category?.name || "General"}
                         </span>
                         <p className="text-sm font-bold mt-2 leading-relaxed">
                             {orderProduct.description || "No description available."}
@@ -305,7 +315,7 @@ export default function ShopGrid({
                             ${orderProduct.unit_price}
                          </div>
                          <Link 
-                            href={`/shop/${orderProduct.category}/${orderProduct.subcategory}/${orderProduct.slug}`}
+                            href={`/shop/${orderProduct.category?.slug}/${orderProduct.subcategory?.slug}/${orderProduct.slug}`}
                             className="block w-full text-center py-3 bg-black text-white font-black uppercase hover:bg-[#9AE5FF] hover:text-black border-4 border-black transition-colors"
                          >
                             View Full Details

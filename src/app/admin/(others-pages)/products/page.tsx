@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createProduct,updateProduct,deleteProduct, addProductStock, getCategories, getSubcategories } from "@/lib/product";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import { getProductsPaginated } from "@/lib/product";
@@ -14,6 +14,7 @@ import {
 import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
 import ImageCropModal from "@/components/admin/ImageCropModal";
+import { createCategory, createSubcategory, deleteCategory, getCategoriesAdmin, getSubcategoriesAdmin, updateCategory, updateSubcategory } from "@/lib/category";
 
 export default function TestProductsPage() {
 
@@ -23,7 +24,7 @@ export default function TestProductsPage() {
   const [showFilter, setShowFilter] = useState(false);
   const [showAddStock, setShowAddStock] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
-
+  const [showCategoryManager, setShowCategoryManager] = useState(false);
 
   const {
     data: products,
@@ -40,6 +41,210 @@ export default function TestProductsPage() {
     );
   }, [products, selectedStatuses]);
 
+  function CategoryManager({
+    onClose,
+  }: {
+    onClose: () => void;
+  }) {
+    const [categories, setCategories] = useState<any[]>([]);
+    const [name, setName] = useState("");
+    const [editing, setEditing] = useState<any | null>(null);
+    const [editingSub, setEditingSub] = useState<any | null>(null);
+    const [subName, setSubName] = useState("");
+    const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
+    const [subcategories, setSubcategories] = useState<any[]>([]);
+    const didLoad = useRef(false);
+    
+
+    async function load() {
+      const [cats, subs] = await Promise.all([
+        getCategoriesAdmin(),
+        getSubcategories(),
+      ]);
+
+      setCategories(cats);
+      setSubcategories(subs);
+    }
+
+    useEffect(() => {
+      if (didLoad.current) return;
+      didLoad.current = true;
+
+      load();
+    }, []);
+    
+    const subMap = useMemo(() => {
+      const map: Record<number, any[]> = {};
+      categories.forEach((cat) => {
+        map[cat.id] = [];
+      });
+
+      subcategories.forEach((sub) => {
+        const catId = sub.category?.id;
+        if (!catId) return;
+        if (!map[catId]) map[catId] = [];
+        map[catId].push(sub);
+      });
+
+      return map;
+    }, [categories, subcategories]);
+
+
+
+    async function save() {
+      if (!name.trim()) return;
+      if (editing) {
+        await updateCategory(editing.id, { name });
+      } else {
+        await createCategory({ name });
+      }
+      setName("");
+      setEditing(null);
+      load();
+    }
+
+    async function remove(id: number) {
+      if (!confirm("Delete this category?")) return;
+      await deleteCategory(id);
+      load();
+    }
+    function editSubcategory(sub: any) {
+      setEditingSub(sub);
+      setSubName(sub.name);
+      setParentCategoryId(sub.category_id);
+    }
+    function addSubcategory(categoryId: number) {
+      setEditingSub(null);
+      setSubName("");
+      setParentCategoryId(categoryId);
+    }
+    function editCategory(cat: any) {
+      setEditing(cat);
+      setName(cat.name);
+    }
+    async function saveSubcategory() {
+      if (!subName.trim() || !parentCategoryId) return;
+
+      if (editingSub) {
+        await updateSubcategory(editingSub.id, { name: subName });
+      } else {
+        await createSubcategory({
+          name: subName,
+          category_id: parentCategoryId,
+        });
+      }
+
+      setEditingSub(null);
+      setSubName("");
+      setParentCategoryId(null);
+      load();
+    }
+    return (
+      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="bg-white rounded-xl w-[420px] p-5 space-y-4">
+          <h3 className="text-lg font-bold">Manage Categories</h3>
+
+          <div className="flex gap-2">
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Category name"
+              className="flex-1 border px-3 py-2 rounded"
+            />
+            <button
+              onClick={save}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              {editing ? "Update" : "Add"}
+            </button>
+          </div>
+
+          <div className="divide-y">
+            {parentCategoryId && (
+              <div className="flex gap-2">
+                <input
+                  value={subName}
+                  onChange={(e) => setSubName(e.target.value)}
+                  placeholder="Subcategory name"
+                  className="flex-1 border px-3 py-2 rounded"
+                />
+                <button
+                  onClick={async () => {
+                    if (!subName.trim()) return;
+
+                    if (editingSub) {
+                      await updateSubcategory(editingSub.id, { name: subName });
+                    } else {
+                      await createSubcategory({
+                        name: subName,
+                        category_id: parentCategoryId,
+                      });
+                    }
+
+                    setEditingSub(null);
+                    setSubName("");
+                    setParentCategoryId(null);
+                    load();
+                  }}
+                  className="px-4 py-2 bg-green-600 text-white rounded"
+                >
+                  {editingSub ? "Update Sub" : "Add Sub"}
+                </button>
+              </div>
+            )}
+
+            {categories.map((cat) => (
+              <div key={cat.id} className="border rounded p-3 space-y-2">
+                {/* CATEGORY */}
+                <div className="flex justify-between font-semibold">
+                  <span>{cat.name}</span>
+                  <button
+                    onClick={() => {
+                      setEditing(cat);
+                      setName(cat.name);
+                    }}
+                    className="text-blue-600 text-sm"
+                  >
+                    Edit
+                  </button>
+                </div>
+
+                <div className="ml-4 space-y-1">
+                  {subMap[cat.id]?.map((sub) => (
+                    <div key={sub.id} className="flex justify-between text-sm">
+                      └ {sub.name}
+                      <button
+                        onClick={() => editSubcategory(sub)}
+                        className="text-blue-600"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* ADD SUB */}
+                  <button
+                    onClick={() => addSubcategory(cat.id)}
+                    className="text-xs text-green-600"
+                  >
+                    + Add subcategory
+                  </button>
+                </div>
+              </div>
+            ))}
+
+
+          </div>
+
+          <div className="flex justify-end">
+            <button onClick={onClose} className="px-4 py-2 border rounded">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   function nextPage() {
     if (page < meta?.total_pages) {
@@ -104,8 +309,8 @@ export default function TestProductsPage() {
     useEffect(() => {
       async function load() {
         const [cats, subs] = await Promise.all([
-          getCategories(),
-          getSubcategories(),
+          getCategoriesAdmin(),
+          getSubcategoriesAdmin(),
         ]);
         setCategories(cats);
         setSubcategories(subs);
@@ -127,7 +332,24 @@ export default function TestProductsPage() {
     const [showCrop, setShowCrop] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [subcategories, setSubcategories] = useState<any[]>([]);
+    
+    const subMap = useMemo(() => {
+      const map: Record<number, any[]> = {};
+      subcategories.forEach((s) => {
+        if (!map[s.category_id]) map[s.category_id] = [];
+        map[s.category_id].push(s);
+      });
+      return map;
+    }, [subcategories]);
 
+    const filteredSubcategories = useMemo(() => {
+      if (!categoryId) return [];
+      return subcategories.filter(
+        (s) => Number(s.category?.id) === Number(categoryId)
+      );
+    }, [categoryId, subcategories]);
+
+    
     async function handleSubmit(e: React.FormEvent) {
       e.preventDefault();
 
@@ -193,14 +415,13 @@ export default function TestProductsPage() {
               disabled={!categoryId}
             >
               <option value="">Select subcategory</option>
-              {subcategories
-                .filter((s) => s.category_id === categoryId)
-                .map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
+              {filteredSubcategories.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
               ))}
-                          </select>
+            </select>
+
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price</label>
@@ -299,6 +520,12 @@ export default function TestProductsPage() {
             onClick={handleSeeAll}
           >
             See all
+          </button>
+          <button
+            onClick={() => setShowCategoryManager(true)}
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Manage Categories
           </button>
         </div>  
 
@@ -448,6 +675,15 @@ export default function TestProductsPage() {
         </Table>
       </div>
       
+      {showCategoryManager && (
+        <CategoryManager
+          onClose={() => {
+            setShowCategoryManager(false);
+            reload(); // reload products nếu category đổi
+          }}
+        />
+      )}
+
       {showAddStock && selectedProduct && (
         <AddStockForm
           product={selectedProduct}
@@ -462,7 +698,7 @@ export default function TestProductsPage() {
           }}
         />
       )}
-
+      
       {openForm && (
         
         <ProductForm

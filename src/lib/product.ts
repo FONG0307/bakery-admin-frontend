@@ -100,7 +100,7 @@ export async function getProductsPublic(
     category?: string;
     subcategory?: string;
     q?: string;
-  } = {} // 👈 QUAN TRỌNG
+  } = {} 
 ) {
   const qs = new URLSearchParams(
     Object.entries(params)
@@ -118,15 +118,25 @@ export async function getProductsPublic(
 }
 
 
-export async function getProductPublicBySlug(slug: string) {
+export async function getProductPublicBySlug(
+  category: string,
+  subcategory: string,
+  slug: string
+) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/public/products/slug/${slug}`,
+    `${API_URL}/api/public/products/${category}/${subcategory}/${slug}`, // ✅ ĐÚNG
     { cache: "no-store" }
   );
 
-  if (!res.ok) throw new Error("Product not found");
+  if (!res.ok) {
+    console.error("API ERROR:", res.status, await res.text());
+    throw new Error("Product not found");
+  }
+
   return res.json();
 }
+
+
 
 export async function getProductPublic(id: number) {
   const res = await fetch(`${API_URL}/api/public/products/${id}`);

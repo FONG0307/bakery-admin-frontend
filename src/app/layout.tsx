@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/context/ToastContext';
 import { CartProvider } from "@/context/CartContext";
+import { CatalogProvider } from '@/context/CatalogContext';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -24,7 +25,9 @@ export default function RootLayout({
             <CartProvider>
               <ToastProvider>
               <SidebarProvider>
-                {children}
+                <CatalogProvider>
+                  {children}
+                </CatalogProvider>
               </SidebarProvider>
             </ToastProvider>
             </CartProvider>

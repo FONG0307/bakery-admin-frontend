@@ -14,28 +14,30 @@ import { useToast } from "@/context/ToastContext";
 
 /* ================= ICONS ================= */
 const ArrowLeft = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="19" y1="12" x2="5" y2="12"></line>
-    <polyline points="12 19 5 12 12 5"></polyline>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
   </svg>
 );
+
 const StarIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
+
 const CartIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="9" cy="21" r="1"></circle>
-    <circle cx="20" cy="21" r="1"></circle>
-    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="9" cy="21" r="1" />
+    <circle cx="20" cy="21" r="1" />
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
   </svg>
 );
 
 type LoadState = "loading" | "success" | "error";
 
 export default function ProductDetailPage() {
-  const { category, subcategory, slug } = useParams<{
+  const params = useParams<{
     category: string;
     subcategory: string;
     slug: string;
@@ -53,17 +55,24 @@ export default function ProductDetailPage() {
   const { setCart } = useCart();
   const { showSuccess, showError } = useToast();
 
-  /* ================= LOAD BY SLUG ================= */
+  /* ================= LOAD PRODUCT ================= */
   useEffect(() => {
-    if (!slug) return;
+    const { category, subcategory, slug } = params;
+    if (!category || !subcategory || !slug) return;
+
     let mounted = true;
 
     async function load() {
       try {
         setState("loading");
-        const res = await getProductPublicBySlug(slug);
-        if (!mounted) return;
 
+        const res = await getProductPublicBySlug(
+          category,
+          subcategory,
+          slug
+        );
+
+        if (!mounted) return;
         setProduct(res);
         setState("success");
       } catch (e) {
@@ -76,8 +85,9 @@ export default function ProductDetailPage() {
     return () => {
       mounted = false;
     };
-  }, [slug]);
+  }, [params]);
 
+  /* ================= REDIRECT IF ERROR ================= */
   useEffect(() => {
     if (state === "error") {
       router.replace("/shop");
