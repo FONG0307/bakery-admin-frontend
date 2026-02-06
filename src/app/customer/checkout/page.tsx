@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
 import { createOrderFromCart, createStripeCheckout } from "@/lib/order";
+import { applyVoucher } from "@/lib/cart";
 
 type PaymentMethod = "cod" | "stripe";
 
@@ -14,8 +15,14 @@ export default function CheckoutPage() {
   const { user } = useAuth();
   const { showSuccess, showError } = useToast();
   const { cart, syncCartToBackend } = useCart();
-
+  
   const items = cart?.items || [];
+
+  const [voucherCode, setVoucherCode] = useState("");
+  const [discountPreview, setDiscountPreview] = useState<{
+    discount_amount: number;
+    final_total: number;
+  } | null>(null);
 
   /* ================= FORM STATE ================= */
   const [form, setForm] = useState({
@@ -87,6 +94,20 @@ export default function CheckoutPage() {
     }
   }
 
+  async function handleApplyVoucher() {
+    if (!voucherCode) return;
+
+    try {
+      await applyVoucher(voucherCode);
+
+      // 🔥 REFRESH CART TỪ BACKEND
+      await syncCartToBackend();
+
+      showSuccess("Voucher applied successfully 🎉");
+    } catch {
+      showError("Invalid or expired voucher code");
+    }
+  }
 
   /* ================= EMPTY CART ================= */
   if ((!cart || items.length === 0) && !submitting) {
@@ -178,12 +199,27 @@ export default function CheckoutPage() {
                 </div>
               ))}
             </div>
-
+            <div className="flex gap-2 mb-4">
+              <input
+                value={voucherCode}
+                onChange={(e) => setVoucherCode(e.target.value)}
+                placeholder="Voucher code"
+                className="flex-1 border-2 border-gray-400 px-3 py-2 font-bold"
+              />
+              <button
+                onClick={handleApplyVoucher}
+                className="border-2 border-black px-4 font-extrabold uppercase hover:bg-black hover:text-white"
+              >
+                Apply
+              </button>
+            </div>
             <div className="flex justify-between font-extrabold text-lg mb-6">
               <span>Total</span>
-              <span>{totalPrice.toLocaleString()} ₫</span>
-            </div>
+              <span>
+                {totalPrice.toLocaleString()} ₫
+              </span>
 
+            </div>
             {/* ===== CASH ON DELIVERY ===== */}
             {form.paymentMethod === "cod" && (
               <>

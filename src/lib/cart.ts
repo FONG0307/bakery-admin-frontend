@@ -52,3 +52,9 @@ export function removeCartItem(itemId: number) {
     method: "DELETE",
   });
 }
+export function applyVoucher(code: string) {
+  return fetchJSON("/api/cart/apply-voucher", {
+    method: "POST",
+    body: JSON.stringify({ code }),
+  });
+}
