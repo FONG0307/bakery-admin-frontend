@@ -52,7 +52,7 @@ export default function ProductDetailPage() {
   const [deliveryDate, setDeliveryDate] = useState("");
 
   const { user } = useAuth();
-  const { setCart } = useCart();
+  const { reloadCart } = useCart();
   const { showSuccess, showError } = useToast();
 
   /* ================= LOAD PRODUCT ================= */
@@ -102,18 +102,23 @@ export default function ProductDetailPage() {
     }
 
     try {
-      const cart = await addToCart({
+      await addToCart({
         product_id: product.id,
         quantity,
         size: selectedSize?.name ?? null,
       });
 
-      setCart(cart);
+      // 🔥 KHÔNG setCart bằng response
+      // 🔥 Chỉ reload cart từ backend (source of truth)
+      await reloadCart();
+
       showSuccess("Đã thêm sản phẩm vào giỏ hàng");
-    } catch {
+    } catch (e) {
+      console.error(e);
       showError("Không thể thêm vào giỏ hàng");
     }
   }
+
 
   /* ================= SKELETON ================= */
   if (state === "loading") {

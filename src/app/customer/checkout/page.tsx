@@ -13,31 +13,26 @@ type PaymentMethod = "cod" | "stripe";
 export default function CheckoutPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const { cart, reloadCart, clearCartLocal } = useCart();
   const { showSuccess, showError } = useToast();
-  const { cart, syncCartToBackend } = useCart();
-  
+
   const items = cart?.items || [];
+  const summary = cart?.summary;
 
   const [voucherCode, setVoucherCode] = useState("");
-  const [discountPreview, setDiscountPreview] = useState<{
-    discount_amount: number;
-    final_total: number;
-  } | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   /* ================= FORM STATE ================= */
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
     address: "",
-    paymentMethod: "cod" as PaymentMethod, // cod | stripe
+    paymentMethod: "cod" as PaymentMethod,
   });
-
-  const [submitting, setSubmitting] = useState(false);
 
   /* ================= PREFILL USER ================= */
   useEffect(() => {
     if (!user) return;
-
     setForm((prev) => ({
       ...prev,
       fullName: [user.first_name, user.last_name].filter(Boolean).join(" "),
@@ -46,7 +41,7 @@ export default function CheckoutPage() {
   }, [user]);
 
   const totalPrice = items.reduce(
-    (sum: number, i: any) => sum + i.price * i.quantity,
+    (sum, i) => sum + i.price * i.quantity,
     0
   );
 
@@ -58,50 +53,14 @@ export default function CheckoutPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  /* ================= SUBMIT ================= */
-  async function handleSubmit() {
-    if (!form.fullName || !form.phone || !form.address) {
-      showError("Please fill in all shipping information.");
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-
-      // 🔥🔥🔥 BẮT BUỘC SYNC CART TRƯỚC
-      await syncCartToBackend();
-
-      // 👉 Sau khi sync xong, backend chắc chắn có cart_items
-      const order = await createOrderFromCart({
-        address: form.address,
-        payment_method: form.paymentMethod,
-      } as any);
-
-      if (form.paymentMethod === "cod") {
-        showSuccess("Order placed successfully! You will pay upon delivery 🚚");
-        router.push("/customer/orders");
-        return;
-      }
-
-      if (form.paymentMethod === "stripe") {
-        const session = await createStripeCheckout(order.id);
-        window.location.href = session.url;
-      }
-    } catch (err) {
-      showError("Unable to create order. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
+  /* ================= APPLY VOUCHER ================= */
   async function handleApplyVoucher() {
     if (!voucherCode) return;
 
     try {
       await applyVoucher(voucherCode);
 
-      // 🔥 REFRESH CART TỪ BACKEND
-      await syncCartToBackend();
+      await reloadCart();
 
       showSuccess("Voucher applied successfully 🎉");
     } catch {
@@ -109,8 +68,46 @@ export default function CheckoutPage() {
     }
   }
 
+  /* ================= SUBMIT ================= */
+  async function handleSubmit() {
+    if (!form.fullName || !form.phone || !form.address) {
+      showError("Please fill in all shipping information.");
+      return;
+    }
+
+    if (items.length === 0) {
+      showError("Your cart is empty");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      const order = await createOrderFromCart({
+        address: form.address,
+        payment_method: form.paymentMethod,
+      } as any);
+
+      clearCartLocal();
+
+      if (form.paymentMethod === "cod") {
+        showSuccess("Order placed successfully! You will pay upon delivery 🚚");
+        router.push("/customer/orders");
+        return;
+      }
+
+      // STRIPE
+      const session = await createStripeCheckout(order.id);
+      window.location.href = session.url;
+    } catch (err) {
+      showError("Unable to create order. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   /* ================= EMPTY CART ================= */
-  if ((!cart || items.length === 0) && !submitting) {
+  if (!cart || items.length === 0) {
     return (
       <div className="bg-main-cupcake-background min-h-screen flex items-center justify-center">
         <p className="font-bold text-xl">Your cart is empty</p>
@@ -208,18 +205,44 @@ export default function CheckoutPage() {
               />
               <button
                 onClick={handleApplyVoucher}
-                className="border-2 border-black px-4 font-extrabold uppercase hover:bg-black hover:text-white"
+                disabled={!voucherCode || items.length === 0}
+                className="border-2 border-black px-4 font-extrabold uppercase disabled:opacity-50"
               >
                 Apply
               </button>
             </div>
-            <div className="flex justify-between font-extrabold text-lg mb-6">
-              <span>Total</span>
-              <span>
-                {totalPrice.toLocaleString()} ₫
-              </span>
+            {/* ===== ORDER SUMMARY BREAKDOWN ===== */}
+            <div className="flex flex-col gap-2 text-sm font-bold mb-6">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>
+                  {(summary?.subtotal ?? totalPrice).toLocaleString()} ₫
+                </span>
+              </div>
 
+              {summary?.discount_amount && summary.discount_amount > 0 && (
+                <div className="flex justify-between text-green-700">
+                  <span>
+                    Discount
+                    {summary.discount_code && (
+                      <> (<b>{summary.discount_code}</b>)</>
+                    )}
+                  </span>
+                  <span>
+                    -{summary.discount_amount.toLocaleString()} ₫
+                  </span>
+                </div>
+              )}
+
+              <div className="flex justify-between text-lg border-t pt-2">
+                <span>Total</span>
+                <span>
+                  {(summary?.total ?? totalPrice).toLocaleString()} ₫
+                </span>
+              </div>
             </div>
+
+
             {/* ===== CASH ON DELIVERY ===== */}
             {form.paymentMethod === "cod" && (
               <>

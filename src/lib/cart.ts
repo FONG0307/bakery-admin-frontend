@@ -26,7 +26,8 @@ async function fetchJSON(url: string, options: RequestInit = {}) {
 }
 
 export function getCart() {
-  return fetchJSON("/api/cart");
+  // ensure we always fetch the latest cart after server-side changes
+  return fetchJSON("/api/cart", { cache: "no-store" } as RequestInit);
 }
 
 export function addToCart(payload: {
